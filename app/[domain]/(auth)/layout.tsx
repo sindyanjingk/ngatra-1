@@ -1,0 +1,27 @@
+import prisma from '../../../lib/prisma'
+import React from 'react'
+
+type Props = {
+    children: React.ReactNode
+    params: {
+        domain: string
+    }
+}
+
+const AuthLayout = async ({ children, params }: Props) => {
+    const domain = params.domain.split('.')[0];
+    const site = await prisma.sites.findFirst({
+        where: {
+            subdomain: domain
+        }
+    })
+    return (
+        <div className="flex items-center justify-start w-screen md:p-12 p-4 flex-col gap-y-2 h-screen bg-gradient-to-br from-green-300 via-blue-300 to-blue-500">
+            {site?.image && <img src={site?.image} alt="" className='w-24 h-24 object-cover rounded-full' />}
+            <div className="text-2xl font-bold text-white">{site?.name}</div>
+            {children}
+        </div>
+    )
+}
+
+export default AuthLayout

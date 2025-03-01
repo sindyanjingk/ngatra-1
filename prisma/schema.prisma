@@ -1,0 +1,353 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URL")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model category {
+  id            String         @id @default(cuid())
+  iconUrl       String?        @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
+  category_name String?
+  siteId        String?
+  product       product[]
+  siteServices  siteServices[]
+}
+
+model examples {
+  id            Int     @id @default(autoincrement())
+  name          String?
+  description   String?
+  domainCount   Int?
+  url           String?
+  image         String?
+  imageBlurhash String?
+}
+
+model masterPaymentMethod {
+  id                String              @id @default(cuid())
+  name              String?
+  sitePaymentMethod sitePaymentMethod[]
+}
+
+model masterVendor {
+  id         String       @id
+  vendorName String?
+  siteVendor siteVendor[]
+}
+
+model posts {
+  id            String   @id
+  title         String?
+  description   String?
+  content       String?
+  slug          String
+  image         String?  @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
+  imageBlurhash String?  @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
+  createdAt     DateTime @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime @db.Timestamp(6)
+  published     Boolean  @default(false)
+  siteId        String?
+  userId        String?
+  sites         sites?   @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "posts_siteId_sites_id_fk")
+  users         User?    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "posts_userId_users_id_fk")
+
+  @@unique([slug, siteId], map: "posts_slug_siteId_index")
+  @@index([siteId], map: "posts_siteId_index")
+  @@index([userId], map: "posts_userId_index")
+}
+
+model product {
+  id          String        @id
+  code        String?
+  categoryId  String?
+  price       Float?        @db.Real
+  productName String?
+  vendor      String?
+  status      Boolean?
+  category    category?     @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "product_categoryId_category_id_fk")
+  transaction transaction[]
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model siteLanguage {
+  id            String  @id @default(cuid())
+  siteId        String?
+  tagLine       String? @default("BELI LAYANAN SOSMED DAN BUAT WEBSITE SOSMED GRATIS DISINI")
+  beraneka      String? @default("Beraneka ragam")
+  jumlahLayanan String? @default("Lebih dari 100 layanan dalam katalog")
+  berjalan      String? @default("Semuanya berjalan otomatis")
+  realTime      String? @default("Semuanya dilakukan secara realtime")
+  dukungan      String? @default("Dukungan pelanggan terbaik")
+  agen          String? @default("Agen kami akan selalu membantu anda")
+  sites         sites?  @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteLanguage_siteId_sites_id_fk")
+}
+
+model sitePaymentMethod {
+  id                    String               @id @default(cuid())
+  masterPaymentMethodId String?
+  siteId                String?
+  masterPaymentMethod   masterPaymentMethod? @relation(fields: [masterPaymentMethodId], references: [id], onDelete: Cascade, map: "sitePaymentMethod_masterPaymentMethodId_masterPaymentMethod_id_")
+  sites                 sites?               @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "sitePaymentMethod_siteId_sites_id_fk")
+}
+
+model siteVendor {
+  id             String        @id
+  masterVendorId String?
+  siteId         String?
+  masterVendor   masterVendor? @relation(fields: [masterVendorId], references: [id], onDelete: Cascade, map: "siteVendor_masterVendorId_masterVendor_id_fk")
+  sites          sites?        @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteVendor_siteId_sites_id_fk")
+}
+
+model sites {
+  id                String              @id @default(cuid())
+  name              String?
+  description       String?
+  logo              String?             @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/JRajRyC-PhBHEinQkupt02jqfKacBVHLWJq7Iy.png")
+  font              String              @default("font-cal")
+  image             String?             @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
+  imageBlurhash     String?             @default("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAhCAYAAACbffiEAAAACXBIWXMAABYlAAAWJQFJUiTwAAABfUlEQVR4nN3XyZLDIAwE0Pz/v3q3r55JDlSBplsIEI49h76k4opexCK/juP4eXjOT149f2Tf9ySPgcjCc7kdpBTgDPKByKK2bTPFEdMO0RDrusJ0wLRBGCIuelmWJAjkgPGDSIQEMBDCfA2CEPM80+Qwl0JkNxBimiaYGOTUlXYI60YoehzHJDEm7kxjV3whOQTD3AaCuhGKHoYhyb+CBMwjIAFz647kTqyapdV4enGINuDJMSScPmijSwjCaHeLcT77C7EC0C1ugaCTi2HYfAZANgj6Z9A8xY5eiYghDMNQBJNCWhASot0jGsSCUiHWZcSGQjaWWCDaGMOWnsCcn2QhVkRuxqqNxMSdUSElCDbp1hbNOsa6Ugxh7xXauF4DyM1m5BLtCylBXgaxvPXVwEoOBjeIFVODtW74oj1yBQah3E8tyz3SkpolKS9Geo9YMD1QJR1Go4oJkgO1pgbNZq0AOUPChyjvh7vlXaQa+X1UXwKxgHokB2XPxbX+AnijwIU4ahazAAAAAElFTkSuQmCC")
+  subdomain         String?             @unique(map: "sites_subdomain_unique")
+  customDomain      String?             @unique(map: "sites_customDomain_unique")
+  whatsapp          String?
+  currency          String?             @default("IDR")
+  message404        String?             @default("Blimey! You''ve found a page that doesn''t exist.")
+  createdAt         DateTime            @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime            @db.Timestamp(6)
+  userId            String?
+  posts             posts[]
+  siteDesigns       siteDesigns[]
+  siteIntegrations  siteIntegrations[]
+  siteLanguage      siteLanguage[]
+  sitePaymentMethod sitePaymentMethod[]
+  siteProviders     siteProviders[]
+  service           siteServices[]
+  siteSettings      siteSettings[]
+  siteVendor        siteVendor[]
+  users             User?               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "sites_userId_users_id_fk")
+  transaction       transaction[]
+  userSite          userSite[]
+  userToken         userToken[]
+
+  @@index([userId], map: "sites_userId_index")
+}
+
+model siteDesigns {
+  id              String  @id @default(cuid())
+  siteId          String
+  buttonColor     String?
+  buttonText      String?
+  logo            String?
+  image           String?
+  backgroundColor String?
+  textColor       String?
+  sites           sites   @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteDesigns_siteId_sites_id_fk")
+}
+
+model siteIntegrations {
+  id              String  @id @default(cuid())
+  siteId          String
+  whatsapp        String?
+  googleAnalytics String?
+  googleAuth      String?
+  sites           sites   @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteIntegrations_siteId_sites_id_fk")
+}
+
+model siteSettings {
+  id                 String   @id @default(cuid())
+  siteId             String
+  name               String?
+  showBanner         Boolean? @default(false)
+  cancelFail         Boolean? @default(false)
+  averageComplete    Boolean? @default(false)
+  priceRound         String?
+  showApiPage        Boolean? @default(false)
+  showMultiple       Boolean? @default(false)
+  showServicesPage   Boolean? @default(false)
+  fastOrder          Boolean? @default(false)
+  showOrder          Boolean? @default(false)
+  showDiscount       Boolean? @default(false)
+  showRecentPurchase Boolean? @default(false)
+  currency           String?
+  pageTitle          String?
+  pageDescription    String?
+  pageKeywords       String?
+  metaTags           String?
+  footerTags         String?
+  showTotalPanel     Boolean? @default(false)
+  showUserSpent      Boolean? @default(false)
+  dicount            String?  @default("0")
+  sites              sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteSettings_siteId_sites_id_fk")
+}
+
+model siteProviders {
+  id           String         @id @default(cuid())
+  siteId       String
+  url          String?
+  name         String?
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime       @db.Timestamp(6)
+  apiKey       String?
+  balance      String?
+  icon         String?
+  site         sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteProviders_siteId_sites_id_fk")
+  siteServices siteServices[]
+}
+
+model siteServices {
+  id          String         @id @default(cuid())
+  siteId      String
+  name        String?
+  network     String?
+  description String?
+  type        String?
+  rate        String?
+  min         String?
+  max         String?
+  dripfeed    Boolean?       @default(false)
+  refill      Boolean?       @default(false)
+  cancel      Boolean?       @default(false)
+  providerId  String?
+  categoryId  String?
+  category    category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
+  provider    siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
+  site        sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
+}
+
+model siteOrders {
+  id         String   @id @default(cuid())
+  siteId     String
+  userId     String?
+  serviceId  String?
+  providerId String?
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @db.Timestamp(6)
+  status     String?
+}
+
+model userSite {
+  id        String   @id @default(cuid())
+  userId    String
+  siteId    String
+  role      String   @default("member")
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @db.Timestamp(6)
+  site      sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "userSite_siteId_sites_id_fk")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userSite_userId_users_id_fk")
+
+  @@unique([userId, siteId], map: "userSite_userId_siteId_unique")
+  @@index([siteId], map: "userSite_siteId_index")
+}
+
+model userToken {
+  id        String   @id @default(cuid())
+  userId    String
+  siteId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  site      sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "userToken_siteId_sites_id_fk")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userToken_userId_users_id_fk")
+
+  @@unique([userId, siteId], map: "userToken_userId_siteId_unique")
+  @@index([siteId], map: "userToken_siteId_index")
+}
+
+model transaction {
+  id            String             @id
+  siteId        String?
+  productId     String?
+  phone         String?
+  totalAmount   Float?             @db.Real
+  paymentMethod String?
+  params        String?
+  status        transaction_status
+  timestamp     DateTime           @default(now()) @db.Timestamp(6)
+  name          String?
+  qty           Float?             @db.Real
+  product       product?           @relation(fields: [productId], references: [id], onDelete: Cascade, map: "transaction_productId_product_id_fk")
+  sites         sites?             @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "transaction_siteId_sites_id_fk")
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String?
+  email         String      @unique
+  emailVerified DateTime?
+  password      String?
+  role          Role        @default(USER)
+  image         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  posts         posts[]
+  sites         sites[]
+  userSite      userSite[]
+  userToken     userToken[]
+}
+
+model verificationTokens {
+  identifier String
+  token      String   @unique(map: "verificationTokens_token_unique")
+  expires    DateTime @db.Timestamp(6)
+
+  @@id([identifier, token], map: "verificationTokens_identifier_token_pk")
+}
+
+enum transaction_status {
+  waiting_payment
+  processed
+  completed
+  failed
+}
+
+enum user_role {
+  admin
+  user
+  customer
+}
+
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
