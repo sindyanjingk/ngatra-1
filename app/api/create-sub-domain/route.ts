@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
                 },
                 userSite:{
                     create:{
-                        userId: user.id,
+                        userId : user.id,
                         role: "ADMIN",
                         updatedAt: new Date()
                     }

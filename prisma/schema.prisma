@@ -268,6 +268,10 @@ model userSite {
   userId    String
   siteId    String
   role      String   @default("member")
+  discPrice String?
+  refferals String?
+  spent     String?
+  balance   String?
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @db.Timestamp(6)
   site      sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "userSite_siteId_sites_id_fk")

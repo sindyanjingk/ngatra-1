@@ -1,9 +1,8 @@
 import Image from 'next/image'
 import React from 'react'
 
-type Props = {}
 
-const Tarif = (props: Props) => {
+const Tarif = () => {
     return (
         <div className="spce-y-4 flex flex-col items-center justify-center">
             <div className="p-4 border rounded-xl flex items-center justify-between  md:w-2/4">
