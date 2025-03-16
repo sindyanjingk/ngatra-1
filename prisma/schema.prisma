@@ -234,23 +234,30 @@ model siteProviders {
 }
 
 model siteServices {
-  id          String         @id @default(cuid())
-  siteId      String
-  name        String?
-  network     String?
-  description String?
-  type        String?
-  dripfeed    Boolean?       @default(false)
-  refill      Boolean?       @default(false)
-  cancel      Boolean?       @default(false)
-  providerId  String?
-  categoryId  String?
-  rate        Int?
-  min         Int?
-  max         Int?
-  category    category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
-  provider    siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
-  site        sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
+  id            String         @id @default(cuid())
+  siteId        String
+  name          String?
+  network       String?
+  description   String?
+  type          String?
+  dripfeed      Boolean?       @default(false)
+  refill        Boolean?       @default(false)
+  cancel        Boolean?       @default(false)
+  providerId    String?
+  categoryId    String?
+  rate          Int?
+  min           Int?
+  max           Int?
+  serviceId     Int?
+  isEnabled     Boolean?       @default(true)
+  createdAt     DateTime       @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime       @db.Timestamp(6)
+  extraPrice    Int?
+  finalsRate    Int?
+  providersRate Int?
+  category      category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
+  provider      siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
+  site          sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
 }
 
 model siteOrders {

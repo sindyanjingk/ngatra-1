@@ -82,19 +82,14 @@ export default function ImportServicesModal({ siteId, providers, categories }: {
             toast.error("Please select category")
             return
         }
-        const convertSelected = selected.map((item) => ({
-            ...item,
-            rate: selectedProvider.currency === "IDR" ? +item.rate! + (+item.rate! * extraPrice / 100) : (+selected[0].rate! * oneUsd) + ((+selected[0].rate! * extraPrice / 100) * oneUsd),
-            min : +item.min!,
-            max : +item.max!,
-        }))
         setIsloadingCreate(true)
         try {            
             const response = await axios.post(`/api/create-bulk-services`, {
                 siteId: siteId,
                 providerId: selectedProvider.id,
                 categoryId: categoryId,
-                selected: convertSelected || [],
+                selected: selected || [],
+                extraPrice,
             })
             if (response.status === 200) {
                 toast.success("Successfully created services")
