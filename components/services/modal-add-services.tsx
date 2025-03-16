@@ -33,7 +33,7 @@ export default function ModalAddServices() {
     return (
         <form
             action={async (data: FormData) => {
-
+                console.log({ data }); 
             }}
             className="w-full max-w-lg rounded-lg bg-white shadow-md dark:bg-gray-900 md:border md:border-gray-200 md:shadow-lg dark:md:border-gray-700 font-semibold text-md text-gray-600 dark:text-gray-400"
         >
@@ -86,7 +86,7 @@ export default function ModalAddServices() {
                 >
                     {`Cancel`}
                 </button>
-                <CreateSerciceFormButton/>
+                <CreateSerciceFormButton />
             </div>
         </form>
     );

@@ -6,6 +6,7 @@ import { siteProviders } from '@prisma/client'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import DeleteProviderButton from './delete-provider-button'
 import DeleteProviderModal from './delete-provider-modal'
+import { formatIDR, formatUSD } from '@/lib/helpers'
 
 type Props = {
     providers: siteProviders[]
@@ -22,25 +23,34 @@ const YourProvider = ({ providers, siteId }: Props) => {
                         providers.map((item, index) => (
                             <div className='p-4 border-b w-full flex items-center justify-between' key={index}>
                                 <div className="text-md font-bold w-1/2">{item.name}</div>
-                                <Popover>
-                                    <PopoverTrigger className='cursor-pointer' asChild>
-                                        <div className="bg-gray-100 p-2 rounded-lg">
-                                            <EllipsisIcon />
-                                        </div>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-60 flex flex-col p-0">
-                                        <div className="flex items-center gap-x-4 cursor-pointer hover:bg-gray-200 p-4">
-                                            <Code2Icon className='text-blue-500' />
-                                            <div className="text-md font-semibold">Change API Key</div>
-                                        </div>
-                                        <DeleteProviderButton>
-                                            <DeleteProviderModal providerId={item.id} />
-                                        </DeleteProviderButton>
-                                    </PopoverContent>
-                                </Popover>
+                                <div className="flex items-center gap-x-4">
+                                    <div className="text-green-500 font-bold">
+                                        {
+                                            item.currency === "IDR" ?
+                                            formatIDR(+item.balance!) : 
+                                            formatUSD(+item.balance!)
+                                        }
+                                    </div>
+                                    <Popover>
+                                        <PopoverTrigger className='cursor-pointer' asChild>
+                                            <div className="bg-gray-100 p-2 rounded-lg">
+                                                <EllipsisIcon />
+                                            </div>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-60 flex flex-col p-0">
+                                            <div className="flex items-center gap-x-4 cursor-pointer hover:bg-gray-200 p-4">
+                                                <Code2Icon className='text-blue-500' />
+                                                <div className="text-md font-semibold">Change API Key</div>
+                                            </div>
+                                            <DeleteProviderButton>
+                                                <DeleteProviderModal providerId={item.id} />
+                                            </DeleteProviderButton>
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
                             </div>
                         )) :
-                        <div className="flex items-center justify-center gap-x-2 w-full h-full mt-20">    
+                        <div className="flex items-center justify-center gap-x-2 w-full h-full mt-20">
                             <SearchIcon size={18} color='blue' className='animate-bounce' />
                             <h5 className='font-semibold'>Add providers to buy services from them</h5>
                         </div>

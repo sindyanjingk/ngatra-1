@@ -6,13 +6,16 @@ export async function POST(req: NextRequest) {
   try {
     const { url, name, siteId, apiKey} = await req.json();
     const response = await axios.get(`${url}/api/v2?action=services&key=${apiKey}`)
-    if(response.status === 200) {
+    const ballanceResponse = await axios.get(`${url}/api/v2?action=balance&key=${apiKey}`)
+    if(response.status === 200 && ballanceResponse.status === 200) {
         await prisma.siteProviders.create({
             data: {
                 siteId,
                 url: url,
                 name: name,
                 apiKey,
+                balance : ballanceResponse.data.balance,
+                currency : ballanceResponse.data.currency,
                 updatedAt : new Date()
             }
         })

@@ -228,6 +228,7 @@ model siteProviders {
   apiKey       String?
   balance      String?
   icon         String?
+  currency     String?
   site         sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteProviders_siteId_sites_id_fk")
   siteServices siteServices[]
 }
@@ -239,14 +240,14 @@ model siteServices {
   network     String?
   description String?
   type        String?
-  rate        String?
-  min         String?
-  max         String?
   dripfeed    Boolean?       @default(false)
   refill      Boolean?       @default(false)
   cancel      Boolean?       @default(false)
   providerId  String?
   categoryId  String?
+  rate        Int?
+  min         Int?
+  max         Int?
   category    category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
   provider    siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
   site        sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
@@ -268,12 +269,12 @@ model userSite {
   userId    String
   siteId    String
   role      String   @default("member")
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @db.Timestamp(6)
+  balance   String?
   discPrice String?
   refferals String?
   spent     String?
-  balance   String?
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @db.Timestamp(6)
   site      sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "userSite_siteId_sites_id_fk")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userSite_userId_users_id_fk")
 

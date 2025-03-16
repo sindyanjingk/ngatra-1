@@ -13,13 +13,13 @@ import { Iservices } from "../control/providers/add-provider-moda";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { Checkbox } from "../ui/checkbox";
-import { formatIDR } from "@/lib/helpers";
+import { convertUsdToIdr, formatIDR, formatUSD, oneUsd } from "@/lib/helpers";
 import Link from "next/link";
 
 
 export default function ImportServicesModal({ siteId, providers, categories }: { siteId: string, providers: siteProviders[], categories: category[] }) {
     const modal = useModal();
-    const [selectedProvider, setSelectedProvider] = useState<siteProviders>(providers[0] || {id : ""});
+    const [selectedProvider, setSelectedProvider] = useState<siteProviders>(providers[0] || { id: "" });
     const [services, setServices] = useState<Iservices[]>([])
     const [isLoading, setIsloading] = useState(false)
     const [isNext, setIsNext] = useState(false)
@@ -82,13 +82,19 @@ export default function ImportServicesModal({ siteId, providers, categories }: {
             toast.error("Please select category")
             return
         }
+        const convertSelected = selected.map((item) => ({
+            ...item,
+            rate: selectedProvider.currency === "IDR" ? +item.rate! + (+item.rate! * extraPrice / 100) : (+selected[0].rate! * oneUsd) + ((+selected[0].rate! * extraPrice / 100) * oneUsd),
+            min : +item.min!,
+            max : +item.max!,
+        }))
         setIsloadingCreate(true)
-        try {
+        try {            
             const response = await axios.post(`/api/create-bulk-services`, {
                 siteId: siteId,
                 providerId: selectedProvider.id,
                 categoryId: categoryId,
-                selected: selected || []
+                selected: convertSelected || [],
             })
             if (response.status === 200) {
                 toast.success("Successfully created services")
@@ -142,6 +148,7 @@ export default function ImportServicesModal({ siteId, providers, categories }: {
                                     <SelectValue placeholder={"Select Category"} />
                                 </SelectTrigger>
                                 <SelectContent>
+                                    <SelectItem value="same">Same As Categories</SelectItem>
                                     {
                                         transformCategories.map((item, index) => (
                                             <SelectItem key={index} value={item.value}>{item.label}</SelectItem>
@@ -169,8 +176,26 @@ export default function ImportServicesModal({ siteId, providers, categories }: {
                                 selected.map((item, index) => (
                                     <div key={index} className="my-4 border-b pb-2 flex items-start justify-between w-full">
                                         <div className="text-md font-semibold">{item.service}</div>
-                                        <div className="text-md font-semibold">{formatIDR(item.rate ? +item.rate : 0)}</div>
-                                        <div className="text-md font-semibold">{item?.rate ? formatIDR(Math.round(+item.rate * (extraPrice / 100)) + parseInt(item.rate)) : 0}</div>
+                                        <div className="text-md font-semibold">
+                                            {
+                                                selectedProvider.currency === "IDR" ?
+                                                    formatIDR(item.rate ? +item.rate : 0) :
+                                                    convertUsdToIdr(item.rate ? +item.rate : 0, oneUsd)
+                                            }
+                                        </div>
+                                        <div className="text-md font-semibold">
+                                            {
+                                                selectedProvider.currency === "IDR"
+                                                    ? item?.rate
+                                                        ? formatIDR(Math.round(+item.rate * extraPrice / 100) + Number(item.rate))
+                                                        : "Rp0"
+                                                    :
+                                                    convertUsdToIdr(
+                                                        +item.rate! * (extraPrice / 100) + Number(item.rate),
+                                                        oneUsd
+                                                    )
+                                            }
+                                        </div>
                                         <ArrowRight />
                                         <div className="text-md font-semibold"><Input className="w-20" type="number" value={extraPrice} /></div>
                                     </div>

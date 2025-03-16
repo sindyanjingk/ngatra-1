@@ -13,6 +13,7 @@ import prisma from '@/lib/prisma'
 import { Edit2Icon, Trash2Icon } from 'lucide-react'
 import ButtonAddServices from '../services/button-add-services'
 import ModalAddServices from '../services/modal-add-services'
+import { formatIDR } from '@/lib/helpers'
 
 type Props = {
     services: Prisma.siteServicesGetPayload<{
@@ -35,10 +36,6 @@ const ServicesTable = async ({ p, siteId, providers }: Props) => {
             siteId
         }
     })
-    const transformCategories = categories.map((item) => ({
-        label: item.category_name,
-        value: item.id
-    }))
 
     const services = await prisma.siteServices.findMany({
         where : {
@@ -49,25 +46,7 @@ const ServicesTable = async ({ p, siteId, providers }: Props) => {
             category : true
         }
     })
-
-    const where : Prisma.siteServicesWhereInput  = { }
-
-    const categoryServices = Object.values(
-        services.reduce((acc, item) => {
-          const categoryName = item.category?.category_name || "Uncategorized";
-    
-          if (!acc[categoryName]) {
-            acc[categoryName] = {
-              categoryName,
-              services: [],
-            };
-          }
-    
-          acc[categoryName].services.push(item);
-          return acc;
-        }, {} as Record<string, { categoryName: string; services: typeof services }>)
-      );
-
+      
     return (
         <div className="">
             <div className="text-lg my-4 font-bold">List Services</div>
@@ -88,8 +67,8 @@ const ServicesTable = async ({ p, siteId, providers }: Props) => {
                         </SelectTrigger>
                         <SelectContent>
                             {
-                                categoryServices.map((item) => (
-                                    <SelectItem key={item.categoryName} value={item.categoryName}>{item.categoryName}</SelectItem>
+                                categories.map((item) => (
+                                    <SelectItem key={item.id} value={item.category_name!}>{item.category_name}</SelectItem>
                                 ))
                             }
                         </SelectContent>
@@ -108,7 +87,7 @@ const ServicesTable = async ({ p, siteId, providers }: Props) => {
                             <TableHead className="border border-gray-300">ID</TableHead>
                             <TableHead className="border border-gray-300">Name</TableHead>
                             <TableHead className="border border-gray-300">Rate</TableHead>
-                            <TableHead className="border border-gray-300">Network</TableHead>
+                            <TableHead className="border border-gray-300">Category</TableHead>
                             <TableHead className="border border-gray-300">Provider</TableHead>
                             <TableHead className="border border-gray-300">Min</TableHead>
                             <TableHead className="border border-gray-300">Max</TableHead>
@@ -120,8 +99,8 @@ const ServicesTable = async ({ p, siteId, providers }: Props) => {
                             <TableRow key={index} className="border border-gray-300">
                                 <TableCell className="border border-gray-300">{index + 1}</TableCell>
                                 <TableCell className="border border-gray-300">{item.name}</TableCell>
-                                <TableCell className="border border-gray-300">{item.rate}</TableCell>
-                                <TableCell className="border border-gray-300">{item.network}</TableCell>
+                                <TableCell className="border border-gray-300">{formatIDR(item.rate!)}</TableCell>
+                                <TableCell className="border border-gray-300">{item.category?.category_name}</TableCell>
                                 <TableCell className="border border-gray-300">{item.provider?.name}</TableCell>
                                 <TableCell className="border border-gray-300">{item.max}</TableCell>
                                 <TableCell className="border border-gray-300">{item.min}</TableCell>

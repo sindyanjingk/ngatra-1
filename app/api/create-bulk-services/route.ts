@@ -7,44 +7,61 @@ export async function POST(req: NextRequest) {
             siteId,
             providerId,
             selected,
-            categoryId
+            categoryId,
+            extraPrice,
         } = await req.json();
-        const transformData = await Promise.all(
-            selected.map(async (item: any) => {
-                // Cek apakah kategori dengan nama yang sama sudah ada
-                let category = await prisma.category.findFirst({
-                    where: { category_name: item.category },
-                });
-
-                // Jika kategori belum ada, buat baru
-                if (!category) {
-                    category = await prisma.category.create({
-                        data: {
-                            category_name: item.category, // Nama kategori unik
-                            iconUrl: item.iconUrl || "", // Opsional: jika ada icon URL
-                            siteId: siteId || "", // Hubungkan dengan site jika perlu
-                        },
+        let transformData = []
+        if (categoryId === "same") {
+            transformData = await Promise.all(
+                selected.map(async (item: any) => {
+                    // Cek apakah kategori dengan nama yang sama sudah ada
+                    let category = await prisma.category.findFirst({
+                        where: { category_name: item.category },
                     });
-                }
 
-                return {
-                    name: item.name,
-                    siteId: siteId || "",
-                    providerId: providerId || "",
-                    rate: item.rate?.toString() || "0",
-                    categoryId: category.id, // Pakai ID kategori yang sudah ditemukan / dibuat
-                    description: item.description || "",
-                    cancel: item.cancel || false,
-                    dripfeed: item.dripfeed,
-                    max: item.max?.toString() || "0",
-                    min: item.min?.toString() || "0",
-                    network: item.network || "",
-                    refill: item.refill || false,
-                    type: item.type || "sms",
-                };
-            })
-        );
+                    // Jika kategori belum ada, buat baru
+                    if (!category) {
+                        category = await prisma.category.create({
+                            data: {
+                                category_name: item.category, // Nama kategori unik
+                                iconUrl: item.iconUrl || "", // Opsional: jika ada icon URL
+                                siteId: siteId || "", // Hubungkan dengan site jika perlu
+                            },
+                        });
+                    }
 
+                    return {
+                        name: item.name,
+                        siteId: siteId || "",
+                        providerId: providerId || "",
+                        rate: item.rate,
+                        categoryId: category.id, // Pakai ID kategori yang sudah ditemukan / dibuat
+                        description: item.description || "",
+                        cancel: item.cancel || false,
+                        dripfeed: item.dripfeed,
+                        max: item.max || 0,
+                        min: item.min || 0,
+                        network: item.network || "",
+                        refill: item.refill || false,
+                    };
+                })
+            );
+        } else {
+            transformData = selected.map(((item: any) => ({
+                name: item.name,
+                siteId: siteId || "",
+                providerId: providerId || "",
+                rate: item.rate,
+                categoryId: categoryId, // Pakai ID kategori yang sudah ditemukan / dibuat
+                description: item.description || "",
+                cancel: item.cancel || false,
+                dripfeed: item.dripfeed,
+                max: item.max || 0,
+                min: item.min || 0,
+                network: item.network || "",
+                refill: item.refill || false,
+            })))
+        }
         const response = await prisma.siteServices.createMany({
             data: transformData,
         });

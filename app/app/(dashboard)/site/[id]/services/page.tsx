@@ -29,6 +29,12 @@ const ServicesPage = async ({params}: Props) => {
     }
   })
 
+  const categories = await prisma.category.findMany({
+    where : {
+      siteId : params.id
+    }
+  })
+
   return (
     <ServicesTable providers={providers} siteId={params.id} p={1} services={services} />
   )

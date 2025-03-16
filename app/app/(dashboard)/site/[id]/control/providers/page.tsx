@@ -39,7 +39,7 @@ export default async function Providers({
                     </h1>
                 </div>
             </div>
-            <ProviderAds siteId={data.id}/>
+            <ProviderAds serviceUrl={`/site/${params.id}/services`} siteId={data.id}/>
             <div className="flex flex-col items-center space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <h1 className="font-cal text-xl font-semibold dark:text-white text-black">
                     Your Providers For {data.name}

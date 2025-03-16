@@ -10,6 +10,7 @@ type Props = {
     Icon?: React.ReactNode;
     logo: string;
     siteId: string;
+    serviceUrl?: string;
 }
 
 const ProviderItem = ({
@@ -17,7 +18,8 @@ const ProviderItem = ({
     url,
     Icon,
     logo,
-    siteId
+    siteId,
+    serviceUrl
 }: Props) => {
     return (
         <div className='p-4 border-b flex items-center justify-between gap-x-4 hover:shadow-lg hover:bg-blue-50'>
@@ -30,7 +32,7 @@ const ProviderItem = ({
             </div>
             <div>
                 <AddProviderButton>
-                    <AddProviderModal siteId={siteId} url={url}/>
+                    <AddProviderModal serviceUrl={serviceUrl} siteId={siteId} url={url}/>
                 </AddProviderButton>
             </div>
         </div>

@@ -6,9 +6,11 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export interface Iservices {
-    id? : string
+    id?: string
     service?: string
     name?: string
     type?: string
@@ -26,10 +28,12 @@ export interface Iservices {
 
 export default function AddProviderModal({
     url,
-    siteId
+    siteId,
+    serviceUrl
 }: {
     url: string;
     siteId: string
+    serviceUrl? : string
 }) {
     const modal = useModal();
     const [providerAdded, setProviderAdded] = useState(false)
@@ -50,6 +54,8 @@ export default function AddProviderModal({
         }
         setIsLoading(false)
     }
+
+    const router = useRouter()
     return (
         <form
             className="w-full max-w-lg rounded-lg bg-white shadow-md dark:bg-gray-900 md:border md:border-gray-200 md:shadow-lg dark:md:border-gray-700 font-semibold text-md text-gray-600 dark:text-gray-400"
@@ -64,7 +70,12 @@ export default function AddProviderModal({
                         <div className="flex flex-col gap-y-4">
                             <h5 className="text-center">Now you can add services</h5>
                             <div className="flex items-center justify-center gap-x-4">
-                                <Button type="button" onClick={modal?.hide}  >Add Services</Button>
+                                {/* <Link href={`/site/${siteId}/services`} className="flex items-center gap-x-2"> */}
+                                    <Button onClick={()=>{
+                                        router.push(`/site/${siteId}/services`)
+                                        modal?.hide()
+                                    }} type="button"  >Add Services</Button>
+                                {/* </Link> */}
                                 <Button type="button" onClick={modal?.hide} variant="outline">Later</Button>
                             </div>
                         </div> :

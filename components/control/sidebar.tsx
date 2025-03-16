@@ -17,6 +17,9 @@ import {
     Users,
     Layers,
     BellDotIcon,
+    CodeSquareIcon,
+    Cable,
+    CableIcon,
 } from "lucide-react";
 import { useParams, usePathname, useSelectedLayoutSegments } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -136,6 +139,18 @@ export default function Sidebar() {
                 href: `/site/${id}/control/notification`,
                 isActive: segments[0] === "notification",
                 icon: <BellDotIcon width={18} />,
+            },
+            {
+                name: "Interactions",
+                href: `/site/${id}/control/interactions`,
+                isActive: segments[0] === "interactions",
+                icon: <CableIcon width={18} />,
+            },
+            {
+                name: "API",
+                href: `/site/${id}/control/api`,
+                isActive: segments[0] === "api",
+                icon: <CodeSquareIcon width={18} />,
             }
         ];
     }, [segments]);

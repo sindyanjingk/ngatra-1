@@ -4,9 +4,10 @@ import ProviderItem from './provider-item'
 
 type Props = {
     siteId : string
+    serviceUrl?: string
 }
 
-const ProviderAds = ({siteId}: Props) => {
+const ProviderAds = ({siteId, serviceUrl}: Props) => {
   let data = [
     {
         favIcon: "/logo.png",
@@ -61,7 +62,7 @@ const ProviderAds = ({siteId}: Props) => {
     <div className="border rounded-lg shadow-md">
       {
         data.map((item, index) => (
-          <ProviderItem siteId={siteId} logo={item.favIcon} item={item.name} url={item.url} Icon={item.icon} key={index} />
+          <ProviderItem serviceUrl={serviceUrl} siteId={siteId} logo={item.favIcon} item={item.name} url={item.url} Icon={item.icon} key={index} />
         ))
       }
     </div>
