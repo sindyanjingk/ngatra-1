@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth/next"
-import prisma from '../../../lib/prisma'
+import prisma from '../../lib/prisma'
 import { redirect } from 'next/navigation'
 import React from 'react'
-import { authOptions } from "../../../lib/auth"
-import NavbarHome from "../../../components/home/navbar-home"
-import DropdownLanguage from "../../../components/home/dropdown-language"
-import GetStarted from "../../../components/home/get-started"
-import TabsComponent from "../../../components/home/tabs-components"
+import { authOptions } from "../../lib/auth"
+import NavbarHome from "../../components/home/navbar-home"
+import DropdownLanguage from "../../components/home/dropdown-language"
+import GetStarted from "../../components/home/get-started"
+import TabsComponent from "../../components/home/tabs-components"
 
 type Props = {}
 
