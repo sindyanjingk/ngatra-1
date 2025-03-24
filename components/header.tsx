@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { Button } from './ui/button';
 import AddFundsButton from './add-funds/add-funds-button';
 import AddFundsModal from './add-funds/add-funds-modal';
+import { formatIDR } from '@/lib/helpers';
 
 const Header = async ({ limit, id }: { limit?: number, id: string }) => {
     const session = await getSession();
@@ -30,6 +31,12 @@ const Header = async ({ limit, id }: { limit?: number, id: string }) => {
             id: id,
         },
     });
+
+    const userInfo = await prisma.user.findUnique({
+        where : {
+            id : session.user.id
+        }
+    })
 
     const topNav = [
         {
@@ -70,7 +77,7 @@ const Header = async ({ limit, id }: { limit?: number, id: string }) => {
                 <PopoverTrigger className='flex items-center gap-x-2'>
                     <Wallet2Icon className='text-green-400' />
                     <div className="font-bold">
-                        $20
+                        {formatIDR(userInfo?.balance || 0)}
                     </div>
                     <ChevronDown />
                 </PopoverTrigger>

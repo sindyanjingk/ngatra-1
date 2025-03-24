@@ -30,13 +30,14 @@ export async function POST(req: NextRequest) {
         }
 
         console.log("Ini transaksi top-up");
-        const user = await prisma.user.findUnique({ where: { id: transaction.user.id } })
         await prisma.user.update({
             where: {
                 id: transaction?.user?.id,
             },
             data: {
-                balance: Number(user?.balance) + Number(gross_amount)
+                balance: {
+                    increment : Number(gross_amount)
+                }
             }
         })
         return NextResponse.json({ msg: "Success update balance" })

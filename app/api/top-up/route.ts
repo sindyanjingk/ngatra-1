@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
                 status : "waiting_payment",
                 name : "TOPUP",
                 userId : session.user.id,
-                totalAmount : +ammount,
+                totalAmount : ammount,
             }
         })
 
