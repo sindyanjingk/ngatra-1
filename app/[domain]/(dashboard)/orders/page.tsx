@@ -20,8 +20,6 @@ const Orders = async ({
       siteId : site?.id
     }
   })
-  console.log({transaction});
-  
   return (
     <div>Orders</div>
   )
