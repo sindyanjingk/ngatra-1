@@ -32,7 +32,8 @@ export async function POST(req: NextRequest) {
                 min ,
                 network,
                 refill ,
-                type
+                type,
+                updatedAt : new Date()
             }
         })
         return NextResponse.json({ message: "success", response }, { status: 200 });
