@@ -21,7 +21,11 @@ const Orders = async ({
     }
   })
   return (
-    <div>Orders</div>
+    <div>
+      {transaction.map((item, index)=>(
+        <div key={index} className="text-xl">{item.name}</div>
+      ))}
+    </div>
   )
 }
 
