@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    console.log({children});
     const [token, setToken] = useState("")
     const router = useRouter()
     useEffect(() => {

@@ -36,7 +36,14 @@ const OrdersPage = async ({ params, searchParams }: Props) => {
     }
   })
 
+  const transaction = await prisma.transaction.findMany({
+    where : {
+      siteId : params.id
+    }
+  })
+
   const p = page ? +page : 1
+  console.log({transaction});
   return (
     <OrderTable p={p} users={users}/>
   )

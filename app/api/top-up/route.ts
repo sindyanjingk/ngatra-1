@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
         })
         const transaction = await prisma.transaction.create({
             data : {
+                id : order_id,
                 status : "waiting_payment",
                 name : "TOPUP",
                 userId : session.user.id,
