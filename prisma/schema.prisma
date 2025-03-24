@@ -109,16 +109,56 @@ model VerificationToken {
 }
 
 model siteLanguage {
-  id            String  @id @default(cuid())
-  siteId        String?
-  tagLine       String? @default("BELI LAYANAN SOSMED DAN BUAT WEBSITE SOSMED GRATIS DISINI")
-  beraneka      String? @default("Beraneka ragam")
-  jumlahLayanan String? @default("Lebih dari 100 layanan dalam katalog")
-  berjalan      String? @default("Semuanya berjalan otomatis")
-  realTime      String? @default("Semuanya dilakukan secara realtime")
-  dukungan      String? @default("Dukungan pelanggan terbaik")
-  agen          String? @default("Agen kami akan selalu membantu anda")
-  sites         sites?  @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteLanguage_siteId_sites_id_fk")
+  id          String       @id @default(cuid())
+  siteId      String?
+  siteLanding siteLanding?
+  sites       sites?       @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteLanguage_siteId_sites_id_fk")
+}
+
+model siteLanding {
+  id               String       @id @default(cuid())
+  siteLanguageId   String       @unique
+  signIn           String?      @default("Sign In")
+  signUp           String?      @default("Sign Up")
+  newOrder         String?      @default("New Order")
+  service          String?      @default("Service")
+  mostConvenient   String?      @default("Your most convenient provider")
+  become           String?      @default("Become popular with our panel")
+  startNow         String?      @default("Start now")
+  fastOrder        String?      @default("Fast order")
+  ourPanelIsGood   String?      @default("Our panel is good for")
+  likesFollowers   String?      @default("Likes, followers, shares and tons of other servicesfor many of social networks")
+  advantages       String?      @default("Advantages")
+  attractive       String?      @default("Attract new customers and build trust in your business using high activity in social networks")
+  hugeAssortment   String?      @default("Huge assortment of services")
+  hugeDesc         String?      @default("More than 100 services in catalogue")
+  fullAutomatic    String?      @default("Full automatic order processing")
+  automaticDesc    String?      @default("The order is processed automatically, without human intervention")
+  greatSupport     String?      @default("Great support")
+  supportDesc      String?      @default("Our agents will always help you")
+  registerNow      String?      @default("Register now")
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  areFollowersDesc String?      @default("Yes, they are. All our users are real people. Your content will interest them and after a couple of hours activity on your channel will start to grow")
+  areFollowersReal String?      @default("Are followers real?")
+  callToAction     String?      @default("Do not waste your time, become a popular now!")
+  everyThingAtOnce String?      @default("Everything at once in your personal cabinet")
+  guarantees       String?      @default("Any guarantees?")
+  guaranteesDesc   String?      @default("Our service works via payment aggregator Unitpay. To conclude such partnership we went through a lot of verification procedures. Also, we have a great reputation.")
+  howToTrack       String?      @default("How to track my order?")
+  howToTrackDesc   String?      @default("After you have bought a package you get into the page where you can watch status of your order. Also, you will get an email with a link by which you can track your order.")
+  hundredCustomers String?      @default("")
+  isSecure         String?      @default("Is this secure?")
+  isSecureDesc     String?      @default("Of course, Our users are real people, that is why social networks dont have any suspicion. We are working for over 5 years now, and we have not witnessed a single blocked profile")
+  testi1           String?      @default("hypertrain")
+  testi1Desc       String?      @default("Everything was clear, followers came within 3 hours, ordered some to test, all ok")
+  testi2           String?      @default("RayanTvin")
+  testi2Desc       String?      @default("I used instagram, followers came quickly and no problems with the account, I recommend it")
+  testi3           String?      @default("Matthew")
+  testi3Desc       String?      @default("Needed subscribers to a telegram channel, everything came quickly and the quality is good")
+  testi4           String?      @default("Yeager")
+  testi4Desc       String?      @default("Everything came quickly and in the ordered quantity, on the quality we will still look at it")
+  siteLanguage     siteLanguage @relation(fields: [siteLanguageId], references: [id], onDelete: Cascade, map: "siteLanding_siteLanguageId_siteLanguage_id_fk")
 }
 
 model sitePaymentMethod {
@@ -304,7 +344,7 @@ model userToken {
 }
 
 model transaction {
-  id            String             @id
+  id            String             @id @default(cuid())
   siteId        String?
   productId     String?
   phone         String?
@@ -315,24 +355,30 @@ model transaction {
   timestamp     DateTime           @default(now()) @db.Timestamp(6)
   name          String?
   qty           Float?             @db.Real
+  userId        String?
   product       product?           @relation(fields: [productId], references: [id], onDelete: Cascade, map: "transaction_productId_product_id_fk")
   sites         sites?             @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "transaction_siteId_sites_id_fk")
+  user          User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String      @unique
+  email         String        @unique
   emailVerified DateTime?
   password      String?
-  role          Role        @default(USER)
+  role          Role          @default(USER)
   image         String?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  balance       Int?
+  feeToday      Int?
+  income        Int?
   accounts      Account[]
   sessions      Session[]
   posts         posts[]
   sites         sites[]
+  transaction   transaction[]
   userSite      userSite[]
   userToken     userToken[]
 }
@@ -347,9 +393,13 @@ model verificationTokens {
 
 enum transaction_status {
   waiting_payment
-  processed
+  processing
   completed
   failed
+  inProgress
+  partial
+  canceled
+  pending
 }
 
 enum user_role {

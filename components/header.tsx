@@ -9,6 +9,8 @@ import prisma from '@/lib/prisma';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import Image from 'next/image';
 import { Button } from './ui/button';
+import AddFundsButton from './add-funds/add-funds-button';
+import AddFundsModal from './add-funds/add-funds-modal';
 
 const Header = async ({ limit, id }: { limit?: number, id: string }) => {
     const session = await getSession();
@@ -104,13 +106,12 @@ const Header = async ({ limit, id }: { limit?: number, id: string }) => {
                         </div>
                     </div>
                     <div className="flex items-center justify-between p-4 border-b">
-                        <Button className='bg-blue-500 hover:bg-blue-400'>
-                            <CirclePlusIcon className='text-white' size={20}/>
-                            Add Funds
-                        </Button>
+                        <AddFundsButton>
+                            <AddFundsModal siteId='' />
+                        </AddFundsButton>
                         <Button className='text-blue-500 px-8' variant={"outline"}>History</Button>
                     </div>
-                    <Link href={`/site/${id}/tarif`} className="text-md flex items-center gap-x-2 text-blue-400 font-bold px-8 py-4">How Commision Work? <SquareArrowOutUpRight/></Link>
+                    <Link href={`/site/${id}/tarif`} className="text-md flex items-center gap-x-2 text-blue-400 font-bold px-8 py-4">How Commision Work? <SquareArrowOutUpRight /></Link>
                 </PopoverContent>
             </Popover>
             <Link className='' href={`/site/${id}/control/settings`}>

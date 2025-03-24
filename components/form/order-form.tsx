@@ -47,20 +47,14 @@ const OrderForm = ({
             return acc;
         }, {} as Record<string, { categoryName: string; services: typeof siteServices }>)
     );
-
-    // const services = categoryServices.filter((service) => service.categoryName === selectedCategory).map((item) => ({
-    //     label: item.name,
-    //     value: item.id
-    // }));
-
     const services = categoryServices.find((service) => service.categoryName === selectedCategory)?.services.map((item) => ({
         label: item.name,
         value: item
     }));
     const buyServices = services?.find((service) => service.value.id === selectedService)?.value;
     return (
-        <div className='bg-white min-h-screen text-gray-800 flex flex-col md:flex-row justify-center gap-x-12 md:py-12 items-start md:w-3/4'>
-            <form className='md:w-1/2 space-y-4' onSubmit={handleSubmit(data => {
+        <div className='bg-white min-h-screen flex flex-col md:flex-row items-start gap-4 text-gray-800 w-full p-4'>
+            <form className='w-full space-y-3' onSubmit={handleSubmit(data => {
                 
             })}>
                 <div className="text-lg font-bold my-8">Choose Service</div>
@@ -129,7 +123,7 @@ const OrderForm = ({
             </form>
             {
                 buyServices &&
-                <Card className='md:my-24 w-1/2'>
+                <Card className='md:my-24 md:w-1/2 w-full'>
                     <CardHeader>
                         <CardTitle>{buyServices.name}</CardTitle>
                     </CardHeader>

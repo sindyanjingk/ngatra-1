@@ -24,7 +24,7 @@ const OrderSite = async ({
     }
   });
   return (
-    <div className='flex items-center justify-center bg-white min-h-screen'>
+    <div className=''>
       <OrderForm siteServices={services}/>
     </div>
   )

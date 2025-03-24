@@ -8,6 +8,9 @@ import { motion } from 'framer-motion'
 
 type Props = {
     buttonColor?: string
+    advantages?: string
+    attractive?: string
+    startNow?: string
 }
 
 const cardVariants = {
@@ -15,7 +18,7 @@ const cardVariants = {
     visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5 } }
 }
 
-const BenefitSection = ({ buttonColor }: Props) => {
+const BenefitSection = ({ buttonColor, advantages, attractive, startNow }: Props) => {
     return (
         <div className='mt-20 flex items-center justify-center flex-col'>
             <motion.div
@@ -25,7 +28,16 @@ const BenefitSection = ({ buttonColor }: Props) => {
                 viewport={{ once: true }}
                 className="text-6xl font-bold text-center p-12"
             >
-                Keuntungan
+                {advantages}
+            </motion.div>
+            <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true }}
+                className="text-3xl font-bold text-center p-12"
+            >
+                {attractive}
             </motion.div>
             <div className="flex flex-col md:flex-row md:items-start items-center justify-center gap-12 mt-12">
                 {[
@@ -58,8 +70,8 @@ const BenefitSection = ({ buttonColor }: Props) => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
             >
-                <Button style={{ backgroundColor: buttonColor  || ""}} className="bg-blue-500 hover:bg-blue-600 text-white px-12 py-6 text-lg mt-8">
-                    Daftar sekarang
+                <Button style={{ backgroundColor: buttonColor || "" }} className="bg-blue-500 hover:bg-blue-600 text-white px-12 py-6 text-lg mt-8">
+                    {startNow}
                 </Button>
             </motion.div>
         </div>

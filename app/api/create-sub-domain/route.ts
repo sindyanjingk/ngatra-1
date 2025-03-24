@@ -55,7 +55,9 @@ export async function POST(req: NextRequest) {
                 },
                 siteLanguage :{
                     create :{
-
+                        siteLanding : {
+                            create : {}
+                        }
                     }
                 },
                 sitePaymentMethod :{

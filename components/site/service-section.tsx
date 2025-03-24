@@ -8,7 +8,13 @@ const fadeInVariant = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
 }
 
-const ServiceSection = () => {
+const ServiceSection = ({
+  ourPanel,
+  likeFollowers
+} : {
+  ourPanel?:string
+  likeFollowers?:string
+}) => {
   return (
     <div className='mt-20 flex items-center justify-center flex-col'>
       <motion.div 
@@ -18,7 +24,16 @@ const ServiceSection = () => {
         variants={fadeInVariant}
         viewport={{ once: true }}
       >
-        Semua layanan kami telah di uji memperoses dengan baik untuk memuaskan kebutuhan sosmed.
+        {ourPanel}
+      </motion.div>
+      <motion.div 
+        className="md:text-3xl text-xl font-bold text-center p-12"
+        initial="hidden"
+        whileInView="visible"
+        variants={fadeInVariant}
+        viewport={{ once: true }}
+      >
+        {likeFollowers}
       </motion.div>
 
       <div className="flex items-center md:items-start flex-col md:flex-row justify-center gap-12 mt-12 ">

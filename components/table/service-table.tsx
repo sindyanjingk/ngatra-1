@@ -25,6 +25,8 @@ import ModalDeleteAllServices from '../services/bulk-services/modal-delete-all-s
 import ModalChangeNameDescription from '../services/bulk-services/modal-change-name-description'
 import ModalChangePriceServices from '../services/bulk-services/modal-change-price-services'
 import ModalUpdateServices from '../services/modal-edit-services'
+import Link from 'next/link'
+import FilterCategoryServices from '../services/filter-category'
 
 type Props = {
     services: Prisma.siteServicesGetPayload<{
@@ -74,21 +76,14 @@ const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
                 </div>
                 <SearchTable />
                 <div className="flex items-center gap-x-4">
-                    <Select>
-                        <SelectTrigger className='md:w-[200px]'>
-                            <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {categories.map((item) => (
-                                <SelectItem key={item.id} value={item.category_name!}>{item.category_name}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <FilterCategoryServices categories={categories} />
                     <AddCategoryButton>
                         <AddCategoryModal siteId={siteId} />
                     </AddCategoryButton>
                 </div>
-                <Button>Direct Providers</Button>
+                <Link href={"/site/" + siteId + "/top-providers"}>
+                    <Button>Direct Providers</Button>
+                </Link>
             </div>
             {/* tampilan table */}
             <ScrollArea className="w-full overflow-auto">
@@ -215,15 +210,19 @@ const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
                                                     <FolderIcon />
                                                     Change Category
                                                 </Button>
-                                                <Button variant={"ghost"} className='flex items-center gap-x-2'>
+                                                {/* <Button variant={"ghost"} className='flex items-center gap-x-2'>
                                                     <Layers2Icon />
                                                     Duplicate
-                                                </Button>
-                                                <Button variant={"ghost"} className='flex items-center gap-x-2'>
+                                                </Button> */}
+                                                <Button onClick={() => {
+                                                    modal?.show(<ModalChangePriceServices selectedServices={[item]} />)
+                                                }} variant={"ghost"} className='flex items-center gap-x-2'>
                                                     <PercentCircleIcon />
                                                     Custom Price
                                                 </Button>
-                                                <Button variant={"ghost"} className='flex items-center gap-x-2'>
+                                                <Button onClick={() => {
+                                                    modal?.show(<ModalDeleteAllServices selectedServices={[item.id]} />)
+                                                }} variant={"ghost"} className='flex items-center gap-x-2'>
                                                     <Trash2Icon />
                                                     Delete
                                                 </Button>

@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
                         currency,
                         pageDescription: description,
                         name,
-                        pageTitle :  name,
+                        pageTitle: name,
                     }
                 },
                 siteDesigns: {
@@ -50,7 +50,14 @@ export async function POST(req: NextRequest) {
                 },
                 siteLanguage: {
                     create: {
-
+                        siteLanding: {
+                            create: {
+                                signIn: "Sign In",
+                                signUp: "Sign Up",
+                                newOrder: "New Order",
+                                service: "Services",
+                            }
+                        }
                     }
                 }
             },
@@ -61,7 +68,7 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        console.log({site});
+        console.log({ site });
 
         // Kirim token ke client
         return NextResponse.json({ msg: "Success create site" }, { status: 200 });

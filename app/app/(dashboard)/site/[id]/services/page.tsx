@@ -13,22 +13,39 @@ type Props = {
 
 const ServicesPage = async ({ params, searchParams }: Props) => {
 
-  const { search } = searchParams
-  console.log({ search });
-  const where : Prisma.siteServicesWhereInput = {}
-  if(search){
-    where.OR = [
-      {
-        name: {
-          contains: search,
-          mode: 'insensitive'
-        }
-      }
-    ]
+  const { search, categoryId } = searchParams;
+  const where: Prisma.siteServicesWhereInput = { AND: [] };
+  
+  // Pastikan AND adalah array sebelum menambahkan kondisi
+  const andConditions: Prisma.siteServicesWhereInput[] = [];
+  
+  if (search) {
+      andConditions.push({
+          OR: [
+              {
+                  name: {
+                      contains: search,
+                      mode: "insensitive",
+                  },
+              },
+          ],
+      });
   }
-  where.AND = {
-    siteId: params.id,
+  
+  // Tambahkan filter categoryId jika bukan "all"
+  if (categoryId && categoryId !== "all") {
+      andConditions.push({
+          categoryId: categoryId,
+      });
   }
+  
+  // Tambahkan siteId sebagai filter utama
+  andConditions.push({
+      siteId: params.id,
+  });
+  
+  // Masukkan semua kondisi ke dalam where.AND
+  where.AND = andConditions.length > 0 ? andConditions : undefined;
 
   const services = await prisma.siteServices.findMany({
     where,
@@ -60,4 +77,5 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
     <ServicesTable categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
   )
 }
+
 export default ServicesPage
