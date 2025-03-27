@@ -10,7 +10,11 @@ export async function GET(req: NextRequest) {
         where: {
             id: auth.userId,
         },
-        select: { name: true, balance: true }
+        select: { name: true, balance: true, spent : true, transaction : {
+            where : {
+                status : "Completed"
+            }
+        } }
     })
 
     return NextResponse.json(users);

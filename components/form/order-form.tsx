@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
@@ -10,6 +10,7 @@ import { formatIDR } from '@/lib/helpers'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import ButtonCreateOrder from '../order/button-create-order'
 import ModalCreateOrder from '../order/modal-create-order'
+import axios from 'axios'
 
 
 const OrderForm = ({
@@ -26,6 +27,7 @@ const OrderForm = ({
     const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
     const [selectedService, setSelectedService] = React.useState<string | null>(null);
     const [ammount, setAmmount] = React.useState<number>(0);
+    const [link, setLink] = useState<string>("")
     const {
         register,
         handleSubmit,
@@ -52,10 +54,39 @@ const OrderForm = ({
         value: item
     }));
     const buyServices = services?.find((service) => service.value.id === selectedService)?.value;
+    const [token, setToken] = useState("")
+    const [userName, setUsername] = useState("")
+    const [balance, setBalance] = useState(0)
+    const [isDreepFeed, setIsDreepFeed] = useState(false)
+    const [runs, setRuns] = useState(0)
+    const [interval, setInterval] = useState(0)
+    const getUser = async () => {
+        const response = await axios.get(`/api/user`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        if (response.status === 200) {
+            setUsername(response.data.name || "")
+            setBalance(response.data.balance || 0)
+        }
+    }
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem('token')
+            setToken(token || "")
+        }
+    }, [])
+
+    useEffect(() => {
+        if (token) {
+            getUser()
+        }
+    }, [token])
     return (
         <div className='bg-white min-h-screen flex flex-col md:flex-row items-start gap-4 text-gray-800 w-full p-4'>
             <form className='w-full space-y-3' onSubmit={handleSubmit(data => {
-                
+
             })}>
                 <div className="text-lg font-bold my-8">Choose Service</div>
                 <div className='flex flex-col gap-y-4 w-full'>
@@ -94,16 +125,36 @@ const OrderForm = ({
                 </div>
                 <div className='flex flex-col gap-y-4 w-full'>
                     <Label htmlFor='Link'>Link</Label>
-                    <Input type="text" id='Link' placeholder='Link' />
+                    <Input onChange={e => {
+                        setLink(e.target.value)
+                    }} type="text" id='Link' placeholder='Link' />
                 </div>
+
                 <div className='flex flex-col gap-y-4 w-full'>
                     <Label htmlFor='Amount'>Amount</Label>
+                    {
+                        buyServices &&
+                        <div className="font-bold">{`Min ${buyServices.min} - Max ${buyServices.max}`}</div>
+                    }
                     <Input onChange={e => setAmmount(+e.target.value)} type="text" id='Amount' value={ammount} />
                 </div>
                 <div className="flex items-center gap-x-4">
-                    <Switch />
+                    <Switch onCheckedChange={setIsDreepFeed} />
                     <div className="text-md">Drip Feed?</div>
                 </div>
+                {
+                    isDreepFeed &&
+                    <div className="flex items-center gap-x-4">
+                        <div className="space-y-2">
+                            <Label htmlFor='runs'>Runs</Label>
+                            <Input onChange={e => setRuns(+e.target.value)} type="text" id='runs' value={runs} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor='interval'>{`Interval (Minutes)`}</Label>
+                            <Input onChange={e => setInterval(+e.target.value)} type="text" id='runs' value={interval} />
+                        </div>
+                    </div>
+                }
                 <hr />
                 <div className="flex items-center justify-between">
                     <div className="text-md">Amount</div>
@@ -117,7 +168,18 @@ const OrderForm = ({
                 {
                     buyServices &&
                     <ButtonCreateOrder>
-                        <ModalCreateOrder name={buyServices?.name!} amount={ammount} rate={+buyServices.rate! / 1000 * ammount} link='' />
+                        <ModalCreateOrder
+                            runs={runs}
+                            interval={interval}
+                            dreepFeed={isDreepFeed}
+                            providerUrl={buyServices.provider?.url || ""}
+                            serviceId={buyServices.serviceId?.toString() || ""}
+                            balance={balance}
+                            name={buyServices?.name!}
+                            amount={ammount}
+                            rate={+buyServices.rate! / 1000 * ammount}
+                            link={link}
+                        />
                     </ButtonCreateOrder>
                 }
             </form>

@@ -12,40 +12,35 @@ type Props = {
 }
 
 const OrdersPage = async ({ params, searchParams }: Props) => {
-  const { page, search } = searchParams
-  const where: (Prisma.userSiteWhereInput) = {};
-  if (search) {
-    where.AND = [
-      {
-        user: {
-          name: {
-            contains: search
-          }
-        }
-      }
-    ];
+  const { page, search, status } = searchParams
+  const where: (Prisma.transactionWhereInput) = {};
+
+  if(status !== "All") {
+    where.status = status
   }
-  const users = await prisma.userSite.findMany({
-    where: {
-      ...where,
-      siteId: params.id,
-    },
-    include: {
-      site: true,
-      user: true,
-    }
-  })
+
+  where.siteId = params.id
+  where.name = "ORDER"
 
   const transaction = await prisma.transaction.findMany({
-    where : {
-      siteId : params.id
+    where,
+    include : {
+      siteService : {
+        include : {
+          provider : true
+        }
+      },
+      user : true,
+      sites : true
+    },
+    orderBy : {
+      createdAt : "desc"
     }
   })
 
   const p = page ? +page : 1
-  console.log({transaction});
   return (
-    <OrderTable p={p} users={users}/>
+    <OrderTable transactions={transaction}/>
   )
 }
 

@@ -9,7 +9,7 @@ export const generateOrderId = () => {
     const randomString = Math.random().toString(36).substring(2, 6).toUpperCase();
 
     // Gabungkan menjadi order ID
-    const orderId = `NGTR-${datetime}-${randomString}`;
+    const orderId = `ORDER-${datetime}-${randomString}`;
 
     return orderId;
 }

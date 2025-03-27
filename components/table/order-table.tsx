@@ -1,65 +1,120 @@
-import React from 'react'
-import SearchTable from './search-table'
-import { ScrollArea } from '../ui/scroll-area'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import PaginationTable from './pagination-table'
-import { Prisma } from '@prisma/client'
-import { Button } from '../ui/button'
-import { Edit2Icon, Trash2Icon } from 'lucide-react'
+'use client';
 
-type Props = {
-    users : (Prisma.userSiteGetPayload<{ include: { user: true, site : true } }>)[] 
-    p : number
-}
+import { useState } from "react";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ArrowRightCircleIcon, CheckIcon, EllipsisIcon, XIcon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Prisma } from "@prisma/client";
+import OrderItem from "../order/order-item";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import ButtonStatusOrder from "../order/button-status-order";
+import { useSearchParams } from "next/navigation";
 
-const OrderTable = ({users, p}: Props) => {
-    
+export type TTransaction = Prisma.transactionGetPayload<{
+  include: {
+    user: true,
+    siteService: {
+      include: {
+        provider: true
+      }
+    },
+    sites: true;
+  };
+}>;
+
+export default function OrderTable({ transactions }: { transactions: TTransaction[] }) {
+  const [selectedOrders, setSelectedOrders] = useState<TTransaction[]>([]);
+  const isAllSelected = selectedOrders.length === transactions.length;
+
+  const searchParams = useSearchParams()
+  const statusState = searchParams.get("status")
+  
+
+  const toggleSelectAll = (checked: boolean) => {
+    setSelectedOrders(checked ? transactions : []);
+  };
+
+  const toggleSelectSingle = (order: TTransaction, checked: string | boolean) => {
+    setSelectedOrders((prev) =>
+      checked ? [...prev, order] : prev.filter((o) => o.id !== order.id)
+    );
+  };
+
+  const status = [
+    "All",
+    "Processing",
+    "Completed",
+    "Failed",
+    "In progress",
+    "Partial",
+    "Canceled",
+    "Pending",
+  ];
+
+  console.log({statusState});
+  console.log({transactions});
+  
+
   return (
-    <div className="">
-      <div className="text-lg my-4 font-bold">List User</div>
-      <div className="flex gap-4 items-center justify-between mb-4">
-        <div className="w-1/3">
-          <SearchTable />
-        </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-xl font-bold mb-4">Orders</h1>
+      <div className="flex items-center gap-x-4">
+        {status.map((item, index) => (
+          <ButtonStatusOrder statusState={statusState} key={index} status={item}/>
+        ))}
       </div>
-      {/* tampilan table */}
-      <ScrollArea className="w-full overflow-auto">
-        <Table className="border border-gray-300">
-          <TableHeader className="bg-gray-100">
-            <TableRow>
-              <TableHead className="border border-gray-300">ID</TableHead>
-              <TableHead className="border border-gray-300">Name</TableHead>
-              <TableHead className="border border-gray-300">Email</TableHead>
-              <TableHead className="border border-gray-300">Role</TableHead>
-              <TableHead className="border border-gray-300">Registered</TableHead>
-              <TableHead className="border border-gray-300">Site</TableHead>
-              <TableHead className="border border-gray-300">ACTION</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {users.map((item, index) => (
-              <TableRow key={index} className="border border-gray-300">
-                <TableCell className="border border-gray-300">{index + 1}</TableCell>
-                <TableCell className="border border-gray-300">{item.user.name || item.user.name}</TableCell>
-                <TableCell className="border border-gray-300">{item.user?.email}</TableCell>
-                <TableCell className="border border-gray-300">{item.role}</TableCell>
-                <TableCell className="border border-gray-300">{item.user.createdAt.toLocaleString()}</TableCell>
-                <TableCell className="border border-gray-300">{item.site.name}</TableCell>
-                <TableCell className="border border-gray-300 w-12">
-                    <div className="flex items-center gap-x-2">
-                        <Button variant={"outline"}><Edit2Icon/></Button>
-                        <Button variant={"outline"}><Trash2Icon/></Button>
-                    </div>
-                </TableCell>
-
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </ScrollArea>
-      <PaginationTable count={users.length} p={p} />
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <Checkbox checked={isAllSelected} onCheckedChange={toggleSelectAll} />
+            </TableHead>
+            {selectedOrders.length !== 0 ? (
+              <TableHead className="flex items-center gap-x-4">
+                <div className="text-green-500 font-bold">{selectedOrders.length}</div>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <EllipsisIcon className="cursor-pointer" />
+                  </PopoverTrigger>
+                  <PopoverContent className="md:w-56">
+                  <Button variant={"ghost"}>
+                      <ArrowRightCircleIcon/>
+                      Resend To Provider
+                    </Button>
+                    <Button variant={"ghost"}>
+                      <CheckIcon />
+                      Mark as completed
+                    </Button>
+                    <Button variant={"ghost"}>
+                      <XIcon/>
+                      Cancel With Refund
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </TableHead>
+            ) : (
+              <>
+                <TableHead>Order</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Service</TableHead>
+                <TableHead>Start</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Price</TableHead>
+                <TableHead>Date</TableHead>
+              </>
+            )}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {transactions.map((order:any, index:number) => {
+            const isSelected = selectedOrders.some((o) => o.id === order.id);
+            return (
+              <OrderItem key={index} isSelected={isSelected} order={order} selectedOrders={selectedOrders} toggleSelectSingle={toggleSelectSingle} />
+            );
+          })}
+        </TableBody>
+      </Table>
     </div>
-  )
+  );
 }
-
-export default OrderTable

@@ -1,3 +1,4 @@
+import StatisticsPage from "@/components/statistics/statisticsPage";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
@@ -11,11 +12,11 @@ export default async function SiteAnalytics({
   if (!session) {
     redirect("/");
   }
-const data = await prisma.sites.findFirst({
+  const data = await prisma.sites.findFirst({
     where: {
-        id: params.id
-    }   
-})
+      id: params.id
+    }
+  })
 
   if (!data || data.userId !== session.user.id) {
     notFound();
@@ -23,10 +24,20 @@ const data = await prisma.sites.findFirst({
 
   const url = data.customDomain ? data.customDomain : `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
+  const orders = await prisma.transaction.findMany({
+    where: {
+      siteId: params.id,
+    },
+    include: {
+      user: true,
+      sites: true,
+      siteService: true,
+    }
+  })
   return (
     <>
       <div className="flex items-center justify-center sm:justify-start">
-        <div className="flex flex-col items-center space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+        {/* <div className="flex flex-col items-center space-x-0 space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
           <h1 className="font-cal text-xl font-bold sm:text-3xl dark:text-white">
             Statistics for {data.name}
           </h1>
@@ -38,7 +49,8 @@ const data = await prisma.sites.findFirst({
           >
             {url} ↗
           </a>
-        </div>
+        </div> */}
+        <StatisticsPage orders={orders}/>
       </div>
     </>
   );

@@ -3,6 +3,8 @@ import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import React from 'react'
 
+export type TUsers = Prisma.userSiteGetPayload<{ include: { user: true, site: true } }>
+
 type Props = {
   params: {
     id: string

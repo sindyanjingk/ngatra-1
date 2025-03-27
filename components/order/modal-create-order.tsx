@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatIDR } from "@/lib/helpers";
 import axios from "axios";
+import { toast } from "sonner";
 
 
 export default function ModalCreateOrder({
@@ -15,43 +16,84 @@ export default function ModalCreateOrder({
     rate,
     name,
     link,
+    balance,
+    providerUrl,
+    serviceId,
+    dreepFeed,
+    runs,
+    interval
 }: {
     amount: number,
     rate: number,
     name: string,
     link: string,
+    balance: number,
+    providerUrl: string,
+    serviceId?: string,
+    dreepFeed?: boolean,
+    runs?: number,
+    interval?: number,
 }) {
     const modal = useModal();
-
-    const [data, setData] = useState({
-        name: "",
-        subdomain: "",
-        description: "",
-    });
+    const [token, setToken] = useState("")
 
     useEffect(() => {
-        setData((prev) => ({
-            ...prev,
-            subdomain: prev.name
-                .toLowerCase()
-                .trim()
-                .replace(/[\W_]+/g, "-"),
-        }));
-    }, [data.name]);
-    
+        if (typeof window !== "undefined") {
+            const token = localStorage.getItem("token")
+            setToken(token || "")
+        }
+    }, [])
     return (
         <form
             action={async (data: FormData) => {
-                const res = await axios.post(`/api/payment`, {
-                    name,
-                    amount : Math.ceil(rate),
-                    email : "Email",
-                    phone : "Phone"
-                })
+                try {
+                    if (balance === 0) {
+                        toast.error("Please add funds first")
+                        return
+                    }
+                    if(!dreepFeed){
+                        const res = await axios.post(`/api/new-order`, {
+                            name,
+                            quantity: amount,
+                            amount: Math.ceil(rate),
+                            link,
+                            providerUrl,
+                            serviceId
+                        }, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
+    
+                        console.log({ res });
+                        if (res.status === 200) {
+                            toast.success("Success create order")
+                            modal?.hide()
+                        }
+                    }else{
+                        const res = await axios.post(`/api/new-order/dreep-feed`, {
+                            name,
+                            quantity: amount,
+                            amount: Math.ceil(rate),
+                            link,
+                            providerUrl,
+                            serviceId,
+                            runs,
+                            interval
+                        }, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        })
 
-                console.log({res});
-                if(res.status === 200){
-                    window.open(res.data.response.redirect_url, "_blank")
+                        console.log({ res });
+                        if (res.status === 200) {
+                            toast.success("Success create order")
+                            modal?.hide()
+                        }
+                    }
+                } catch (error: any) {
+                    toast.error(error?.response?.data?.message || "Something went wrong")
                 }
             }}
             className="w-full max-w-lg rounded-lg bg-white shadow-md dark:bg-gray-900 md:border md:border-gray-200 md:shadow-lg dark:md:border-gray-700 font-semibold text-md text-gray-600 dark:text-gray-400"
@@ -94,7 +136,7 @@ function CreateSerciceFormButton() {
 
             disabled={pending}
         >
-            {pending ? <Loader2Icon className="animate-spin"/> : "Continue"}
+            {pending ? <Loader2Icon className="animate-spin" /> : "Continue"}
         </Button>
     );
 }

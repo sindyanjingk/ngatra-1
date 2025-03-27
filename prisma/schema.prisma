@@ -298,6 +298,7 @@ model siteServices {
   category      category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
   provider      siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
   site          sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
+  transactions  transaction[]
 }
 
 model siteOrders {
@@ -318,10 +319,10 @@ model userSite {
   role      String   @default("member")
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @db.Timestamp(6)
-  balance   String?
-  discPrice String?
   refferals String?
   spent     String?
+  balance   Int?     @default(0)
+  discPrice Int?     @default(0)
   site      sites    @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "userSite_siteId_sites_id_fk")
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "userSite_userId_users_id_fk")
 
@@ -344,21 +345,30 @@ model userToken {
 }
 
 model transaction {
-  id            String             @id @default(cuid())
-  siteId        String?
-  productId     String?
-  phone         String?
-  totalAmount   Float?             @db.Real
-  paymentMethod String?
-  params        String?
-  status        transaction_status
-  timestamp     DateTime           @default(now()) @db.Timestamp(6)
-  name          String?
-  qty           Float?             @db.Real
-  userId        String?
-  product       product?           @relation(fields: [productId], references: [id], onDelete: Cascade, map: "transaction_productId_product_id_fk")
-  sites         sites?             @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "transaction_siteId_sites_id_fk")
-  user          User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id              String        @id @default(cuid())
+  siteId          String?
+  productId       String?
+  phone           String?
+  totalAmount     Float?        @db.Real
+  paymentMethod   String?
+  params          String?
+  timestamp       DateTime      @default(now()) @db.Timestamp(6)
+  name            String?
+  qty             Float?        @db.Real
+  userId          String?
+  siteServiceId   String?
+  providerOrderId Int?
+  createdAt       DateTime?     @default(now())
+  deletedAt       DateTime?
+  link            String?
+  updatedAt       DateTime?     @default(now()) @updatedAt
+  status          String?
+  profit          Int?
+  spent           Int?          @default(0)
+  product         product?      @relation(fields: [productId], references: [id], onDelete: Cascade, map: "transaction_productId_product_id_fk")
+  sites           sites?        @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "transaction_siteId_sites_id_fk")
+  siteService     siteServices? @relation(fields: [siteServiceId], references: [id], onDelete: Cascade)
+  user            User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -371,9 +381,12 @@ model User {
   image         String?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
-  balance       Int?
-  feeToday      Int?
-  income        Int?
+  balance       Int?          @default(0)
+  feeToday      Int?          @default(0)
+  income        Int?          @default(0)
+  spent         Int?          @default(0)
+  deletedAt     DateTime?
+  discount      Int?          @default(0)
   accounts      Account[]
   sessions      Session[]
   posts         posts[]

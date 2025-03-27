@@ -6,24 +6,24 @@ import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
-import axios from "axios";
+import { updateUserAction,  } from "../../lib/action";
+import { TUsers } from "@/app/app/(dashboard)/site/[id]/users/page";
 
 
 
-export default function AddFundsModal({ siteId }: { siteId: string }) {
+export default function ModalEditUsers({ users }: { users: TUsers }) {
     const modal = useModal();
 
     return (
         <form
             action={async (data: FormData) => {
-                const ammount = data.get("ammount")
-                const response = await axios.post(`/api/top-up`, { ammount })
-                if (response.status === 200) {
-                    window.open(response.data.response.redirect_url, "_blank")
-                    toast.success("Success add funds")
+                const response = await updateUserAction(data, users)  
+                if(response.status) {
+                    toast.success(response.message)
                     modal?.hide()
-                } else {
-                    toast.error("Something went wrong")
+                    window.location.reload()
+                }else{
+                    toast.error(response.message)
                 }
             }}
             className="w-full max-w-lg rounded-lg bg-white shadow-md dark:bg-gray-900 md:border md:border-gray-200 md:shadow-lg dark:md:border-gray-700 font-semibold text-md text-gray-600 dark:text-gray-400"
@@ -31,11 +31,15 @@ export default function AddFundsModal({ siteId }: { siteId: string }) {
             {/* Form Header */}
             <div className="flex flex-col items-center justify-center space-y-4 p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                    Add Funds
+                    Update User
                 </h2>
                 <div className="flex flex-col gap-y-2 w-full">
-                    <label htmlFor="ammount">Ammount</label>
-                    <Input id="ammount" type="text" name="ammount" placeholder="Ammount" />
+                    <label htmlFor="username">{`Username`}</label>
+                    <Input defaultValue={users.user.name || ""} id="username" type="text" name="username" placeholder={users.user.name || ""}/>
+                </div>
+                <div className="flex flex-col gap-y-2 w-full">
+                    <label htmlFor="email">{`Email`}</label>
+                    <Input defaultValue={users.user.email || ""} id="email" type="text" name="email" placeholder={users.user.email || ""}/>
                 </div>
             </div>
 
@@ -48,7 +52,7 @@ export default function AddFundsModal({ siteId }: { siteId: string }) {
                 >
                     Cancel
                 </button>
-                <CreateFundsButton />
+                <CreateCategoryButton />
             </div>
 
         </form>
@@ -56,7 +60,7 @@ export default function AddFundsModal({ siteId }: { siteId: string }) {
 }
 
 
-function CreateFundsButton() {
+function CreateCategoryButton() {
     const { pending } = useFormStatus();
     return (
         <button
@@ -68,7 +72,7 @@ function CreateFundsButton() {
             )}
             disabled={pending}
         >
-            {pending ? <Loader2Icon className="animate-spin" size={18} /> : "Create"}
+            {pending ? <Loader2Icon className="animate-spin" size={18} /> : "Update"}
         </button>
     );
 }

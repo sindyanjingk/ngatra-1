@@ -8,6 +8,7 @@ import prisma from '../../lib/prisma';
 import React from 'react'
 import QuestionSection from '@/components/site/question-section';
 import CallToAction from '@/components/site/call-to-action';
+import FloatingWAButton from '@/components/integrations/floating-wa-button';
 
 
 const DomainPage = async ({
@@ -81,6 +82,8 @@ const DomainPage = async ({
         areFollowersDesc={siteLanguage?.siteLanding?.areFollowersDesc || ""}
         guarantees={siteLanguage?.siteLanding?.guarantees || ""}
         guaranteesDesc={siteLanguage?.siteLanding?.guaranteesDesc || ""}
+        isSecure={siteLanguage?.siteLanding?.isSecure || ""}
+        isSecureDesc={siteLanguage?.siteLanding?.isSecureDesc || ""}
         howToTrack={siteLanguage?.siteLanding?.howToTrack || ""}
         howToTrackDesc={siteLanguage?.siteLanding?.howToTrackDesc || ""}
       />
@@ -88,6 +91,7 @@ const DomainPage = async ({
         buttonColor={siteDesigns?.buttonColor!}
         startNow={siteLanguage?.siteLanding?.startNow || "Start Now"}
         cta={siteLanguage?.siteLanding?.callToAction || ""}/>
+      <FloatingWAButton phone='6281234567890' />
       <Footer showBanner={siteSettings?.showBanner!} />
 
     </div>
