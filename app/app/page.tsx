@@ -7,6 +7,7 @@ import NavbarHome from "../../components/home/navbar-home"
 import DropdownLanguage from "../../components/home/dropdown-language"
 import GetStarted from "../../components/home/get-started"
 import TabsComponent from "../../components/home/tabs-components"
+import FeaturesHome from "@/components/home/features-home"
 
 type Props = {}
 
@@ -32,6 +33,7 @@ const DashboardPage = async (props: Props) => {
       <GetStarted/>
       <div className="h-28"></div>
       <TabsComponent/>
+      <FeaturesHome/>
     </div>
   )
 }
