@@ -34,7 +34,7 @@ const LoginUserSiteForm = ({siteId}: Props) => {
                     siteId 
                 })
                 if (response.status === 200) {
-                    const success = localStorage.setItem("token", response.data.token)
+                    localStorage.setItem("token", response.data.token)
                     toast.success(response.data.message)
                     router.push(`/`)
                 }

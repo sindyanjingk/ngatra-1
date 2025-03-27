@@ -17,7 +17,8 @@ export async function POST(req: NextRequest) {
     // Validasi password (pastikan ada hashing)
     // const isValidPassword = user.password === password; // Sebaiknya gunakan bcrypt
     // if (!isValidPassword) return NextResponse.json({ error: "Password salah" }, { status: 401 });
-    const isValidPassword = bcrypt.compare(password, user.password!);
+    const isValidPassword = await bcrypt.compare(password, user.password!);
+    console.log({isValidPassword, password, user : user.password});
     if (!isValidPassword) {
       return NextResponse.json({ error: "Password salah" }, { status: 401 });
     }

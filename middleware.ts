@@ -31,7 +31,7 @@ export default async function middleware(req: NextRequest) {
   console.log("📄 Final Path:", path);
 
   // **Dashboard utama di root domain atau localhost**
-  if (hostname === "localhost:3000" || hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN) {
+  if (hostname === "localhost:3000" || hostname === "www.ngatrapanel.my.id" || hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN) {
     const session = await getToken({ req });
 
     const redirectToRegister = url.searchParams.get("redirect") === "register";
