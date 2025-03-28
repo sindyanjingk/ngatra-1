@@ -15,7 +15,8 @@ const OrderSite = async ({
   })
   const services = await prisma.siteServices.findMany({
     where: {
-      siteId: site?.id
+      siteId: site?.id,
+      isEnabled : true
     },
     include: {
       category: true,

@@ -27,6 +27,7 @@ import ModalChangePriceServices from '../services/bulk-services/modal-change-pri
 import ModalUpdateServices from '../services/modal-edit-services'
 import Link from 'next/link'
 import FilterCategoryServices from '../services/filter-category'
+import PaginationTable from './pagination-table'
 
 type Props = {
     services: Prisma.siteServicesGetPayload<{

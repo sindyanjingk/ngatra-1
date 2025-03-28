@@ -13,10 +13,9 @@ type Props = {
 
 const ServicesPage = async ({ params, searchParams }: Props) => {
 
-  const { search, categoryId } = searchParams;
+  const { page, search, categoryId } = searchParams;
   const where: Prisma.siteServicesWhereInput = { AND: [] };
-  
-  // Pastikan AND adalah array sebelum menambahkan kondisi
+
   const andConditions: Prisma.siteServicesWhereInput[] = [];
   
   if (search) {
@@ -32,20 +31,25 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       });
   }
   
-  // Tambahkan filter categoryId jika bukan "all"
   if (categoryId && categoryId !== "all") {
       andConditions.push({
           categoryId: categoryId,
       });
   }
   
-  // Tambahkan siteId sebagai filter utama
   andConditions.push({
       siteId: params.id,
   });
   
-  // Masukkan semua kondisi ke dalam where.AND
   where.AND = andConditions.length > 0 ? andConditions : undefined;
+
+  const p = page ? +page : 1;
+  const pageSize = 10;  // Tentukan jumlah item per halaman
+
+  // Hitung jumlah total data
+  const totalServices = await prisma.siteServices.count({
+    where,
+  });
 
   const services = await prisma.siteServices.findMany({
     where,
@@ -55,7 +59,9 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
     },
     orderBy: {
       createdAt: 'asc'
-    }
+    },
+    skip: (p - 1) * pageSize,  // Melewati jumlah data sebelumnya
+    take: pageSize,  // Ambil jumlah data sesuai pageSize
   })
 
   const providers = await prisma.siteProviders.findMany({
@@ -72,7 +78,6 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       siteId: params.id
     }
   })
-
   return (
     <ServicesTable categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
   )
