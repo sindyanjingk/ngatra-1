@@ -58,7 +58,9 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       category: true
     },
     orderBy: {
-      createdAt: 'desc'
+      category : {
+        category_name: 'asc'
+      }
     },
   })
 

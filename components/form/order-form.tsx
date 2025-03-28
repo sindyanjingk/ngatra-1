@@ -90,6 +90,21 @@ const OrderForm = ({
             })}>
                 <div className="text-lg font-bold my-8">Choose Service</div>
                 <div className='flex flex-col gap-y-4 w-full'>
+                    <Label htmlFor='Search'>Platform</Label>
+                    <Select onValueChange={e => setSelectedCategory(e)}>
+                        <SelectTrigger>
+                            <SelectValue placeholder={"Select Category"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {
+                                categoryServices.map((item, index) => (
+                                    <SelectItem key={index} value={item.categoryName}>{item.categoryName}</SelectItem>
+                                ))
+                            }
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div className='flex flex-col gap-y-4 w-full'>
                     <Label htmlFor='Search'>Category</Label>
                     <Select onValueChange={e => setSelectedCategory(e)}>
                         <SelectTrigger>

@@ -211,15 +211,33 @@ const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
                                                     <FolderIcon />
                                                     Change Category
                                                 </Button>
-                                                {/* <Button variant={"ghost"} className='flex items-center gap-x-2'>
+                                                <Button variant={"ghost"} className='flex items-center gap-x-2'>
                                                     <Layers2Icon />
                                                     Duplicate
-                                                </Button> */}
+                                                </Button>
                                                 <Button onClick={() => {
                                                     modal?.show(<ModalChangePriceServices selectedServices={[item]} />)
                                                 }} variant={"ghost"} className='flex items-center gap-x-2'>
                                                     <PercentCircleIcon />
                                                     Custom Price
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        modal?.show(<ModalDisableAll selectedServices={[item.id]} />)
+                                                    }}
+                                                    variant={"ghost"}
+                                                    className='flex items-center gap-x-2'>
+                                                    <XSquareIcon />
+                                                    Disable Service
+                                                </Button>
+                                                <Button
+                                                    onClick={() => {
+                                                        modal?.show(<ModalEnableAll selectedServices={[item.id]} />)
+                                                    }}
+                                                    variant={"ghost"}
+                                                    className='flex items-center gap-x-2'>
+                                                    <PlusSquareIcon />
+                                                    Enable Service
                                                 </Button>
                                                 <Button onClick={() => {
                                                     modal?.show(<ModalDeleteAllServices selectedServices={[item.id]} />)

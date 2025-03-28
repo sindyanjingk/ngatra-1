@@ -52,9 +52,6 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
     "Pending",
   ];
 
-  console.log({statusState});
-  console.log({transactions});
-  
 
   return (
     <div className="container mx-auto p-4">

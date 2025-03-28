@@ -3,12 +3,13 @@
 import { useFormStatus } from "react-dom";
 import { useEffect, useState } from "react";
 import { useModal } from "@/components/modal/provider";
-import { Loader2Icon } from "lucide-react";
+import { CircleCheckBigIcon, Loader2Icon } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { formatIDR } from "@/lib/helpers";
 import axios from "axios";
 import { toast } from "sonner";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 
 
 export default function ModalCreateOrder({
@@ -51,7 +52,7 @@ export default function ModalCreateOrder({
                         toast.error("Please add funds first")
                         return
                     }
-                    if(!dreepFeed){
+                    if (!dreepFeed) {
                         const res = await axios.post(`/api/new-order`, {
                             name,
                             quantity: amount,
@@ -64,13 +65,28 @@ export default function ModalCreateOrder({
                                 Authorization: `Bearer ${token}`
                             }
                         })
-    
+
                         console.log({ res });
                         if (res.status === 200) {
                             toast.success("Success create order")
-                            modal?.hide()
+                            modal?.show(
+                                <Card>
+                                    <CardHeader>
+                                        <CircleCheckBigIcon />
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
+                                        <div className="text-md font-bold">Payment Successfull</div>
+                                        <div className="text-green-500">{formatIDR(balance)}</div>
+                                        <div className="font-bold">{""}</div>
+                                        <div className="font-semibold">{"service name"}</div>
+                                        <div className="font-semibold">{"link"}</div>
+                                        <div className="font-semibold">{"id order"}</div>
+                                        <div className="font-semibold">{"sisa saldo"}</div>
+                                    </CardContent>
+                                </Card>
+                            )
                         }
-                    }else{
+                    } else {
                         const res = await axios.post(`/api/new-order/dreep-feed`, {
                             name,
                             quantity: amount,
@@ -89,7 +105,26 @@ export default function ModalCreateOrder({
                         console.log({ res });
                         if (res.status === 200) {
                             toast.success("Success create order")
-                            modal?.hide()
+                            modal?.show(
+                                <Card>
+                                    <CardHeader>
+                                        <CircleCheckBigIcon className="text-green-500" />
+                                    </CardHeader>
+                                    <CardContent className="space-y-3">
+                                        <div className="text-md font-bold">Payment Successfull</div>
+                                        <div className="text-green-500">{formatIDR(balance)}</div>
+                                        <div className="font-bold">{""}</div>
+                                        <div className="font-semibold">{"service name"}</div>
+                                        <div className="font-semibold">{"link"}</div>
+                                        <div className="font-semibold">{"id order"}</div>
+                                        <div className="font-semibold">{"sisa saldo"}</div>
+                                    </CardContent>
+                                    <CardFooter>
+                                        <Button >My Order</Button>
+                                        <Button >New Order</Button>
+                                    </CardFooter>
+                                </Card>
+                            )
                         }
                     }
                 } catch (error: any) {
