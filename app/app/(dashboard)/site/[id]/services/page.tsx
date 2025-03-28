@@ -58,10 +58,8 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       category: true
     },
     orderBy: {
-      createdAt: 'asc'
+      createdAt: 'desc'
     },
-    skip: (p - 1) * pageSize,  // Melewati jumlah data sebelumnya
-    take: pageSize,  // Ambil jumlah data sesuai pageSize
   })
 
   const providers = await prisma.siteProviders.findMany({

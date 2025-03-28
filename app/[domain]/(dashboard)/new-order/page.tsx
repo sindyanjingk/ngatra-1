@@ -22,6 +22,9 @@ const OrderSite = async ({
       category: true,
       provider: true,
       site: true
+    },
+    orderBy : {
+      createdAt: 'desc'
     }
   });
   return (
