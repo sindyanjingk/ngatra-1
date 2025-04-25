@@ -97,6 +97,13 @@ function ChartCard({
         <CardTitle>{title}</CardTitle>
       </CardHeader>
       <CardContent className="h-32">
+        {
+          data.length === 0 ? (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500">No data available</p>
+            </div>
+          ) : null
+        }
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data}>
             <XAxis dataKey="name" tick={{ fontSize: 12 }} />
