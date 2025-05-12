@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type ForgotPasswordForm = {
   email: string;
@@ -30,46 +32,91 @@ export function ForgotPasswordForm() {
   const emailForm = useForm<ForgotPasswordForm>();
   const otpForm = useForm<VerifyOTPForm>();
   const resetForm = useForm<ResetPasswordForm>();
+  const [isLoadingSent, setIsLoadingSent] = useState(false);
 
   const handleSendOTP = async (data: ForgotPasswordForm) => {
-    setEmail(data.email);
+    // setEmail(data.email);
 
-    // Simulasi pengiriman OTP ke email
-    const generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-    setOtp(generatedOTP);
-    console.log("OTP (hanya untuk testing):", generatedOTP);
+    // const generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+    // setOtp(generatedOTP);
+    // console.log("OTP (hanya untuk testing):", generatedOTP);
 
-    toast.success("Kode OTP telah dikirim ke email!");
-    setStep("otp");
+    // toast.success("Kode OTP telah dikirim ke email!");
+    // setStep("otp");
+    setIsLoadingSent(true);
+    try {
+      const response = await axios.post(`/api/forgot-password`, {
+        email: data.email
+      });
+      if (response.status === 200) {
+        toast.success("Kode OTP telah dikirim ke email!");
+        setStep("otp");
+      }
+    } catch (error:any) {
+      console.log({ error });
+      toast.error(error?.response?.data?.msg || "Terjadi kesalahan saat mengirim OTP.");
+    }
+    setIsLoadingSent(false);
   };
 
   const handleVerifyOTP = async (data: VerifyOTPForm) => {
-    if (data.otp !== "123456") {
-      otpForm.setError("otp", { message: "Kode OTP salah" });
-      return;
-    }
+    // if (data.otp !== "123456") {
+    //   otpForm.setError("otp", { message: "Kode OTP salah" });
+    //   return;
+    // }
 
-    toast.success("OTP benar, silakan atur ulang password.");
-    setStep("reset");
+    // toast.success("OTP benar, silakan atur ulang password.");
+    try {
+      const response = await axios.put(`/api/forgot-password`, {
+        email : emailForm.getValues("email"),
+        otp : data.otp,
+      })
+      if (response.status === 200) {
+        toast.success("OTP benar, silakan atur ulang password.");
+        setStep("reset");
+      }
+    } catch (error:any) {
+      console.log({error});
+      toast.error(error?.response?.data?.msg || "Terjadi kesalahan saat verifikasi OTP.");
+    }
   };
+
+  const router = useRouter()
 
   const handleResetPassword = async (data: ResetPasswordForm) => {
-    if (data.password !== data.confirmPassword) {
-      resetForm.setError("confirmPassword", { message: "Konfirmasi password tidak cocok" });
-      return;
+    // if (data.password !== data.confirmPassword) {
+    //   resetForm.setError("confirmPassword", { message: "Konfirmasi password tidak cocok" });
+    //   return;
+    // }
+    // console.log("Password reset for:", email);
+
+    // toast.success("Password berhasil diubah! Silakan login.");
+    // setStep("email");
+    try {
+      if(data.password !== data.confirmPassword) {
+        resetForm.setError("confirmPassword", { message: "Konfirmasi password tidak cocok" });
+        return;
+      }
+      const response = await axios.post(`/api/reset-password`, {
+        email : emailForm.getValues("email"),
+        otpCode : otpForm.getValues("otp"),
+        password : data.password,
+      })
+      if(response.status === 200) {
+        toast.success("Password berhasil diubah! Silakan login.");
+        setStep("email");
+        router.push("/login")
+      } 
+    } catch (error:any) {
+      console.log({error});
+      toast.error(error?.response?.data?.msg || "Terjadi kesalahan saat mengubah password.");
     }
-
-    // TODO: Panggil API untuk mengubah password user
-    console.log("Password reset for:", email);
-
-    toast.success("Password berhasil diubah! Silakan login.");
-    setStep("email");
   };
-
+  
   return (
     <div className="bg-white shadow-md rounded-2xl px-8 pt-6 pb-8 mb-4 md:w-1/3 flex flex-col space-y-3 items-center">
       <Image alt="Ngatra Panel" width={100} height={100} className="relative mx-auto h-20 w-auto" src="/ngatra-logo.svg" />
-      
+
       {step === "email" && (
         <form onSubmit={emailForm.handleSubmit(handleSendOTP)} className="w-full flex flex-col space-y-4">
           <div>
@@ -93,7 +140,7 @@ export function ForgotPasswordForm() {
             type="submit"
             disabled={emailForm.formState.isSubmitting}
           >
-            {emailForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Kirim OTP"}
+            {emailForm.formState.isSubmitting ? <Loader2 className="animate-spin" /> : "Kirim OTP Ke Email"}
           </button>
         </form>
       )}

@@ -387,6 +387,7 @@ model User {
   spent         Int?          @default(0)
   deletedAt     DateTime?
   discount      Int?          @default(0)
+  forgot_code   Int?
   accounts      Account[]
   sessions      Session[]
   posts         posts[]
