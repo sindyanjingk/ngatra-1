@@ -166,7 +166,7 @@ const UserTable = ({ users, p }: Props) => {
                           <ModalUserOrders users={user}/>
                         )
                       }} variant="ghost" className="w-full flex items-center justify-start gap-2">
-                        <ShoppingCartIcon /> User Orders
+                        <ShoppingCartIcon /> Payment History
                       </Button>
                     </PopoverContent>
                   </Popover>

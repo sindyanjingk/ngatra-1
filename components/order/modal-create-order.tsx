@@ -10,6 +10,7 @@ import { formatIDR } from "@/lib/helpers";
 import axios from "axios";
 import { toast } from "sonner";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { motion } from 'framer-motion';
 
 
 export default function ModalCreateOrder({
@@ -70,20 +71,29 @@ export default function ModalCreateOrder({
                         if (res.status === 200) {
                             toast.success("Success create order")
                             modal?.show(
-                                <Card>
-                                    <CardHeader>
-                                        <CircleCheckBigIcon />
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        <div className="text-md font-bold">Payment Successfull</div>
-                                        <div className="text-green-500">{formatIDR(balance)}</div>
-                                        <div className="font-bold">{""}</div>
-                                        <div className="font-semibold">{"service name"}</div>
-                                        <div className="font-semibold">{"link"}</div>
-                                        <div className="font-semibold">{"id order"}</div>
-                                        <div className="font-semibold">{"sisa saldo"}</div>
-                                    </CardContent>
-                                </Card>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <Card className="max-w-sm mx-auto shadow-xl border-green-400 border">
+                                        <CardHeader className="flex items-center justify-center text-green-500">
+                                            <CircleCheckBigIcon className="w-12 h-12 animate-bounce" />
+                                        </CardHeader>
+                                        <CardContent className="space-y-3 text-center">
+                                            <div className="text-lg font-bold text-green-600">Payment Successful!</div>
+                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(res.data?.balance || 0)}</div>
+
+                                            <div className="grid gap-1 text-sm text-muted-foreground">
+                                                <div><span className="font-semibold text-foreground">Layanan:</span> {name}</div>
+                                                <div><span className="font-semibold text-foreground">Link:</span> {link}</div>
+                                                <div><span className="font-semibold text-foreground">ID Pesanan:</span> {res.data?.orderId || ""}</div>
+                                                <div><span className="font-semibold text-foreground">Sisa Saldo:</span> {formatIDR(res.data?.balance || "")}</div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
                             )
                         }
                     } else {
@@ -106,24 +116,29 @@ export default function ModalCreateOrder({
                         if (res.status === 200) {
                             toast.success("Success create order")
                             modal?.show(
-                                <Card>
-                                    <CardHeader>
-                                        <CircleCheckBigIcon className="text-green-500" />
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        <div className="text-md font-bold">Payment Successfull</div>
-                                        <div className="text-green-500">{formatIDR(balance)}</div>
-                                        <div className="font-bold">{""}</div>
-                                        <div className="font-semibold">{"service name"}</div>
-                                        <div className="font-semibold">{"link"}</div>
-                                        <div className="font-semibold">{"id order"}</div>
-                                        <div className="font-semibold">{"sisa saldo"}</div>
-                                    </CardContent>
-                                    <CardFooter>
-                                        <Button >My Order</Button>
-                                        <Button >New Order</Button>
-                                    </CardFooter>
-                                </Card>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <Card className="max-w-sm mx-auto shadow-xl border-green-400 border">
+                                        <CardHeader className="flex items-center justify-center text-green-500">
+                                            <CircleCheckBigIcon className="w-12 h-12 animate-bounce" />
+                                        </CardHeader>
+                                        <CardContent className="space-y-3 text-center">
+                                            <div className="text-lg font-bold text-green-600">Payment Successful!</div>
+                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(balance)}</div>
+
+                                            <div className="grid gap-1 text-sm text-muted-foreground">
+                                                <div><span className="font-semibold text-foreground">Layanan:</span> {name}</div>
+                                                <div><span className="font-semibold text-foreground">Link:</span> {link}</div>
+                                                <div><span className="font-semibold text-foreground">ID Pesanan:</span> {res.data?.orderId || ""}</div>
+                                                <div><span className="font-semibold text-foreground">Sisa Saldo:</span> {formatIDR(res.data?.balance || "")}</div>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </motion.div>
                             )
                         }
                     }

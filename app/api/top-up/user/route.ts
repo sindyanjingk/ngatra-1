@@ -8,8 +8,8 @@ export async function POST(req: NextRequest) {
     const auth = await authMiddleware(req);
     if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
     try {
-        const serverKey = `${process.env.MIDTRANS_SANBOX_SERVER_KEY}`
-        const clientKey = `${process.env.MIDTRANS_SANBOX_CLIENT_KEY}`
+        const serverKey = "SB-Mid-server-zAFHjuMsUn64UGL096Xz3tX0" //`${process.env.MIDTRANS_SANBOX_SERVER_KEY}`
+        const clientKey =  "SB-Mid-client-tHaoHMww5OMhohru" //`${process.env.MIDTRANS_SANBOX_CLIENT_KEY}`
         const snap = new Midtrans.Snap({
             clientKey,
             serverKey,

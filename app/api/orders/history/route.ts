@@ -9,10 +9,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
         const { id } = await req.json();
-
-        console.log({id});
-        
-
         const order = await prisma.transaction.findMany({
             where: {
                 userId : id

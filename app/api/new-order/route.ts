@@ -18,31 +18,25 @@ export async function POST(req: NextRequest) {
         const provider = await prisma.siteProviders.findFirst({
             where: { url: providerUrl }
         })
-        provider?.url
+        console.log({ 
+            provider,  
+            providerUrl,
+            serviceId,
+            link,
+            quantity,
+            amount, 
+        });
+        
         const response = await axios.post(`${providerUrl}/api/v2?action=add&service=${serviceId}&link=${link}&quantity=${quantity}&key=${provider?.apiKey}`)
         const service = await prisma.siteServices.findFirst({
             where : {
                 serviceId : +serviceId
             }
         })
+        console.log({response : response.data});
         if (response.status === 200) {
             const hargaAsli = service?.providersRate! / 1000 * quantity
-            // await prisma.transaction.create({
-            //     data: {
-            //         id: generateOrderId(),
-            //         status: "pending",
-            //         name: "ORDER",
-            //         qty: quantity,
-            //         siteId: auth.siteId,
-            //         userId: auth.userId,
-            //         totalAmount: +amount,
-            //         link,
-            //         profit : amount - hargaAsli,
-            //         providerOrderId : response?.data?.order || "",
-            //         siteServiceId : service?.id,
-            //     }
-            // })
-            await prisma.user.update({
+            const user = await prisma.user.update({
                 where : {
                     id : auth.userId
                 },
@@ -69,10 +63,13 @@ export async function POST(req: NextRequest) {
                     }
                 }
             })
+
+            return NextResponse.json({
+                msg: "Success create order",
+                balance : user.balance,
+                orderId : response.data?.order || ""
+            })
         }
-        return NextResponse.json({
-            msg: "Success create order"
-        })
     } catch (error: any) {
         console.log({ error });
         if (error.response) {

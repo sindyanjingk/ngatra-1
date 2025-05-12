@@ -54,29 +54,35 @@ export default function ModalUserOrders({ users }: { users: TUsers }) {
             {/* Form Header */}
             <div className="flex flex-col items-center justify-center space-y-4 p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                    User Orders
+                    Payment History
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">{formatIDR(users.user.balance || 0)}</p>
             </div>
             <div className="flex flex-col gap-y-2 p-4">
-            <ScrollArea className="h-64 w-full rounded-md border p-4">
-                {isLoading ? (
-                    <Loader2Icon className="animate-spin mx-auto" />
-                ) : (
-                    orders.map((item, index) => (
-                        <div key={index} className="flex items-center justify-between border-b py-2">
-                            <div className="space-y-2">
-                                <span>
-                                {formatIDR(item.totalAmount || 0)}
-                                </span>
-                                <p>{moment(item.createdAt).format("ddd mm yy hh:mm")}</p>
+                <ScrollArea className="h-64 w-full rounded-md border p-4">
+                    {isLoading ? (
+                        <Loader2Icon className="animate-spin mx-auto" />
+                    ) :
+                        orders.length === 0 ? (
+                            <div className="flex items-center justify-center h-full">
+                                <p className="text-gray-500">No orders found</p>
                             </div>
-                            <div className="">{item.name}</div>
-                        </div>
-                    ))
-                )}
-            </ScrollArea>
-        </div>
+                        ) :
+                            (
+                                orders.map((item, index) => (
+                                    <div key={index} className="flex items-center justify-between border-b py-2">
+                                        <div className="space-y-2">
+                                            <span>
+                                                {formatIDR(item.totalAmount || 0)}
+                                            </span>
+                                            <p>{moment(item.createdAt).format("ddd mm yy hh:mm")}</p>
+                                        </div>
+                                        <div className="">{item.name}</div>
+                                    </div>
+                                ))
+                            )}
+                </ScrollArea>
+            </div>
             {/* Form Actions */}
             <div className="flex items-center justify-end space-x-2 rounded-b-lg border-t border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <button
