@@ -224,7 +224,7 @@ const OrderForm = ({
                             balance={balance}
                             name={buyServices.name!}
                             amount={ammount}
-                            rate={+buyServices.rate! / 1000 * ammount}
+                            rate={+price || 0}
                             link={link}
                         />
                     </ButtonCreateOrder>
