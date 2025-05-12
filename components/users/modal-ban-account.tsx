@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { banUsersAction, createCategory } from "../../lib/action";
+import { banUsersAction } from "../../lib/action";
 import { TUsers } from "@/app/app/(dashboard)/site/[id]/users/page";
 
 

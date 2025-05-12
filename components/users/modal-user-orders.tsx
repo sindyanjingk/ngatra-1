@@ -9,7 +9,6 @@ import axios from "axios";
 import { Prisma } from "@prisma/client";
 import { Loader2Icon } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
-import OrderItem from "../order/order-item";
 import moment from "moment";
 
 

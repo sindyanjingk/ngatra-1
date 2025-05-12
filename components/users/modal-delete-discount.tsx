@@ -1,7 +1,6 @@
 "use client";
 
 import { useModal } from "@/components/modal/provider";
-import { Input } from "../ui/input";
 import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";

@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { addDiscountAction, createCategory, resetPasswordAction } from "../../lib/action";
+import { resetPasswordAction } from "../../lib/action";
 import { TUsers } from "@/app/app/(dashboard)/site/[id]/users/page";
 
 

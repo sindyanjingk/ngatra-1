@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 import { cn } from "@/lib/utils";
 import { CircleMinusIcon, CirclePlusIcon, Loader2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { addBalanceAction, removeBalanceAction, updateUserAction, } from "../../lib/action";
+import { addBalanceAction, removeBalanceAction } from "../../lib/action";
 import { TUsers } from "@/app/app/(dashboard)/site/[id]/users/page";
 import { Button } from "../ui/button";
 import { formatIDR } from "@/lib/helpers";
