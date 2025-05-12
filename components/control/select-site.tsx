@@ -36,7 +36,7 @@ const SelectSite = ({ sites, siteName }: Props) => {
           {siteName}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[220px] bg-gradient-to-b from-violet-800 to-[#308BC3] text-white p-2 space-y-1">
+      <PopoverContent className="w-[220px] bg-gradient-to-b from-violet-800 to-[#308BC3] text-white p-2 space-y-1 hover:text-white">
         {sites.map((item) => (
           <div
             key={item.id}

@@ -28,6 +28,7 @@ import ModalUpdateServices from '../services/modal-edit-services'
 import Link from 'next/link'
 import FilterCategoryServices from '../services/filter-category'
 import PaginationTable from './pagination-table'
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
 
 type Props = {
     services: Prisma.siteServicesGetPayload<{
@@ -36,6 +37,14 @@ type Props = {
             category: true,
         }
     }>[]
+    result: {
+        category: string,
+        data: Prisma.siteServicesGetPayload<{
+            include: {
+                category: true,
+            }
+        }>[]
+    }[]
     p: number
     categories: category[]
     siteId: string
@@ -46,7 +55,7 @@ type Props = {
     }>[]
 }
 
-const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
+const ServicesTable = ({ categories, siteId, providers, services, result }: Props) => {
     const [selectedRows, setSelectedRows] = useState<siteServices[]>([]);
     const modal = useModal()
     const toggleRow = (item: siteServices) => {
@@ -140,10 +149,6 @@ const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
                                                         <ArrowUpDownIcon />
                                                         Change Category
                                                     </Button>
-                                                    {/* <Button variant={"ghost"} className='flex items-center gap-x-2'>
-                                                        <GalleryThumbnailsIcon />
-                                                        Change Image
-                                                    </Button> */}
                                                     <Button onClick={() => {
                                                         modal?.show(<ModalChangeNameDescription selectedServices={selectedRows} />)
                                                     }} variant={"ghost"} className='flex items-center gap-x-2'>
@@ -156,11 +161,6 @@ const ServicesTable = ({ categories, siteId, providers, services }: Props) => {
                                                         <PercentCircleIcon />
                                                         Change Price
                                                     </Button>
-                                                    {/* 
-                                                    <Button variant={"ghost"} className='flex items-center gap-x-2'>
-                                                        <DollarSignIcon />
-                                                        Add Special Price
-                                                    </Button> */}
                                                     <Button onClick={() => {
                                                         modal?.show(<ModalDeleteAllServices selectedServices={selectedRows.map(item => item.id)} />)
                                                     }} variant={"ghost"} className='flex items-center gap-x-2'>

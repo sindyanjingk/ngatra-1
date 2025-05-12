@@ -1,3 +1,5 @@
+import { Service } from '@/components/order/form-order'
+import ServicesAccordion from '@/components/table/service-accordion'
 import ServicesTable from '@/components/table/service-table'
 import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
@@ -44,9 +46,8 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
   where.AND = andConditions.length > 0 ? andConditions : undefined;
 
   const p = page ? +page : 1;
-  const pageSize = 10;  // Tentukan jumlah item per halaman
+  const pageSize = 10;  
 
-  // Hitung jumlah total data
   const totalServices = await prisma.siteServices.count({
     where,
   });
@@ -64,6 +65,30 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
     },
   })
 
+  const newCategories = services.map(item=>item.category).filter((category): category is NonNullable<typeof category> => category !== null);
+  console.log({newCategories});
+  
+  const data = services.map(item=>({
+    category : item.category?.category_name,
+    data : item
+  }))
+
+  const groupedMap = data.reduce((acc, item) => {
+    const existing = acc.get(item.category!);
+    if (existing) {
+      existing.push(item.data);
+    } else {
+      acc.set(item.category!, [item.data]);
+    }
+    return acc;
+  }, new Map<string, any[]>());
+  
+  const result = Array.from(groupedMap.entries()).map(([category, data]) => ({
+    category,
+    data,
+  }));
+  
+  
   const providers = await prisma.siteProviders.findMany({
     where: {
       siteId: params.id
@@ -79,8 +104,8 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
     }
   })
   return (
-    <ServicesTable categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
+    // <ServicesTable result={result} categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
+      <ServicesAccordion result={result}  categories={newCategories} providers={providers} siteId={params.id} />
   )
 }
-
 export default ServicesPage

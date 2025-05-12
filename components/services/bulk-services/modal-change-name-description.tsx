@@ -10,11 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { changeNameAndDescriptionServices } from "@/lib/service-action";
 import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ModalChangeNameDescription({ selectedServices }: { selectedServices: siteServices[] }) {
     const modal = useModal();
 
     return (
+        <ScrollArea className="h-[500px] w-[500px] overflow-scroll">
         <form
             action={async (data: FormData) => {
                 const servicesToUpdate = selectedServices.map((service) => ({
@@ -58,6 +60,7 @@ export default function ModalChangeNameDescription({ selectedServices }: { selec
                 <CreateServiceFormButton />
             </div>
         </form>
+        </ScrollArea>
     );
 }
 

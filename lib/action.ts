@@ -5,12 +5,15 @@ import { TAuthFormInputs } from "./type";
 import { TUsers } from "@/app/app/(dashboard)/site/[id]/users/page";
 
 export const registerCredentials = async (data: TAuthFormInputs) => {
+    console.log({data});
+    
     try {
         const user = await prisma.user.findFirst({
             where: {
                 email: data.email,
             },
         });
+        
         if (user) {
             return {
                 status: false,
@@ -18,16 +21,20 @@ export const registerCredentials = async (data: TAuthFormInputs) => {
             };
         }
 
-        const salt = await bcrypt.genSalt()
-        const hashedPassword = await bcrypt.hash(data.password, salt)
+        // if (typeof data.password !== "string") {
+        //     throw new Error("Password must be a string");
+        // }
 
-        const newUser = await prisma.user.create({
-            data: {
-                email: data.email,
-                password: hashedPassword,
-                name: data.username,
-            },
-        });
+        // const salt = await bcrypt.genSalt()
+        // const hashedPassword = await bcrypt.hash("abc1234", salt)
+
+        // const newUser = await prisma.user.create({
+        //     data: {
+        //         email: data.email,
+        //         password: hashedPassword,
+        //         name: data.username,
+        //     },
+        // });
         return {
             status: true,
             message: "Register success"

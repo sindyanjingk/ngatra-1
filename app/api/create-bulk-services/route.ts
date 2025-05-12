@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
         const { siteId, providerId, selected, categoryId, extraPrice } = await req.json();
+        console.log({siteId});
         const provider = await prisma.siteProviders.findFirst({
             where: { id: providerId },
         });
@@ -23,14 +24,14 @@ export async function POST(req: NextRequest) {
                             data: {
                                 category_name: item.category,
                                 iconUrl: item.iconUrl || "",
-                                siteId: siteId || "",
+                                siteId: siteId,
                             },
                         });
                     }
 
                     return {
                         name: item.name,
-                        siteId: siteId || "",
+                        siteId: siteId ,
                         providerId: providerId || "",
                         rate:
                             provider?.currency === "IDR"
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
         } else {
             transformData = selected.map((item: any) => ({
                 name: item.name,
-                siteId: siteId || "",
+                siteId: siteId ,
                 providerId: providerId || "",
                 rate:
                     provider?.currency === "IDR"
