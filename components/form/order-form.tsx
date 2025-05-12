@@ -35,6 +35,7 @@ const OrderForm = ({
     const [isDreepFeed, setIsDreepFeed] = useState(false)
     const [runs, setRuns] = useState(0)
     const [interval, setInterval] = useState(0)
+    const [price, setPrice] = useState(0)
 
     const {
         register,
@@ -80,6 +81,17 @@ const OrderForm = ({
         )
 
     const buyServices = filteredServices.find(s => s.id === selectedService)
+
+    useEffect(() => {
+
+        if (buyServices?.type?.includes("Package")) {
+            const amount = buyServices.name?.split(" ")[0]
+            setAmmount(+amount! || 0)
+            setPrice(buyServices.rate || 0)
+        }else{
+            setPrice(+(+buyServices?.rate! / 1000) * ammount)
+        }
+    }, [buyServices])
 
     return (
         <div className='bg-white min-h-screen flex flex-col md:flex-row items-start gap-4 text-gray-800 w-full p-4'>
@@ -159,13 +171,16 @@ const OrderForm = ({
                 </div>
 
                 {/* Input Amount */}
-                <div className='flex flex-col gap-y-4 w-full'>
-                    <Label htmlFor='Amount'>Amount</Label>
-                    {buyServices && (
-                        <div className="font-bold">{`Min ${buyServices.min} - Max ${buyServices.max}`}</div>
-                    )}
-                    <Input onChange={e => setAmmount(+e.target.value)} type="text" id='Amount' value={ammount} />
-                </div>
+                {
+                    !buyServices?.type?.includes("Package") &&
+                    <div className='flex flex-col gap-y-4 w-full'>
+                        <Label htmlFor='Amount'>Amount</Label>
+                        {buyServices && (
+                            <div className="font-bold">{`Min ${buyServices.min} - Max ${buyServices.max}`}</div>
+                        )}
+                        <Input onChange={e => setAmmount(+e.target.value)} type="text" id='Amount' value={ammount} />
+                    </div>
+                }
 
                 {/* Drip Feed */}
                 <div className="flex items-center gap-x-4">
@@ -194,7 +209,7 @@ const OrderForm = ({
                 <hr />
                 <div className="flex items-center justify-between">
                     <div className="text-md">Price</div>
-                    <div className="text-md">{buyServices && formatIDR((+buyServices.rate! / 1000) * ammount)}</div>
+                    <div className="text-md">{buyServices && formatIDR(price || 0)}</div>
                 </div>
 
                 {/* Submit Order */}
@@ -224,7 +239,7 @@ const OrderForm = ({
                     </CardHeader>
                     <CardContent>
                         <div className="tex-2xl font-bold text-center mb-3">
-                            {formatIDR((+buyServices.rate! / 1000) * ammount)}
+                            {formatIDR(price || 0)}
                         </div>
                         <div className="text-md" dangerouslySetInnerHTML={{ __html: buyServices.description! }}></div>
                     </CardContent>

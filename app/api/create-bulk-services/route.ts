@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
                         serviceId: +item.service || 0,
                         refill: item.refill || false,
                         updatedAt: new Date(),
+                        type : item?.type
                     };
                 })
             );
@@ -73,6 +74,7 @@ export async function POST(req: NextRequest) {
                 serviceId: +item.service || 0,
                 refill: item.refill || false,
                 updatedAt: new Date(),
+                type : item?.type
             }));
         }
 
