@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   const { hostname, path } = req.query;
 
   if (!hostname || Array.isArray(hostname)) {
