@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatIDR } from '@/lib/helpers'
 import axios from 'axios'
 import { Loader2Icon, LucideBadgeDollarSign, ShoppingBasketIcon, UserCheck2Icon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 type Props = {}
@@ -15,21 +16,28 @@ const DashboardPage = (props: Props) => {
   const [balance, setBalance] = useState(0)
   const [complete, setComplete] = useState(0)
   const [spent, setTotalSpent] = useState(0)
+  const router = useRouter()
   const getUser = async () => {
     setIsLoading(true)
-    const response = await axios.get(`/api/user`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    try {
+      const response = await axios.get(`/api/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (response.status === 200) {
+        setUsername(response.data.name || "")
+        setBalance(response.data.balance || 0)
+        setComplete(response.data.transaction.length || 0)
+        setTotalSpent(response.data.spent || 0)
       }
-    })
-    if (response.status === 200) {
-      setUsername(response.data.name || "")
-      setBalance(response.data.balance || 0)
-      setComplete(response.data.transaction.length || 0)
-      setTotalSpent(response.data.spent || 0)
+    } catch (error) {
+      router.push(`/login`)
     }
     setIsLoading(false)
   }
+
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem('token')
