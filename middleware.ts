@@ -120,6 +120,5 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL(`/app${path === "/" ? "" : path}`, req.url));
   }
 
-  // Kalau custom domain / subdomain → langsung rewrite ke /[hostname]/[path]
   return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));
 }
