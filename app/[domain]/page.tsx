@@ -17,6 +17,8 @@ const DomainPage = async ({
   params: { domain: string; slug: string };
 }) => {
   const domain = params.domain.split('.')[0];
+  console.log({ domain });
+
   const site = await prisma.sites.findFirst({
     where: {
       subdomain: domain
@@ -73,9 +75,9 @@ const DomainPage = async ({
         likeFollowers={siteLanguage?.siteLanding?.likesFollowers || ""}
       />
       <BenefitSection
-        startNow={siteLanguage?.siteLanding?.startNow || ""} 
-        attractive={siteLanguage?.siteLanding?.attractive || ""} 
-        advantages={siteLanguage?.siteLanding?.advantages || ""} 
+        startNow={siteLanguage?.siteLanding?.startNow || ""}
+        attractive={siteLanguage?.siteLanding?.attractive || ""}
+        advantages={siteLanguage?.siteLanding?.advantages || ""}
         buttonColor={siteDesigns?.buttonColor!} />
       <QuestionSection
         areFollowers={siteLanguage?.siteLanding?.areFollowersReal || ""}
@@ -87,10 +89,10 @@ const DomainPage = async ({
         howToTrack={siteLanguage?.siteLanding?.howToTrack || ""}
         howToTrackDesc={siteLanguage?.siteLanding?.howToTrackDesc || ""}
       />
-      <CallToAction 
+      <CallToAction
         buttonColor={siteDesigns?.buttonColor!}
         startNow={siteLanguage?.siteLanding?.startNow || "Start Now"}
-        cta={siteLanguage?.siteLanding?.callToAction || ""}/>
+        cta={siteLanguage?.siteLanding?.callToAction || ""} />
       <FloatingWAButton phone='6281234567890' />
       <Footer showBanner={siteSettings?.showBanner!} />
 
