@@ -35,9 +35,6 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           throw new Error("User not found");
         }
-
-        // Add password verification logic here if using hashed passwords
-
         return user;
       },
     }),
@@ -45,7 +42,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: `/login`,
     verifyRequest: `/login`,
-    error: "/login", // Error code passed in query string as ?error=
+    error: "/login", 
   },
   adapter: PrismaAdapter(prisma) as Adapter,
   session: { strategy: "jwt" },
@@ -80,9 +77,13 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     jwt: async ({ token, user }) => {
+      console.log('user in jwt:', user);
+      console.log('token in jwt before:', token);
       if (user) {
         token.user = user;
+        token.sub = user.id;
       }
+      console.log('token in jwt after:', token);
       return token;
     },
     session: async ({ session, token }) => {
