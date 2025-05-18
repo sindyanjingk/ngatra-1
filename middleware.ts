@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
   if (!host) return NextResponse.error();
 
-  let hostname = host;
+  let hostname = host.split(":")[0];
 
   // Handle localhost development
   if (hostname.includes(".localhost")) {
@@ -55,6 +55,8 @@ export default async function middleware(req: NextRequest) {
 
     return NextResponse.rewrite(new URL(`/app${path === "/" ? "" : path}`, req.url));
   }
+
+  console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`)
 
   // Kalau bukan root domain (subdomain atau custom domain lain)
   return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));

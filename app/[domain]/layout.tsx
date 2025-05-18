@@ -51,39 +51,39 @@ export default async function SiteLayout({
     params: { domain: string };
     children: ReactNode;
 }) {
-    const domain = decodeURIComponent(params.domain);
-    if (!domain) {
-        notFound();
-    }
-    const data = await prisma.sites.findFirst({
-        where: {
-            subdomain: domain.split(".")[0],
-        },
-    });
+    // const domain = decodeURIComponent(params.domain);
+    // if (!domain) {
+    //     notFound();
+    // }
+    // const data = await prisma.sites.findFirst({
+    //     where: {
+    //         subdomain: domain.split(".")[0],
+    //     },
+    // });
 
-    const siteDesigns = await prisma.siteDesigns.findFirst({
-        where: {
-            siteId: data?.id,
-        }
-    })
+    // const siteDesigns = await prisma.siteDesigns.findFirst({
+    //     where: {
+    //         siteId: data?.id,
+    //     }
+    // })
 
-    if (!data) {
-        notFound();
-    }
+    // if (!data) {
+    //     notFound();
+    // }
 
-    // Redirect to custom domain if it exists
-    if (
-        domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) &&
-        data.customDomain &&
-        process.env.REDIRECT_TO_CUSTOM_DOMAIN_IF_EXISTS === "true"
-    ) {
-        return redirect(`https://${data.customDomain}`);
-    }
+    // // Redirect to custom domain if it exists
+    // if (
+    //     domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) &&
+    //     data.customDomain &&
+    //     process.env.REDIRECT_TO_CUSTOM_DOMAIN_IF_EXISTS === "true"
+    // ) {
+    //     return redirect(`https://${data.customDomain}`);
+    // }
     
     return (
         <div style={{
-            backgroundColor: siteDesigns?.backgroundColor || "",
-            color: siteDesigns?.textColor || "",
+            // backgroundColor: siteDesigns?.backgroundColor || "",
+            // color: siteDesigns?.textColor || "",
         }} className={`min-h-screen`}>
             <main className="">
                 {children}
