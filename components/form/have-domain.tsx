@@ -7,6 +7,7 @@ import { Button } from '../ui/button'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { Loader2Icon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type Props = {}
 
@@ -17,6 +18,7 @@ const HaveDomain = (props: Props) => {
         currency: "IDR",
     });
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter()
 
     const onSubmit = async (e: any) => {
         e.preventDefault();
@@ -27,6 +29,7 @@ const HaveDomain = (props: Props) => {
                 console.log({ response });
             }
             toast.success("Domain created successfully");
+            router.push(`/`)
         } catch (error: any) {
             console.log({ error });
             toast.error(error?.response?.data?.error || "Something went wrong");
@@ -60,7 +63,7 @@ const HaveDomain = (props: Props) => {
                 />
             </div>
             <div className="rounded-xl bg-gradient-to-r from-purple-700 via-blue-500 to-blue-500 p-4 text-white">
-                <div className="text-sm font-bold">{`Please visit your registrar's dashboard and set DNS to:`}</div>
+                <div className="text-sm font-bold">{`Please visit your domain registered dashboard and set DNS to:`}</div>
                 <ul className='text-sm font-medium space-y-2'>
                     <div className="flex items-center gap-x-8">
                         <div className="space-y-2">

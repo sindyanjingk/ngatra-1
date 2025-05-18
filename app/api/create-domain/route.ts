@@ -23,9 +23,10 @@ export async function POST(req: NextRequest) {
         }
         const response = await prisma.sites.create({
             data: {
+                name : domain,
                 customDomain: domain,
                 subdomain: domain,
-                userId: session?.user.id,
+                userId: session?.user?.id,
                 updatedAt: new Date(),
                 currency,
                 siteSettings: {
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
         })
         return NextResponse.json({ message: "success", response }, { status: 200 });
     } catch (error: any) {
+        console.log({error});
         console.log({ error : error?.response?.data });
         return NextResponse.json({ error: error?.response?.data?.error?.code || "Something went wrong" }, { status: 500 });
     }

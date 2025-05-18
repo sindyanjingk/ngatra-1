@@ -12,9 +12,17 @@ export async function generateMetadata({
     params: { domain: string };
 }): Promise<Metadata | null> {
     const domain = decodeURIComponent(params.domain);
+    console.log({ domain });
     const data = await prisma.sites.findFirst({
         where: {
-            subdomain: domain.split(".")[0],
+            OR: [
+                {
+                    customDomain: domain.split(":")[0],
+                },
+                {
+                    subdomain: domain.split(".")[0],
+                }
+            ]
         },
     });
 
@@ -54,15 +62,18 @@ export default async function SiteLayout({
     children: ReactNode;
 }) {
     const domain = decodeURIComponent(params.domain);
-    // if (!domain) {
-    //     notFound();
-    // }
-
     console.log({ domain });
 
     const data = await prisma.sites.findFirst({
         where: {
-            subdomain: domain.split(".")[0],
+            OR: [
+                {
+                    customDomain: domain.split(":")[0],
+                },
+                {
+                    subdomain: domain.split(".")[0],
+                }
+            ]
         },
     });
 
@@ -73,7 +84,7 @@ export default async function SiteLayout({
                 <div className="space-y-8">
                     Your domain is not regisered yet
                     <div className="text-sm">Pelase register first</div>
-                    <Link  className="mt-8" href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/register`}>
+                    <Link className="mt-8" href={`https://${process.env.NEXT_PUBLIC_ROOT_DOMAIN}/register`}>
                         <Button>Register</Button>
                     </Link>
                 </div>
