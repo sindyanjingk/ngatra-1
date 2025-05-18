@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
         }
         let user = await prisma.user.findFirst({ where: { name: username } });
         if (!user) {
-            // Jika user belum ada, buat akun baru
             const hashedPassword = await bcrypt.hash(password, 10);
             user = await prisma.user.create({
                 data: {

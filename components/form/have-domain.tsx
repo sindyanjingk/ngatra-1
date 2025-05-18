@@ -4,26 +4,79 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import { Button } from '../ui/button'
+import axios from 'axios'
+import { toast } from 'sonner'
+import { Loader2Icon } from 'lucide-react'
 
 type Props = {}
 
 const HaveDomain = (props: Props) => {
     const [data, setData] = useState({
         name: "",
-        subdomain: "",
-        whatsapp: "",
-        currency: "IDR", // Default currency
-        description: "",
+        domain: "",
+        currency: "IDR",
     });
+    const [isLoading, setIsLoading] = useState(false)
+
+    const onSubmit = async (e: any) => {
+        e.preventDefault();
+        setIsLoading(true)
+        try {
+            const response = await axios.post(`/api/create-domain`, data);
+            if (response.status === 200) {
+                console.log({ response });
+            }
+            toast.success("Domain created successfully");
+        } catch (error: any) {
+            console.log({ error });
+            toast.error(error?.response?.data?.error || "Something went wrong");
+        }
+        setIsLoading(false)
+    }
     return (
         <form className='space-y-4'>
-            <Label htmlFor="domain" className="text-gray-700 text-md">Panel Domain <span className='text-red-500'>*</span></Label>
-            <Input placeholder='www.yourdomain.com' className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500" />
+            <div className="space-y-2">
+                <Label htmlFor="name" className="text-gray-700 text-md">Panel Name <span className='text-red-500'>*</span></Label>
+                <Input
+                    onChange={e => {
+                        setData({ ...data, name: e.target.value })
+                    }}
+                    name='name'
+                    required
+                    placeholder='Your panel name'
+                    className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="domain" className="text-gray-700 text-md mt-12">Panel Domain <span className='text-red-500'>*</span></Label>
+                <Input
+                    onChange={e => {
+                        setData({ ...data, domain: e.target.value })
+                    }}
+                    name='domain'
+                    required
+                    placeholder='www.yourdomain.com'
+                    className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500"
+                />
+            </div>
             <div className="rounded-xl bg-gradient-to-r from-purple-700 via-blue-500 to-blue-500 p-4 text-white">
-                <div className="text-sm font-bold">{`Please visit your registrar's dashboard and change nameservers to:`}</div>
-                <ul className='text-sm font-medium'>
-                    <li>ns1.ngatradns.com</li>
-                    <li>ns2.ngatradns.com</li>
+                <div className="text-sm font-bold">{`Please visit your registrar's dashboard and set DNS to:`}</div>
+                <ul className='text-sm font-medium space-y-2'>
+                    <div className="flex items-center gap-x-8">
+                        <div className="space-y-2">
+                            <div className=" text-md font-semibold">Type</div>
+                            <div className=" text-md font-semibold">A</div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className=" text-md font-semibold">Name</div>
+                            <div className=" text-md font-semibold">@</div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className=" text-md font-semibold">Value</div>
+                            <div className=" text-md font-semibold">76.76.21.21</div>
+                        </div>
+                    </div>
+
                 </ul>
             </div>
             <div className='space-y-3'>
@@ -42,25 +95,9 @@ const HaveDomain = (props: Props) => {
                     </SelectContent>
                 </Select>
             </div>
-            <div className='space-y-3'>
-                <label htmlFor="currency" className="block text-sm font-medium mb-1 text-gray-700">
-                    Admin Username <span className="text-red-500">*</span>
-                </label>
-                <Input placeholder='www.yourdomain.com' className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className='space-y-3'>
-                <label htmlFor="currency" className="block text-sm font-medium mb-1 text-gray-700">
-                    Admin Password <span className="text-red-500">*</span>
-                </label>
-                <Input placeholder='www.yourdomain.com' className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <div className='space-y-3'>
-                <label htmlFor="currency" className="block text-sm font-medium mb-1 text-gray-700">
-                    Confirm Password <span className="text-red-500">*</span>
-                </label>
-                <Input placeholder='www.yourdomain.com' className="rounded-full text-gray-900 bg-gray-100 p-4 pr-20 focus:ring-2 focus:ring-blue-500" />
-            </div>
-            <Button className="rounded-full bg-gradient-to-r from-purple-700 via-blue-500 to-blue-500 p-4 text-white" type='submit'>Submit</Button>
+            <Button onClick={onSubmit} className="rounded-full bg-gradient-to-r from-purple-700 via-blue-500 to-blue-500 p-4 text-white" type='submit'>
+                {isLoading ? <Loader2Icon className='animate-spin' /> : "Create Domain"}
+            </Button>
         </form>
     )
 }

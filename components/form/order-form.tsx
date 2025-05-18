@@ -43,6 +43,13 @@ const OrderForm = ({
         formState: { errors, isSubmitting },
     } = useForm()
 
+    const hasAnyNetwork = siteServices.some(service => {
+        return service.network && service.network.trim() !== "";
+      });
+
+    console.log({ hasAnyNetwork });
+
+
     const getUser = async () => {
         const response = await axios.get(`/api/user`, {
             headers: {
@@ -88,7 +95,7 @@ const OrderForm = ({
             const amount = buyServices.name?.split(" ")[0]
             setAmmount(+amount! || 0)
             setPrice(buyServices.rate || 0)
-        }else{
+        } else {
             setPrice(+(+buyServices?.rate! / 1000) * ammount)
         }
     }, [buyServices])
@@ -98,26 +105,30 @@ const OrderForm = ({
             <form className='w-full space-y-3' onSubmit={handleSubmit(data => { })}>
                 <div className="text-lg font-bold my-8">Choose Service</div>
 
-                {/* Select Network */}
-                <div className='flex flex-col gap-y-4 w-full'>
-                    <Label htmlFor='Network'>Platform</Label>
-                    <Select onValueChange={e => {
-                        setSelectedNetwork(e)
-                        setSelectedCategory(null)
-                        setSelectedService(null)
-                    }}>
-                        <SelectTrigger>
-                            <SelectValue placeholder={"Select Network"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {
-                                Array.from(new Set(siteServices.map(s => s.network))).map((network, index) => (
-                                    <SelectItem key={index} value={network!}>{network}</SelectItem>
-                                ))
-                            }
-                        </SelectContent>
-                    </Select>
-                </div>
+                {
+                    hasAnyNetwork ?
+                        <div className='flex flex-col gap-y-4 w-full'>
+                            <Label htmlFor='Network'>Platform</Label>
+                            <Select onValueChange={e => {
+                                setSelectedNetwork(e)
+                                setSelectedCategory(null)
+                                setSelectedService(null)
+                            }}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={"Select Network"} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {
+                                        Array.from(new Set(siteServices.map(s => s.network))).map((network, index) => (
+                                            <SelectItem key={index} value={network!}>{network}</SelectItem>
+                                        ))
+                                    }
+                                </SelectContent>
+                            </Select>
+                        </div> : null
+
+                }
+
 
                 {/* Select Category */}
                 {selectedNetwork && (

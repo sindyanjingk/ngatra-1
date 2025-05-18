@@ -18,12 +18,22 @@ const DomainPage = async ({
 }) => {
   const domain = params.domain.split('.')[0];
   console.log({ domain });
-
   const site = await prisma.sites.findFirst({
     where: {
-      subdomain: domain
+      OR : [
+        {
+          subdomain : domain
+        },
+        {
+          customDomain : domain
+        }
+      ]
     }
   })
+
+  if(!site) {
+    return <div>Site not found</div>
+  }
   const siteSettings = await prisma.siteSettings.findFirst({
     where: {
       siteId: site?.id
