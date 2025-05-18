@@ -89,9 +89,9 @@ export const authOptions: NextAuthOptions = {
     session: async ({ session, token }) => {
       session.user = {
         ...session.user,
-        // @ts-expect-error
+        // @ts-ignore
         id: token.sub,
-        // @ts-expect-error
+        // @ts-ignore
         username: token?.user?.username || token?.user?.gh_username,
       };
       return session;
