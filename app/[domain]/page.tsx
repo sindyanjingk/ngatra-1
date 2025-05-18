@@ -16,9 +16,6 @@ const DomainPage = async ({
 }: {
   params: { domain: string; slug: string };
 }) => {
-  const domain = params.domain.split('.')[0];
-  console.log({ domain });
-  console.log("Ini ke triger");
   return (
     <div>
       <div className="text-2xl">Masuk ke domain page</div>

@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
   if (!host) return NextResponse.error();
 
-  let hostname = host.split(":")[0];
+  let hostname = host
 
   // Handle localhost development
   if (hostname.includes(".localhost")) {
