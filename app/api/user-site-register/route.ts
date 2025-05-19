@@ -10,13 +10,13 @@ export async function POST(req: NextRequest) {
     const { email, password, username, siteId } = await req.json();
   
     if (!email || !password || !username || !siteId) {
-      return NextResponse.json({ error: "Semua field harus diisi" }, { status: 400 });
+      return NextResponse.json({ error: "Something went wrong" }, { status: 400 });
     }
 
     // Cek apakah child site ada
     const site = await prisma.sites.findUnique({ where: { id: siteId } });
     if (!site) {
-      return NextResponse.json({ error: "Site tidak ditemukan" }, { status: 404 });
+      return NextResponse.json({ error: "Site not found" }, { status: 404 });
     }
 
     // Cek apakah user sudah ada berdasarkan email
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     
 
     if (existingUserSite) {
-      return NextResponse.json({ error: "User sudah terdaftar di site ini" }, { status: 409 });
+      return NextResponse.json({ error: "User has been registered" }, { status: 409 });
     }
 
     // Daftarkan user ke child site dengan role default "member"
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({
-      message: "Registrasi berhasil",
+      message: "Success register user",
       token,
       user: {
         id: user.id,
@@ -82,6 +82,6 @@ export async function POST(req: NextRequest) {
     });
   } catch (error) {
     console.log({error});
-    return NextResponse.json({ error: "Terjadi kesalahan" }, { status: 500 });
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

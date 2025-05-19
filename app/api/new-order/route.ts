@@ -2,11 +2,21 @@ import { NextResponse, NextRequest } from "next/server";
 import { generateOrderId } from "@/lib/generate";
 import prisma from "@/lib/prisma";
 import axios from "axios";
-import { authMiddleware } from "@/lib/helpers";
+import { getSession } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-    const auth = await authMiddleware(req);
-    if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
+    const session = await getSession()
+    if(!session) {
+        return NextResponse.json({
+            status : 401,
+            message : "Unauthorized"
+        })
+    }
+    const userSite = await prisma.userSite.findFirst({
+        where : {
+            id : session.user.id,
+        }
+    })
     try {
         const {
             providerUrl,
@@ -18,6 +28,8 @@ export async function POST(req: NextRequest) {
         const provider = await prisma.siteProviders.findFirst({
             where: { url: providerUrl }
         })
+        console.log({providerUrl, serviceId, link, quantity, amount});
+        
         console.log({ 
             provider,  
             providerUrl,
@@ -38,7 +50,7 @@ export async function POST(req: NextRequest) {
             const hargaAsli = service?.providersRate! / 1000 * quantity
             const user = await prisma.user.update({
                 where : {
-                    id : auth.userId
+                    id : userSite?.userId
                 },
                 data :{
                     balance : {
@@ -50,7 +62,7 @@ export async function POST(req: NextRequest) {
                             status : "pending",
                             name : "ORDER",
                             qty : quantity,
-                            siteId : auth.siteId,
+                            siteId : userSite?.siteId,
                             totalAmount : +amount,
                             link,
                             profit : amount - hargaAsli,
@@ -71,16 +83,12 @@ export async function POST(req: NextRequest) {
             })
         }
     } catch (error: any) {
-        console.log({ error });
         if (error.response) {
-            console.error("Midtrans API Response Error:", error.response.data);
             return NextResponse.json(
-                { error: error.response.data },
+                { message: error.response.data?.error },
                 { status: error.response.status }
             );
         }
-
-        console.error("Midtrans API Error:", error.message);
         return NextResponse.json(
             { error: "Something went wrong" },
             { status: 500 }

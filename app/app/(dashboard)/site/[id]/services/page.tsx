@@ -66,7 +66,6 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
   })
 
   const newCategories = services.map(item=>item.category).filter((category): category is NonNullable<typeof category> => category !== null);
-  console.log({newCategories});
   
   const data = services.map(item=>({
     category : item.category?.category_name,

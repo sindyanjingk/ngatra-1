@@ -32,6 +32,7 @@ export default function MetaDataModal({
     const [footerTags, setFooterTags] = useState(pageFooterTags || "");
 
     const submit = async () => {
+        console.log({siteId});
         try {
             const response = await axios.post(`/api/meta-data`, {
                 siteId,

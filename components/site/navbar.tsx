@@ -25,21 +25,21 @@ const SiteNavbar = ({
     signUp
  }: Props) => {
     const pathname = usePathname()
-    const [token, setToken] = useState("")
-    const router = useRouter()
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('token')
-            if(token){
-                router.push('/dashboard')
-            }
-            setToken(token || "")
-        }
-    }, [])
-    const handleLogout = () => {
-        localStorage.removeItem('token')
-        window.location.href = '/'
-    }
+    // const [token, setToken] = useState("")
+    // const router = useRouter()
+    // useEffect(() => {
+    //     if (typeof window !== 'undefined') {
+    //         const token = localStorage.getItem('token')
+    //         if(token){
+    //             router.push('/dashboard')
+    //         }
+    //         setToken(token || "")
+    //     }
+    // }, [])
+    // const handleLogout = () => {
+    //     localStorage.removeItem('token')
+    //     window.location.href = '/'
+    // }
     return (
         <motion.nav
             initial={{ opacity: 0, y: -80 }}
@@ -55,9 +55,9 @@ const SiteNavbar = ({
                 {/* <Link href="blog" className={`hover:text-blue-400 font-bold ${pathname === "/blog" && "text-blue-500"}`}>Blog</Link> */}
             </div>
             {
-                token ?
-                    <Button onClick={handleLogout}>Logout</Button>
-                    :
+                // token ?
+                //     <Button onClick={handleLogout}>Logout</Button>
+                //     :
                     <Menubar className="bg-gray-700 border-none data-[state=open]:bg-gray-700">
                         <MenubarMenu>
                             <MenubarTrigger className="text-white">

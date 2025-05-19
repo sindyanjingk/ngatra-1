@@ -16,6 +16,7 @@ type Props = {
 const UserPage = async ({ params, searchParams }: Props) => {  
   const { page, search } = searchParams
   const where: (Prisma.userSiteWhereInput) = {};
+  const id = params.id
   if (search) {
     where.AND = [
       {
@@ -40,7 +41,7 @@ const UserPage = async ({ params, searchParams }: Props) => {
 
   const p = page ? +page : 1
   return (
-    <UserTable users={users} p={p} />
+    <UserTable siteId={id}  users={users} p={p} />
   )
 }
 

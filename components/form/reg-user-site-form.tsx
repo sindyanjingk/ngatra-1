@@ -25,6 +25,7 @@ const RegisterUserSiteForm = ({ siteId }: { siteId: string }) => {
 
     return (
         <form onSubmit={handleSubmit(async data => {
+            console.log({data});
             try {
                 if (errors.username || errors.email || errors.password) {
                     console.log({ errors });

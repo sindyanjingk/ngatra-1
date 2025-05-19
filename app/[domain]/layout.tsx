@@ -1,6 +1,5 @@
 
 import { ReactNode } from "react";
-import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import prisma from "../../lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,6 @@ export async function generateMetadata({
     params: { domain: string };
 }): Promise<Metadata | null> {
     const domain = decodeURIComponent(params.domain);
-    console.log({ domain });
     const data = await prisma.sites.findFirst({
         where: {
             OR: [
@@ -76,8 +74,6 @@ export default async function SiteLayout({
             ]
         },
     });
-
-    console.log({ data });
     if (!data) {
         return (
             <div className="text-xl font-bold min-h-screen w-screen bg-gradient-to-tr from-blue-400 to-purple-500 flex items-center justify-center">
@@ -98,23 +94,10 @@ export default async function SiteLayout({
         }
     })
 
-    // if (!data) {
-    //     notFound();
-    // }
-
-    // Redirect to custom domain if it exists
-    // if (
-    //     domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) &&
-    //     data.customDomain &&
-    //     process.env.REDIRECT_TO_CUSTOM_DOMAIN_IF_EXISTS === "true"
-    // ) {
-    //     return redirect(`https://${data.customDomain}`);
-    // }
-
     return (
         <div style={{
-            // backgroundColor: siteDesigns?.backgroundColor || "",
-            // color: siteDesigns?.textColor || "",
+            backgroundColor: siteDesigns?.backgroundColor || "",
+            color: siteDesigns?.textColor || "",
         }} className={`min-h-screen`}>
             <main className="">
                 {children}

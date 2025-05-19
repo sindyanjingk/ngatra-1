@@ -9,12 +9,19 @@ type Props = {
 }
 
 const AuthLayout = async ({ children, params }: Props) => {
-    const domain = params.domain.split('.')[0];
+    const domain = decodeURIComponent(params.domain);
     const site = await prisma.sites.findFirst({
         where: {
-            subdomain: domain
+            OR: [
+                {
+                    subdomain: domain.split('.')[0]
+                },
+                {
+                    customDomain: domain.split(':')[0]
+                }
+            ]
         }
-    })
+    })    
     return (
         <div className="flex items-center justify-start w-screen md:p-12 p-4 flex-col gap-y-2 h-screen bg-gradient-to-br from-green-300 via-blue-300 to-blue-500">
             {site?.image && <img src={site?.image} alt="" className='w-24 h-24 object-cover rounded-full' />}

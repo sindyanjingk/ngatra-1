@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/auth";
 import prisma from "../../../lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,13 +13,18 @@ export async function POST(req: NextRequest) {
         footerTags
      } = await req.json();
 
-
+     const session = await getSession();
+     if (!session) {
+        return NextResponse.json({
+            status: 401,
+            message: "Unauthorized",
+        });
+    }
      const siteSettings = await prisma.siteSettings.findFirst({
         where: {
             siteId: siteId,
         }
-    })
-
+    })    
     if (!siteSettings) {
         await prisma.siteSettings.create({
             data: {
@@ -44,8 +50,6 @@ export async function POST(req: NextRequest) {
             }
         })
     }
-
-    // Kirim token ke client
     return NextResponse.json({ msg : "Success update meta data" });
   } catch (error) {
     console.log({error});

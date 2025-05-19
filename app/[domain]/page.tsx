@@ -9,6 +9,8 @@ import React from 'react'
 import QuestionSection from '@/components/site/question-section';
 import CallToAction from '@/components/site/call-to-action';
 import FloatingWAButton from '@/components/integrations/floating-wa-button';
+import { getSession } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 
 const DomainPage = async ({
@@ -53,6 +55,11 @@ const DomainPage = async ({
       siteLanding: true
     }
   })
+
+  const session = await getSession()
+  if(session){
+    redirect('dashboard')
+  }
 
   return (
     <div style={{

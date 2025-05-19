@@ -13,8 +13,6 @@ import { BanknoteIcon, CheckCircle2Icon, Globe2Icon, InspectIcon, Layers2, Shopp
 import Image from 'next/image'
 import React from 'react'
 
-type Props = {}
-
 const Settings = async ({
     params,
 }: {

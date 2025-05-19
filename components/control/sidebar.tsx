@@ -115,7 +115,6 @@ export default function Sidebar() {
                 isActive: segments[0] === "design",
                 icon: <Sparkles width={18} />
             },
-
             {
                 name: "Managers",
                 href: `/site/${id}/control/managers`,

@@ -3,13 +3,26 @@ import Midtrans from 'midtrans-client-typescript'
 import { generateTopUpOrderId } from "@/lib/generate";
 import prisma from "@/lib/prisma";
 import { authMiddleware } from "@/lib/helpers";
+import { getSession } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-    const auth = await authMiddleware(req);
-    if ("error" in auth) return NextResponse.json({ error: auth.error }, { status: auth.status });
+    const session = await getSession()
+    if(!session) {
+        return NextResponse.json({
+            status : 401,
+            message : "Unauthorized"
+        })
+    }
+    const userSite = await prisma.userSite.findFirst({
+        where : {
+            id : session.user.id,
+        }
+    })
+
+
     try {
-        const serverKey = "SB-Mid-server-zAFHjuMsUn64UGL096Xz3tX0" //`${process.env.MIDTRANS_SANBOX_SERVER_KEY}`
-        const clientKey =  "SB-Mid-client-tHaoHMww5OMhohru" //`${process.env.MIDTRANS_SANBOX_CLIENT_KEY}`
+        const serverKey =  `${process.env.MIDTRANS_SANDBOX_SERVER_KEY}`
+        const clientKey =   `${process.env.MIDTRANS_SANDBOX_CLIENT_KEY}`
         const snap = new Midtrans.Snap({
             clientKey,
             serverKey,
@@ -22,7 +35,7 @@ export async function POST(req: NextRequest) {
 
         const user = await prisma.user.findFirst({
             where : {
-                id : auth.userId
+                id : userSite?.userId
             }
         })
         const response = await snap.createTransaction({
@@ -43,7 +56,7 @@ export async function POST(req: NextRequest) {
                 id: order_id,
                 status: "waiting_payment",
                 name: "TOPUP",
-                siteId: auth.siteId,
+                siteId: userSite?.siteId,
                 userId: user?.id,
                 totalAmount: +ammount,
             }

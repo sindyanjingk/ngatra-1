@@ -10,7 +10,7 @@ import { TUsers } from '@/app/app/(dashboard)/site/[id]/users/page'
 import {
   Edit2Icon, EllipsisIcon, FilePlusIcon,
   FileWarningIcon, FolderPlusIcon, KeyIcon,
-  PencilIcon, PercentCircleIcon, ShoppingCartIcon,
+  PencilIcon, PercentCircleIcon, PlusIcon, ShoppingCartIcon,
   Trash2Icon
 } from 'lucide-react'
 import { useModal } from '../modal/provider'
@@ -22,13 +22,15 @@ import ModalDeleteDiscount from '../users/modal-delete-discount'
 import ModalManageBalance from '../users/modal-manage-balance'
 import ModalResetPassword from '../users/modal-reset-password'
 import ModalUserOrders from '../users/modal-user-orders'
+import ModalAddUser from '../users/modal-add-user'
 
 type Props = {
   users: TUsers[]
   p: number
+  siteId: string
 }
 
-const UserTable = ({ users, p }: Props) => {
+const UserTable = ({ users, p, siteId }: Props) => {
   const [selectedUsers, setSelectedUsers] = useState<TUsers[]>([]);
 
   const handleSelectAll = (checked: boolean) => {
@@ -47,7 +49,16 @@ const UserTable = ({ users, p }: Props) => {
 
   return (
     <div className="">
-      <div className="text-lg my-4 font-bold">List User</div>
+      <div className="flex gap-x-4 items-center justify-between w-full">
+        <div className="text-lg my-4 font-bold">List User</div>
+        <Button onClick={()=>{
+          modal?.show(
+            <ModalAddUser siteId={siteId} />
+          )
+        }}>
+          <PlusIcon /> Add User
+        </Button>
+      </div>
       <ScrollArea className="w-full overflow-auto">
         <Table>
           <TableHeader>
@@ -79,9 +90,9 @@ const UserTable = ({ users, p }: Props) => {
                     }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                       <FilePlusIcon /> Unban Account
                     </Button>
-                    <Button  onClick={()=>{
+                    <Button onClick={() => {
                       modal?.show(
-                        <ModalDeleteDiscount users={selectedUsers}/>
+                        <ModalDeleteDiscount users={selectedUsers} />
                       )
                     }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                       <Trash2Icon /> Delete Discount
@@ -140,30 +151,30 @@ const UserTable = ({ users, p }: Props) => {
                       <EllipsisIcon className='cursor-pointer' />
                     </PopoverTrigger>
                     <PopoverContent className='md:w-56 space-y-2'>
-                      <Button onClick={()=>{
+                      <Button onClick={() => {
                         modal?.show(
-                          <ModalManageBalance users={user}/>
+                          <ModalManageBalance users={user} />
                         )
                       }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                         <FolderPlusIcon /> Manage Balance
                       </Button>
-                      <Button onClick={()=>{
+                      <Button onClick={() => {
                         modal?.show(
-                          <ModalEditUsers users={user}/>
+                          <ModalEditUsers users={user} />
                         )
                       }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                         <PencilIcon /> Edit User
                       </Button>
-                      <Button onClick={()=>{
+                      <Button onClick={() => {
                         modal?.show(
-                          <ModalResetPassword users={user}/>
+                          <ModalResetPassword users={user} />
                         )
                       }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                         <KeyIcon /> Reset Password
                       </Button>
-                      <Button onClick={()=>{
+                      <Button onClick={() => {
                         modal?.show(
-                          <ModalUserOrders users={user}/>
+                          <ModalUserOrders users={user} />
                         )
                       }} variant="ghost" className="w-full flex items-center justify-start gap-2">
                         <ShoppingCartIcon /> Payment History

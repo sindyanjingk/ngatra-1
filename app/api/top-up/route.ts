@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ msg: "Unauthorized" })
     }
     try {
-        const serverKey = `${process.env.MIDTRANS_SANBOX_SERVER_KEY}`
-        const clientKey = `${process.env.MIDTRANS_SANBOX_CLIENT_KEY}`
+        const serverKey = `${process.env.MIDTRANS_SANDBOX_SERVER_KEY}`
+        const clientKey = `${process.env.MIDTRANS_SANDBOX_CLIENT_KEY}`
         const snap = new Midtrans.Snap({
             clientKey,
             serverKey,

@@ -5,9 +5,8 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Loader2Icon } from 'lucide-react'
 import Link from 'next/link'
-import axios from 'axios'
-import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 type Props = {
     siteId : string
@@ -26,23 +25,16 @@ const LoginUserSiteForm = ({siteId}: Props) => {
     })
     const router = useRouter()
     return (
-        <form onSubmit={handleSubmit(async data => {
-            try {
-                const response = await axios.post(`/api/user-site-login`, {
-                    email: data.email,
-                    password: data.password,
-                    siteId 
-                })
-                if (response.status === 200) {
-                    localStorage.setItem("token", response.data.token)
-                    toast.success(response.data.message)
-                    router.push(`/`)
-                }
-            } catch (error: any) {
-                console.log({ error });
-                toast.error(error.response.data.error)
+        <form onSubmit={handleSubmit(async(data)=>{
+            const response = await signIn("credentials", {
+                redirect : false,
+                email : data.email,
+                password : data.password,
+            })
+            if(response?.ok){
+                router.push(`dashboard`)
             }
-
+            console.log({response});
         })} className='text-gray-800 bg-white shadow-md rounded-xl px-8 pt-6 pb-8 mb-4 md:w-1/3  w-full flex items-center justify-center flex-col gap-6'>
             <div className="flex flex-col gap-y-2 w-full">
                 <label htmlFor="email">Email</label>

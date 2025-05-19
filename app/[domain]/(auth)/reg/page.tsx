@@ -9,12 +9,19 @@ type Props = {
 }
 
 const RegisterPage = async ({params}: Props) => {
-  const domain = params.domain.split('.')[0];
+  const domain = decodeURIComponent(params.domain);
   const site = await prisma.sites.findFirst({
       where: {
-          subdomain: domain
+          OR: [
+              {
+                  subdomain: domain.split('.')[0]
+              },
+              {
+                  customDomain: domain.split(':')[0]
+              }
+          ]
       }
-  })
+  })   
   return (
     <RegisterUserSiteForm siteId={site?.id || ''} />
   )

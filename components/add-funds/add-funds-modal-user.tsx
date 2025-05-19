@@ -12,16 +12,11 @@ import axios from "axios";
 
 export default function AddFundsModalUser({ siteId }: { siteId: string }) {
     const modal = useModal();
-    const token = localStorage.getItem("token")
     return (
         <form
             action={async (data: FormData) => {
                 const ammount = data.get("ammount")
-                const response = await axios.post(`/api/top-up/user`, { ammount }, {
-                    headers : {
-                        Authorization : `Bearer ${token}`
-                    }
-                })
+                const response = await axios.post(`/api/top-up/user`, { ammount })
                 if (response.status === 200) {
                     window.open(response.data.response.redirect_url, "_blank")
                     toast.success("Success add funds")

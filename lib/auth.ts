@@ -5,6 +5,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "./prisma";
+import { headers } from "next/headers";
+import { getSiteContext } from "./getSiteContext";
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 export const authOptions: NextAuthOptions = {
@@ -28,6 +30,41 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
+        const {
+          host,
+          isRootDomain,
+        } = getSiteContext();
+        console.log({ host, isRootDomain });
+        if (!isRootDomain) {
+          console.log("trigerred");
+          const site = await prisma.sites.findFirst({
+            where: {
+              OR: [
+                {
+                  subdomain: host.split(".")[0],
+                },
+                {
+                  customDomain: host.split(":")[0],
+                }
+              ]
+            },
+          });
+          if (!site) {
+            throw new Error("Site not found");
+          }
+          const userSite = await prisma.userSite.findFirst({
+            where: {
+              siteId: site?.id,
+              user: {
+                email: credentials.email
+              }
+            }
+          })
+          if (!userSite) {
+            throw new Error("User not found");
+          }
+          return userSite
+        }
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -42,7 +79,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: `/login`,
     verifyRequest: `/login`,
-    error: "/login", 
+    error: "/login",
   },
   adapter: PrismaAdapter(prisma) as Adapter,
   session: { strategy: "jwt" },
@@ -77,13 +114,10 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     jwt: async ({ token, user }) => {
-      console.log('user in jwt:', user);
-      console.log('token in jwt before:', token);
       if (user) {
         token.user = user;
         token.sub = user.id;
       }
-      console.log('token in jwt after:', token);
       return token;
     },
     session: async ({ session, token }) => {
@@ -125,8 +159,8 @@ export function withSiteAuth(action: any) {
     }
 
     const site = await prisma.sites.findFirst({
-      where:{
-        id : siteId
+      where: {
+        id: siteId
       }
     });
 
@@ -154,10 +188,10 @@ export function withPostAuth(action: any) {
     }
 
     const post = await prisma.posts.findFirst({
-      where:{
-        id : postId
+      where: {
+        id: postId
       },
-      include:{
+      include: {
         sites: true
       }
     });

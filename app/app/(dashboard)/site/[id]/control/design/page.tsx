@@ -10,11 +10,6 @@ export default async function SiteSettingsAppearance({
 }: {
   params: { id: string };
 }) {
-    const data = await prisma.sites.findFirst({
-      where: {
-        id: params.id,
-      },
-    });
     const siteDesigns = await prisma.siteDesigns.findFirst({
       where : {
         siteId : params.id

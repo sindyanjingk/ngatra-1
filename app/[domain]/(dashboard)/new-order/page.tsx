@@ -1,5 +1,8 @@
+import SidebarHeader from '@/components/dashboard-user/sidebar-header';
 import OrderForm from '@/components/form/order-form'
+import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma'
+import { redirect } from 'next/navigation';
 import React from 'react'
 
 const OrderSite = async ({
@@ -7,29 +10,50 @@ const OrderSite = async ({
 }: {
   params: { domain: string; slug: string };
 }) => {
-  const domain = params.domain.split('.')[0];
+  const domain = decodeURIComponent(params.domain);
   const site = await prisma.sites.findFirst({
     where: {
-      subdomain: domain
+      OR: [
+        {
+          customDomain: domain.split(":")[0],
+        },
+        {
+          subdomain: domain.split(".")[0],
+        }
+      ]
     }
   })
   const services = await prisma.siteServices.findMany({
     where: {
       siteId: site?.id,
-      isEnabled : true
+      isEnabled: true
     },
     include: {
       category: true,
       provider: true,
       site: true
     },
-    orderBy : {
+    orderBy: {
       createdAt: 'desc'
     }
   });
+  const session = await getSession();
+  const userSite = await prisma.userSite.findFirst({
+    where: {
+      id: session?.user.id
+    },
+    include: {
+      user: true
+    }
+  })
+  const user = userSite?.user
+  if(!user){
+    redirect('login')
+  }
   return (
-    <div className=''>
-      <OrderForm siteServices={services}/>
+    <div className='text-black'>
+      <SidebarHeader title='New Order' />
+      <OrderForm user={user} siteServices={services} />
     </div>
   )
 }
