@@ -45,8 +45,10 @@ export async function POST(req: NextRequest) {
                 serviceId : +serviceId
             }
         })
-        console.log({response : response.data});
+        console.log({response : response.status});
         if (response.status === 200) {
+            console.log("trigerred");
+            
             const hargaAsli = service?.providersRate! / 1000 * quantity
             const user = await prisma.user.update({
                 where : {
@@ -61,7 +63,7 @@ export async function POST(req: NextRequest) {
                             id : generateOrderId(),
                             status : "pending",
                             name : "ORDER",
-                            qty : quantity,
+                            qty : +quantity,
                             siteId : userSite?.siteId,
                             totalAmount : +amount,
                             link,
@@ -76,13 +78,20 @@ export async function POST(req: NextRequest) {
                 }
             })
 
+            console.log({user});
             return NextResponse.json({
                 msg: "Success create order",
                 balance : user.balance,
                 orderId : response.data?.order || ""
             })
+        }else{
+            return NextResponse.json({
+                msg: "Failed create order",
+                orderId : response.data?.order || ""
+            })
         }
     } catch (error: any) {
+        console.log({error});
         if (error.response) {
             return NextResponse.json(
                 { message: error.response.data?.error },

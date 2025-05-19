@@ -5,11 +5,15 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import { ArrowRightCircleIcon, CheckIcon, EllipsisIcon, XIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Prisma } from "@prisma/client";
-import OrderItem from "../order/order-item";
+// import OrderItem from "../order/order-item";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import ButtonStatusOrder from "../order/button-status-order";
 import { useSearchParams } from "next/navigation";
+import dynamic from "next/dynamic";
+import { useModal } from "../modal/provider";
+import { Card, CardHeader } from "../ui/card";
+import { toast } from "sonner";
 
 export type TTransaction = Prisma.transactionGetPayload<{
   include: {
@@ -24,12 +28,13 @@ export type TTransaction = Prisma.transactionGetPayload<{
 }>;
 
 export default function OrderTable({ transactions }: { transactions: TTransaction[] }) {
+  const OrderItem = dynamic(() => import("../order/order-item"), { ssr: false })
   const [selectedOrders, setSelectedOrders] = useState<TTransaction[]>([]);
   const isAllSelected = selectedOrders.length === transactions.length;
 
   const searchParams = useSearchParams()
   const statusState = searchParams.get("status")
-  
+
 
   const toggleSelectAll = (checked: boolean) => {
     setSelectedOrders(checked ? transactions : []);
@@ -52,13 +57,14 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
     "Pending",
   ];
 
+  const modal = useModal()
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-xl font-bold mb-4">Orders</h1>
-      <div className="flex items-center gap-x-4">
+      <div className="flex items-center gap-x-4 mb-4">
         {status.map((item, index) => (
-          <ButtonStatusOrder statusState={statusState} key={index} status={item}/>
+          <ButtonStatusOrder statusState={statusState} key={index} status={item} />
         ))}
       </div>
       <Table>
@@ -75,8 +81,10 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
                     <EllipsisIcon className="cursor-pointer" />
                   </PopoverTrigger>
                   <PopoverContent className="md:w-56">
-                  <Button variant={"ghost"}>
-                      <ArrowRightCircleIcon/>
+                    <Button onClick={() => {
+                      toast.success("Your request is being processed")
+                    }} variant={"ghost"}>
+                      <ArrowRightCircleIcon />
                       Resend To Provider
                     </Button>
                     <Button variant={"ghost"}>
@@ -84,7 +92,7 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
                       Mark as completed
                     </Button>
                     <Button variant={"ghost"}>
-                      <XIcon/>
+                      <XIcon />
                       Cancel With Refund
                     </Button>
                   </PopoverContent>
@@ -104,7 +112,7 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((order:any, index:number) => {
+          {transactions.map((order: any, index: number) => {
             const isSelected = selectedOrders.some((o) => o.id === order.id);
             return (
               <OrderItem key={index} isSelected={isSelected} order={order} selectedOrders={selectedOrders} toggleSelectSingle={toggleSelectSingle} />

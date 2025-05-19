@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { TableCell, TableRow } from '../ui/table'
 import { formatIDR } from '@/lib/helpers'
 import { TTransaction } from '../table/order-table'
@@ -20,32 +20,8 @@ type Props = {
 }
 
 const OrderItem = ({ order, toggleSelectSingle, isSelected }: Props) => {
-    const [status, setStatus] = React.useState<string>("")
+    const [status, setStatus] = React.useState<string>(order.status || "")
     const [isLoadingMark, setIsLoadingMark] = React.useState<boolean>(false)
-    const [isLoadingCancel, setIsLoadingCancel] = React.useState<boolean>(false)
-    const [isLoadingResend, setIsLoadingResend] = React.useState<boolean>(false)
-    const [isLoadingGet, setIsLoadingGet] = React.useState<boolean>(false)
-    const getStatus = async () => {
-        setIsLoadingGet(true)
-        try {
-            const response = await axios.post(`/api/check-status`, {
-                id: order.id,
-                providerUrl: order.siteService?.provider?.url,
-                providerOrderId: order.providerOrderId,
-                key: order.siteService?.provider?.apiKey
-            })
-            console.log({response});
-            setStatus(response.data.status)
-        } catch (error) {
-            console.log({ error });
-        }
-        setIsLoadingGet(false)
-    }
-
-    useEffect(() => {
-        getStatus()
-    }, [])
-
     const handleComplete = async () => {
         setIsLoadingMark(true)
         try {
@@ -54,6 +30,7 @@ const OrderItem = ({ order, toggleSelectSingle, isSelected }: Props) => {
             })
             if (response.status === 200) {
                 toast.success(`Order ${order.id} marked as completed`)
+                window.location.reload();
             }
         } catch (error) {
             console.log({ error });
@@ -76,11 +53,7 @@ const OrderItem = ({ order, toggleSelectSingle, isSelected }: Props) => {
             </TableCell>
             <TableCell>{order.qty}</TableCell>
             <TableCell>
-                {
-                    isLoadingGet ?
-                        <Loader2Icon className='animate-spin' /> :
-                        status
-                }
+               {status || "Pending"}
             </TableCell>
             <TableCell className='space-y-2 flex flex-col'>
                 {formatIDR(+order.totalAmount! || 0)}

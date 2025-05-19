@@ -90,6 +90,10 @@ export async function AppSidebar({ name, user, logo, ...props }: AppSidebarProps
           {
             title: "Refunds",
             url: "refunds",
+          },
+          {
+            title: "History",
+            url: "history-funds",
           }
         ],
       },

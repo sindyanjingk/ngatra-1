@@ -91,12 +91,16 @@ export default function ModalCreateOrder({
                                                 <div><span className="font-semibold text-foreground">ID Pesanan:</span> {res.data?.orderId || ""}</div>
                                                 <div><span className="font-semibold text-foreground">Sisa Saldo:</span> {formatIDR(res.data?.balance || "")}</div>
                                             </div>
+                                            <div className="mt-4">
+                                                <Button>Go to History</Button>
+                                            </div>
                                         </CardContent>
                                     </Card>
                                 </motion.div>
                             )
                         }
                     } else {
+                        console.log("trigerred");
                         const res = await axios.post(`/api/new-order/dreep-feed`, {
                             name,
                             quantity: amount,
