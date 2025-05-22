@@ -298,6 +298,7 @@ model siteServices {
   category      category?      @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "siteServices_categoryId_category_id_fk")
   provider      siteProviders? @relation(fields: [providerId], references: [id], onDelete: Cascade, map: "siteServices_providerId_siteProviders_id_fk")
   site          sites          @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "siteServices_siteId_sites_id_fk")
+  specialPrice  specialPrice[]
   transactions  transaction[]
 }
 
@@ -372,26 +373,27 @@ model transaction {
 }
 
 model User {
-  id            String        @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String        @unique
+  email         String         @unique
   emailVerified DateTime?
   password      String?
-  role          Role          @default(USER)
+  role          Role           @default(USER)
   image         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  balance       Int?          @default(0)
-  feeToday      Int?          @default(0)
-  income        Int?          @default(0)
-  spent         Int?          @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  balance       Int?           @default(0)
+  feeToday      Int?           @default(0)
+  income        Int?           @default(0)
+  spent         Int?           @default(0)
   deletedAt     DateTime?
-  discount      Int?          @default(0)
+  discount      Int?           @default(0)
   forgot_code   Int?
   accounts      Account[]
   sessions      Session[]
   posts         posts[]
   sites         sites[]
+  specialPrice  specialPrice[]
   transaction   transaction[]
   userSite      userSite[]
   userToken     userToken[]
@@ -403,6 +405,15 @@ model verificationTokens {
   expires    DateTime @db.Timestamp(6)
 
   @@id([identifier, token], map: "verificationTokens_identifier_token_pk")
+}
+
+model specialPrice {
+  id           String       @id @default(cuid())
+  serviceId    String
+  userId       String
+  price        Int?
+  siteServices siteServices @relation(fields: [serviceId], references: [id], onDelete: Cascade, map: "specialPrice_serviceId_siteServices_id_fk")
+  users        User         @relation(fields: [userId], references: [id], onDelete: Cascade, map: "specialPrice_userId_users_id_fk")
 }
 
 enum transaction_status {

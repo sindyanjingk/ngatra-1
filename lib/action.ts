@@ -292,3 +292,23 @@ export const resetPasswordAction = async (data:FormData, users:TUsers)=>{
         }
     }
 }
+
+export const deleteCategory = async (id:string) => {
+    try {
+        await prisma.category.delete({
+            where: {
+                id,
+            },
+        });
+        return {
+            status: true,
+            message: "Category deleted successfully",
+        };
+    } catch (error) {
+        console.log({ error });
+        return {
+            status: false,
+            message: "Category deleted failed",
+        };
+    }
+};

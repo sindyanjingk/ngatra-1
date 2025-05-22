@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
     try {
         const { siteId, providerId, selected, categoryId, extraPrice } = await req.json();
-        console.log({siteId});
+        console.log({siteId, categoryId});
         const provider = await prisma.siteProviders.findFirst({
             where: { id: providerId },
         });
@@ -16,9 +16,8 @@ export async function POST(req: NextRequest) {
             transformData = await Promise.all(
                 selected.map(async (item: any) => {
                     let category = await prisma.category.findFirst({
-                        where: { category_name: item.category },
-                    });
-
+                        where: { category_name: item.category, siteId: siteId },
+                    });                  
                     if (!category) {
                         category = await prisma.category.create({
                             data: {

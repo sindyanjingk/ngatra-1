@@ -1,5 +1,5 @@
 "use client"
-import { ArrowUpDownIcon, Dessert, Ellipsis, EllipsisIcon, FolderIcon, Layers2Icon, PencilIcon, PercentCircleIcon, PlusSquareIcon, Trash2Icon, TrashIcon, XSquareIcon } from 'lucide-react'
+import { ArrowUpDownIcon, ChevronDownIcon, ChevronUpIcon, Dessert, Ellipsis, EllipsisIcon, EyeClosedIcon, FolderIcon, Layers2Icon, PencilIcon, PercentCircleIcon, PlusSquareIcon, Trash2Icon, TrashIcon, XSquareIcon } from 'lucide-react'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
 import { Checkbox } from '../ui/checkbox'
 import { useState } from 'react'
@@ -23,6 +23,7 @@ import ModalChangeNameDescription from '../services/bulk-services/modal-change-n
 import ModalChangePriceServices from '../services/bulk-services/modal-change-price-services'
 import ModalDeleteAllServices from '../services/bulk-services/modal-delete-all-services'
 import ModalUpdateServices from '../services/modal-edit-services'
+import ServiceAccordionItem from './service-accordion-item'
 
 type ServiceItem = siteServices
 
@@ -40,9 +41,14 @@ type Props = {
       site: true
     }
   }>[]
+  userSite : Prisma.userSiteGetPayload<{
+    include: {
+      user: true
+    }
+  }>[]
 }
 
-const ServicesAccordion = ({ result, siteId, categories, providers }: Props) => {
+const ServicesAccordion = ({ result, siteId, categories, providers, userSite }: Props) => {
   // const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [selectedItems, setSelectedItems] = useState<Map<string, ServiceItem>>(new Map());
 
@@ -102,6 +108,9 @@ const ServicesAccordion = ({ result, siteId, categories, providers }: Props) => 
 
   const modal = useModal()
 
+  const [openItems, setOpenItems] = useState<string[]>([]);
+  const allCategoryKeys = result.map(group => group.category);
+
   return (
     <div className="space-y-4">
 
@@ -135,147 +144,87 @@ const ServicesAccordion = ({ result, siteId, categories, providers }: Props) => 
         </div>
         {
           selectedItems.size !== 0 &&
-          <span className="text-sm text-gray-600">
-            Selected: {selectedItems.size}
-          </span>
+          <>
+            <span className="text-sm text-gray-600">
+              Selected: {selectedItems.size}
+            </span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <EllipsisIcon className='cursor-pointer' />
+              </PopoverTrigger>
+              <PopoverContent className="">
+                <div className="flex flex-col gap-y-2 items-start justify-start">
+                  <Button
+                    onClick={() => {
+                      modal?.show(<ModalDisableAll selectedServices={selectedIds} />)
+                    }}
+                    variant={"ghost"}
+                    className='flex items-center gap-x-2'>
+                    <XSquareIcon />
+                    Disable All
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      modal?.show(<ModalEnableAll selectedServices={selectedIds} />)
+                    }}
+                    variant={"ghost"}
+                    className='flex items-center gap-x-2'>
+                    <PlusSquareIcon />
+                    Enable All
+                  </Button>
+                  <Button onClick={() => {
+                    modal?.show(<ModalChangeAllCategory categories={categories} selectedServices={selectedIds} />)
+                  }} variant={"ghost"} className='flex items-center gap-x-2'>
+                    <ArrowUpDownIcon />
+                    Change Category
+                  </Button>
+                  <Button onClick={() => {
+                    modal?.show(<ModalChangeNameDescription selectedServices={selectedArray} />)
+                  }} variant={"ghost"} className='flex items-center gap-x-2'>
+                    <Dessert />
+                    Change Name & description
+                  </Button>
+                  <Button onClick={() => {
+                    modal?.show(<ModalChangePriceServices selectedServices={selectedArray} />)
+                  }} variant={"ghost"} className='flex items-center gap-x-2'>
+                    <PercentCircleIcon />
+                    Change Price
+                  </Button>
+                  <Button onClick={() => {
+                    modal?.show(<ModalDeleteAllServices selectedServices={selectedIds} />)
+                  }} variant={"ghost"} className='flex items-center gap-x-2'>
+                    <TrashIcon className='text-red-500' />
+                    Delete All
+                  </Button>
+
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
         }
-        <Popover>
-          <PopoverTrigger asChild>
-            <EllipsisIcon className='cursor-pointer' />
-          </PopoverTrigger>
-          <PopoverContent className="">
-            <div className="flex flex-col gap-y-2 items-start justify-start">
-              <Button
-                onClick={() => {
-                  modal?.show(<ModalDisableAll selectedServices={selectedIds} />)
-                }}
-                variant={"ghost"}
-                className='flex items-center gap-x-2'>
-                <XSquareIcon />
-                Disable All
-              </Button>
-              <Button
-                onClick={() => {
-                  modal?.show(<ModalEnableAll selectedServices={selectedIds} />)
-                }}
-                variant={"ghost"}
-                className='flex items-center gap-x-2'>
-                <PlusSquareIcon />
-                Enable All
-              </Button>
-              <Button onClick={() => {
-                modal?.show(<ModalChangeAllCategory categories={categories} selectedServices={selectedIds} />)
-              }} variant={"ghost"} className='flex items-center gap-x-2'>
-                <ArrowUpDownIcon />
-                Change Category
-              </Button>
-              <Button onClick={() => {
-                modal?.show(<ModalChangeNameDescription selectedServices={selectedArray} />)
-              }} variant={"ghost"} className='flex items-center gap-x-2'>
-                <Dessert />
-                Change Name & description
-              </Button>
-              <Button onClick={() => {
-                modal?.show(<ModalChangePriceServices selectedServices={selectedArray} />)
-              }} variant={"ghost"} className='flex items-center gap-x-2'>
-                <PercentCircleIcon />
-                Change Price
-              </Button>
-              <Button onClick={() => {
-                modal?.show(<ModalDeleteAllServices selectedServices={selectedIds} />)
-              }} variant={"ghost"} className='flex items-center gap-x-2'>
-                <TrashIcon className='text-red-500' />
-                Delete All
-              </Button>
 
-            </div>
-          </PopoverContent>
-        </Popover>
+        <Button onClick={() => {
+          openItems.length === 0 ? setOpenItems(allCategoryKeys) : setOpenItems([])
+
+        }} variant={"ghost"}>
+          {
+            openItems.length === 0 ? <ChevronDownIcon /> : <ChevronUpIcon />
+          }
+        </Button>
       </div>
-
-      <Accordion type="single" collapsible className="w-full">
+      <Accordion type="multiple" onValueChange={setOpenItems} value={openItems} className="w-full">
         {result.map((group, idx) => {
           const allCategorySelected = group.data.every(service => selectedItems.has(service.id));
           return (
-            <AccordionItem key={idx} value={group.category}>
-              <AccordionTrigger>
-                <div className="flex items-center gap-3">
-                  <Checkbox
-                    checked={allCategorySelected}
-                    onCheckedChange={() => toggleSelectByCategory(group.category)}
-                  />
-                  <span>{group.category}</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent className="pl-6 space-y-2">
-                {group.data.map(service => (
-                  <div key={service.id} className="flex items-center gap-3 justify-between">
-                    <div className="flex items-center gap-x-4">
-                      <Checkbox
-                        checked={selectedItems.has(service.id)}
-                        onCheckedChange={() => toggleSelectSingle(service)}
-                      />
-                      <span className="text-sm">{service.name}</span>
-                    </div>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <EllipsisIcon className='cursor-pointer hover:text-blue-500' />
-                      </PopoverTrigger>
-                      <PopoverContent className=' mr-4'>
-                        <div className='flex items-start justify-start flex-col gap-y-2'>
-                          <Button onClick={() => {
-                            modal?.show(<ModalUpdateServices categories={categories} service={service} />)
-                          }} variant={"ghost"} className='flex items-center gap-x-2'>
-                            <PencilIcon />
-                            Edit Services
-                          </Button>
-                          <Button onClick={() => {
-                            modal?.show(<ModalChangeAllCategory categories={categories} selectedServices={[service.id]} />)
-                          }} variant={"ghost"} className='flex items-center gap-x-2'>
-                            <FolderIcon />
-                            Change Category
-                          </Button>
-                          <Button variant={"ghost"} className='flex items-center gap-x-2'>
-                            <Layers2Icon />
-                            Duplicate
-                          </Button>
-                          <Button onClick={() => {
-                            modal?.show(<ModalChangePriceServices selectedServices={[service]} />)
-                          }} variant={"ghost"} className='flex items-center gap-x-2'>
-                            <PercentCircleIcon />
-                            Custom Price
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              modal?.show(<ModalDisableAll selectedServices={[service.id]} />)
-                            }}
-                            variant={"ghost"}
-                            className='flex items-center gap-x-2'>
-                            <XSquareIcon />
-                            Disable Service
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              modal?.show(<ModalEnableAll selectedServices={[service.id]} />)
-                            }}
-                            variant={"ghost"}
-                            className='flex items-center gap-x-2'>
-                            <PlusSquareIcon />
-                            Enable Service
-                          </Button>
-                          <Button onClick={() => {
-                            modal?.show(<ModalDeleteAllServices selectedServices={[service.id]} />)
-                          }} variant={"ghost"} className='flex items-center gap-x-2'>
-                            <Trash2Icon />
-                            Delete
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
+            <ServiceAccordionItem
+              userSite={userSite}
+              key={idx}
+              selectedItems={selectedItems}
+              categories={categories}
+              toggleSelectByCategory={toggleSelectByCategory}
+              toggleSelectSingle={toggleSelectSingle}
+              group={group}
+              allCategorySelected={allCategorySelected} />
           );
         })}
       </Accordion>

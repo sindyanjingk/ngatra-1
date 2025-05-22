@@ -219,3 +219,35 @@ export async function updateServiceAction(serviceId: string, formData: Record<st
         return { success: false, error: "Failed to update service" };
     }
 }
+
+export const addSpecialPrice = async (items:siteServices, data : FormData) => {
+    const userId = data.get("user_site_id")
+    const specialPrice = data.get("special_price")
+    try {
+         await prisma.specialPrice.create({
+            data : {
+                siteServices : {
+                    connect: {
+                        id: items.id
+                    }
+                },
+                users: {
+                    connect: {
+                        id: userId as string
+                    }
+                },
+                price : +(specialPrice ?? 0),
+            }
+        })
+        return {
+            success: true,
+            message: "Successfully added special price"
+        }
+    } catch (error) {
+        console.log({error});
+        return {
+            success: false,
+            message: "Failed to add special price"
+        }
+    }
+}

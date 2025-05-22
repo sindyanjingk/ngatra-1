@@ -48,10 +48,6 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
   const p = page ? +page : 1;
   const pageSize = 10;  
 
-  const totalServices = await prisma.siteServices.count({
-    where,
-  });
-
   const services = await prisma.siteServices.findMany({
     where,
     include: {
@@ -65,7 +61,7 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
     },
   })
 
-  const newCategories = services.map(item=>item.category).filter((category): category is NonNullable<typeof category> => category !== null);
+  // const newCategories = services.map(item=>item.category).filter((category): category is NonNullable<typeof category> => category !== null);
   
   const data = services.map(item=>({
     category : item.category?.category_name,
@@ -102,9 +98,22 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       siteId: params.id
     }
   })
+
+
+  const users = await prisma.userSite.findMany({
+    where : {
+      siteId: params.id
+    },
+    include : {
+      user : true
+    }
+  })
+  
+  console.log({users});
+
   return (
     // <ServicesTable result={result} categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
-      <ServicesAccordion result={result}  categories={newCategories} providers={providers} siteId={params.id} />
+      <ServicesAccordion userSite={users} result={result}  categories={categories} providers={providers} siteId={params.id} />
   )
 }
 export default ServicesPage

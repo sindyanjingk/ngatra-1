@@ -4,6 +4,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { category } from "@prisma/client";
 import { useTransition } from "react";
+import { Trash2Icon } from "lucide-react";
+import { deleteCategory } from "@/lib/action";
+import { toast } from "sonner";
 
 type Props = {
     categories: category[];
@@ -28,6 +31,16 @@ const FilterCategoryServices = ({ categories }: Props) => {
         });
     };
 
+    const handleDelete = async (categoryId: string) => {
+        const response = await deleteCategory(categoryId);
+        if(response.status){
+            toast.success("Category deleted successfully");
+            window.location.reload();
+        }else{
+           toast.error(response.message);
+        }
+    }
+    
     return (
         <Select onValueChange={handleChange} defaultValue={searchParams.get("categoryId") || ""} disabled={isPending}>
             <SelectTrigger className="md:w-[200px]">
@@ -37,7 +50,16 @@ const FilterCategoryServices = ({ categories }: Props) => {
                 <SelectItem value="all">All</SelectItem>
                 {categories.map((item) => (
                     <SelectItem key={item.id} value={item.id}>
-                        {item.category_name}
+                        <div className="flex items-center justify-between w-full">
+                            {item.category_name}
+                            <Trash2Icon
+                                onMouseDown={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete(item.id)
+                                }}
+                                className="ml-2 h-4 w-4 cursor-pointer text-red-500"
+                            />
+                        </div>
                     </SelectItem>
                 ))}
             </SelectContent>
