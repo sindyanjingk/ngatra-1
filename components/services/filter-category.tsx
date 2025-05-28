@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { category } from "@prisma/client";
 import { useTransition } from "react";
 import { Trash2Icon } from "lucide-react";
-import { deleteCategory } from "@/lib/action";
+import { deleteAllCategory, deleteCategory } from "@/lib/action";
 import { toast } from "sonner";
 
 type Props = {
@@ -33,31 +33,52 @@ const FilterCategoryServices = ({ categories }: Props) => {
 
     const handleDelete = async (categoryId: string) => {
         const response = await deleteCategory(categoryId);
-        if(response.status){
+        if (response.status) {
             toast.success("Category deleted successfully");
             window.location.reload();
-        }else{
-           toast.error(response.message);
+        } else {
+            toast.error(response.message);
         }
     }
-    
+
+    const handleDeleteAll = async () => {
+        const response = await deleteAllCategory()
+        if (response.status) {
+            toast.success("All category deleted successfully");
+            window.location.reload();
+        } else {
+            toast.error(response.message);
+        }
+    }
+
     return (
         <Select onValueChange={handleChange} defaultValue={searchParams.get("categoryId") || ""} disabled={isPending}>
             <SelectTrigger className="md:w-[200px]">
                 <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
-                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="all">
+                    <div className="flex items-center justify-between w-full">
+                        All
+                        <Trash2Icon
+                            onMouseDown={(e) => {
+                                e.stopPropagation();
+                                handleDeleteAll()
+                            }}
+                            className="ml-2 h-4 w-4 text-red-200 cursor-pointer hover:text-red-500"
+                        />
+                    </div>
+                </SelectItem>
                 {categories.map((item) => (
                     <SelectItem key={item.id} value={item.id}>
-                        <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center justify-between  w-full">
                             {item.category_name}
                             <Trash2Icon
                                 onMouseDown={(e) => {
                                     e.stopPropagation();
                                     handleDelete(item.id)
                                 }}
-                                className="ml-2 h-4 w-4 cursor-pointer text-red-500"
+                                className="ml-2 h-4 w-4 cursor-pointer text-red-200 hover:text-red-500"
                             />
                         </div>
                     </SelectItem>

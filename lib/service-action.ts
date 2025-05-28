@@ -88,14 +88,14 @@ export const deleteAllServices = async (ids: string[]) => {
         await prisma.siteServices.deleteMany({
             where: {
                 id: {
-                    in: ids, // Perbaikan di sini
+                    in: ids,
                 },
             },
         });
         return {
             success: true,
             message: "Successfully delete all services",
-        }; // Return hasil agar bisa digunakan
+        }; 
     } catch (error) {
         console.error("Error delete services :", error);
         return {

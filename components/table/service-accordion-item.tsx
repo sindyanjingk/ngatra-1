@@ -1,3 +1,4 @@
+"use client"
 import React from 'react'
 import { AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
 import { Checkbox } from '../ui/checkbox';
@@ -14,6 +15,7 @@ import ModalEnableAll from '../services/bulk-services/moda-enable-all';
 import ModalDeleteAllServices from '../services/bulk-services/modal-delete-all-services';
 import { formatIDR } from '@/lib/helpers';
 import ModalAddSpecialPrice from '../services/bulk-services/modal-special-price';
+import ModalEditCategory from '../services/modal-edit-category';
 
 type ServiceItem = siteServices
 
@@ -27,7 +29,7 @@ type Props = {
     selectedItems: Map<string, ServiceItem>;
     toggleSelectSingle: (service: ServiceItem) => void;
     categories: category[];
-    userSite : Prisma.userSiteGetPayload<{
+    userSite: Prisma.userSiteGetPayload<{
         include: {
             user: true
         }
@@ -36,6 +38,7 @@ type Props = {
 
 const ServiceAccordionItem = ({ allCategorySelected, toggleSelectByCategory, group, selectedItems, categories, toggleSelectSingle, userSite }: Props) => {
     const modal = useModal();
+    const [popOverCat, setPopOverCat] = React.useState(false);
     return (
         <AccordionItem value={group.category}>
             <div className="flex items-center gap-x-4 justify-between">
@@ -45,33 +48,20 @@ const ServiceAccordionItem = ({ allCategorySelected, toggleSelectByCategory, gro
                         onCheckedChange={() => toggleSelectByCategory(group.category)}
                     />
                     <span>{group.category}</span>
-                    <Popover>
+                    <Popover open={popOverCat} onOpenChange={setPopOverCat}>
                         <PopoverTrigger asChild>
                             <EllipsisIcon className="cursor-pointer hover:text-blue-500" />
                         </PopoverTrigger>
                         <PopoverContent className=' mr-4'>
                             <div className='flex items-start justify-start flex-col gap-y-2'>
                                 <Button onClick={() => {
-                                    // modal?.show(<ModalUpdateServices categories={categories} service={service} />)
+                                    modal?.show(
+                                        <ModalEditCategory catId={group.data[0].categoryId!}/>
+                                    )
+                                    setPopOverCat(false)
                                 }} variant={"ghost"} className='flex items-center gap-x-2'>
                                     <PencilIcon />
-                                    Edit Services
-                                </Button>
-                                <Button onClick={() => {
-                                    // modal?.show(<ModalChangeAllCategory categories={categories} selectedServices={[service.id]} />)
-                                }} variant={"ghost"} className='flex items-center gap-x-2'>
-                                    <FolderIcon />
-                                    Change Category
-                                </Button>
-                                <Button variant={"ghost"} className='flex items-center gap-x-2'>
-                                    <Layers2Icon />
-                                    Duplicate
-                                </Button>
-                                <Button onClick={() => {
-                                    // modal?.show(<ModalChangePriceServices selectedServices={[service]} />)
-                                }} variant={"ghost"} className='flex items-center gap-x-2'>
-                                    <PercentCircleIcon />
-                                    Custom Price
+                                    Edit Category
                                 </Button>
                                 <Button
                                     onClick={() => {

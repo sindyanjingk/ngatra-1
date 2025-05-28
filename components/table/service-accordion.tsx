@@ -1,6 +1,6 @@
 "use client"
-import { ArrowUpDownIcon, ChevronDownIcon, ChevronUpIcon, Dessert, Ellipsis, EllipsisIcon, EyeClosedIcon, FolderIcon, Layers2Icon, PencilIcon, PercentCircleIcon, PlusSquareIcon, Trash2Icon, TrashIcon, XSquareIcon } from 'lucide-react'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion'
+import { ArrowUpDownIcon, ChevronDownIcon, ChevronUpIcon, Dessert,EllipsisIcon, PercentCircleIcon, PlusSquareIcon, Trash2Icon, TrashIcon, XSquareIcon } from 'lucide-react'
+import { Accordion} from '../ui/accordion'
 import { Checkbox } from '../ui/checkbox'
 import { useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
@@ -22,7 +22,6 @@ import ModalChangeAllCategory from '../services/bulk-services/modal-change-categ
 import ModalChangeNameDescription from '../services/bulk-services/modal-change-name-description'
 import ModalChangePriceServices from '../services/bulk-services/modal-change-price-services'
 import ModalDeleteAllServices from '../services/bulk-services/modal-delete-all-services'
-import ModalUpdateServices from '../services/modal-edit-services'
 import ServiceAccordionItem from './service-accordion-item'
 
 type ServiceItem = siteServices
@@ -49,7 +48,6 @@ type Props = {
 }
 
 const ServicesAccordion = ({ result, siteId, categories, providers, userSite }: Props) => {
-  // const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [selectedItems, setSelectedItems] = useState<Map<string, ServiceItem>>(new Map());
 
   const allIds = result.flatMap(group => group.data.map(item => item.id));

@@ -1,6 +1,4 @@
-import { Service } from '@/components/order/form-order'
 import ServicesAccordion from '@/components/table/service-accordion'
-import ServicesTable from '@/components/table/service-table'
 import prisma from '@/lib/prisma'
 import { Prisma } from '@prisma/client'
 import React from 'react'
@@ -15,7 +13,7 @@ type Props = {
 
 const ServicesPage = async ({ params, searchParams }: Props) => {
 
-  const { page, search, categoryId } = searchParams;
+  const {search, categoryId } = searchParams;
   const where: Prisma.siteServicesWhereInput = { AND: [] };
 
   const andConditions: Prisma.siteServicesWhereInput[] = [];
@@ -45,9 +43,6 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
   
   where.AND = andConditions.length > 0 ? andConditions : undefined;
 
-  const p = page ? +page : 1;
-  const pageSize = 10;  
-
   const services = await prisma.siteServices.findMany({
     where,
     include: {
@@ -60,8 +55,6 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       }
     },
   })
-
-  // const newCategories = services.map(item=>item.category).filter((category): category is NonNullable<typeof category> => category !== null);
   
   const data = services.map(item=>({
     category : item.category?.category_name,
@@ -108,11 +101,8 @@ const ServicesPage = async ({ params, searchParams }: Props) => {
       user : true
     }
   })
-  
-  console.log({users});
 
   return (
-    // <ServicesTable result={result} categories={categories} providers={providers} siteId={params.id} p={1} services={services} />
       <ServicesAccordion userSite={users} result={result}  categories={categories} providers={providers} siteId={params.id} />
   )
 }

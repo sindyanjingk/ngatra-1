@@ -32,8 +32,11 @@ model category {
   iconUrl       String?        @default("https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/hxfcV5V-eInX3jbVUhjAt1suB7zB88uGd1j20b.png")
   category_name String?
   siteId        String?
+  isEnabled     Boolean?       @default(true)
   product       product[]
   siteServices  siteServices[]
+
+  @@unique([category_name, siteId])
 }
 
 model examples {
