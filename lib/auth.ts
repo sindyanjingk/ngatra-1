@@ -10,7 +10,7 @@ import { getSiteContext } from "./getSiteContext";
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "CsfKqPt4J4aPhhYSV2MVd9CiJdY/bmm3qggSQqaMSx4=",
   providers: [
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID as string,
