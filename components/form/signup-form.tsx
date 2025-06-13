@@ -34,10 +34,9 @@ export function SignupForm() {
             setError("confirmPassword", { message: "Confirm password doesn't match" });
             return;
         }
-
-        // Simulasi registrasi (ganti dengan API-mu)
         try {
             const response = await registerCredentials({ email: data.email, password: data.password, username: data.name });
+            console.log({response});
             if (response.status) {
                 toast.success("Success register user.");
                 router.push("/login");

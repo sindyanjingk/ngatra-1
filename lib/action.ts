@@ -24,9 +24,9 @@ export const registerCredentials = async (data: TAuthFormInputs) => {
         }
 
         const salt = await bcrypt.genSalt()
-        const hashedPassword = await bcrypt.hash("abc1234", salt)
+        const hashedPassword = await bcrypt.hash(data.password, salt)
 
-        const newUser = await prisma.user.create({
+        await prisma.user.create({
             data: {
                 email: data.email,
                 password: hashedPassword,
