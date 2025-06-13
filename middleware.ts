@@ -32,8 +32,7 @@ export default async function middleware(req: NextRequest) {
     host === "localhost:3000" ||
     // Handle Replit development URLs - treat them as root domain for development
     (process.env.NODE_ENV === "development" && 
-     (hostname.includes("replit.dev") || hostname.includes("replit.app")) &&
-     !hostname.includes("."))
+     (hostname.includes("replit.dev") || hostname.includes("replit.app")))
 
   if (isRootDomain) {
     const session = await getToken({ req });
@@ -61,13 +60,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL(`/app${path === "/" ? "" : path}`, req.url));
   }
 
-  // For development on Replit, handle subdomain simulation
-  if (process.env.NODE_ENV === "development" && hostname.includes("replit.dev")) {
-    // Extract potential subdomain from URL path or use full hostname as domain identifier
-    const domainIdentifier = hostname;
-    console.log("REWRITE TO (Development):", `/${domainIdentifier}${path === "/" ? "" : path}`);
-    return NextResponse.rewrite(new URL(`/${domainIdentifier}${path === "/" ? "" : path}`, req.url));
-  }
+  
 
   console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`);
 
