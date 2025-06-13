@@ -35,7 +35,7 @@ export default async function middleware(req: NextRequest) {
     hostname.includes("replit.app")
 
   if (isRootDomain) {
-    const session = await getToken({ req })en({ req });
+    const session = await getToken({ req });
 
     const redirectToRegister = url.searchParams.get("redirect") === "register";
     const redirectToForgotPassword = url.searchParams.get("redirect") === "forgot-password";
@@ -65,5 +65,5 @@ export default async function middleware(req: NextRequest) {
   console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`);
 
   // For subdomain or custom domain (tenant sites)
-  return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url)); req.url));
+  return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));
 }
