@@ -3,43 +3,27 @@ import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  // Get DATABASE_URL from environment (Replit Secrets or .env)
-  const databaseUrl = process.env.DATABASE_URL;
-  
-  console.log('Database URL check:', databaseUrl ? 'Found' : 'Not found');
-  
-  if (databaseUrl) {
-    // For Neon database connections
-    if (databaseUrl.includes('neon.tech') || databaseUrl.includes('pooler')) {
-      try {
-        const neon = new Pool({ connectionString: databaseUrl });
-        const adapter = new PrismaNeon({ pool: neon });
-        return new PrismaClient({ adapter });
-      } catch (error) {
-        console.error('Error creating Neon adapter:', error);
-        // Fallback to direct connection
-        return new PrismaClient({
-          datasources: {
-            db: {
-              url: databaseUrl,
-            },
-          },
-        });
-      }
+  // Use DATABASE_URL from .env file
+  if (process.env.DATABASE_URL) {
+    // Check if it's a Neon connection string
+    if (process.env.DATABASE_URL.includes('neon.tech')) {
+      const neon = new Pool({ connectionString: process.env.DATABASE_URL });
+      const adapter = new PrismaNeon({ pool: neon });
+      return new PrismaClient({ adapter });
     } else {
       // Standard PostgreSQL connection
       return new PrismaClient({
         datasources: {
           db: {
-            url: databaseUrl,
+            url: process.env.DATABASE_URL,
           },
         },
       });
     }
   }
   
-  // If no DATABASE_URL is found, throw error
-  throw new Error('DATABASE_URL environment variable is required but not found. Please set it in Replit Secrets.');
+  // Fallback to standard PrismaClient
+  return new PrismaClient();
 };
 
 declare global {
