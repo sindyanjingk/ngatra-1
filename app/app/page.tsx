@@ -11,16 +11,24 @@ import { ArrowRight, Star, Users, Zap, Shield, Globe, BarChart3 } from "lucide-r
 
 const DashboardPage = async () => {
   const session = await getServerSession(authOptions)
-  if (session && session.user) {
-    const data = await prisma.sites.findFirst({
+  
+  // Jika tidak ada session, tampilkan landing page untuk login
+  if (!session?.user) {
+    // Landing page code akan tetap ditampilkan di bawah
+  } else {
+    // Jika ada session, cek apakah user sudah punya website
+    const userSite = await prisma.sites.findFirst({
       where: {
         userId: session.user.id
       }
     })
-    if (!data) {
+    
+    if (!userSite) {
+      // Jika belum punya website, redirect ke onboarding
       redirect("/onboarding")
     } else {
-      redirect(`/site/${data.id}`)
+      // Jika sudah punya website, redirect ke dashboard website
+      redirect(`/site/${userSite.id}`)
     }
   }
 

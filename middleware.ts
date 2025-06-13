@@ -53,7 +53,7 @@ export default async function middleware(req: NextRequest) {
       }
     }
 
-    if (session && url.pathname === "/login") {
+    if (session && (url.pathname === "/login" || url.pathname === "/register")) {
       return NextResponse.redirect(new URL("/", req.url));
     }
 
