@@ -21,7 +21,8 @@ const DashboardPage = async () => {
   console.log("Session status:", { 
     hasSession: !!session, 
     userId: session?.user?.id,
-    userEmail: session?.user?.email 
+    userEmail: session?.user?.email,
+    fullSession: session 
   });
 
   // Jika tidak ada session, tampilkan landing page untuk login

@@ -26,18 +26,25 @@ export function LoginForm() {
     const router = useRouter()
 
     const handleAuth = async (data: AuthForm) => {
-        const result = await signIn("credentials", {
-            redirect: false,
-            email: data.email,
-            password: data.password,
-        });
-        console.log({ result });
-        if (result?.error) {
-            setError("password", { message: "Email atau password salah" });
-            toast.error("Login gagal, periksa kembali email dan password.");
-        } else {
-            toast.success("Login berhasil.");
-            router.push("/");
+        try {
+            const result = await signIn("credentials", {
+                redirect: false,
+                email: data.email,
+                password: data.password,
+                callbackUrl: "/"
+            });
+            console.log({ result });
+            if (result?.error) {
+                setError("password", { message: "Email atau password salah" });
+                toast.error("Login gagal, periksa kembali email dan password.");
+            } else if (result?.ok) {
+                toast.success("Login berhasil.");
+                // Force reload to get fresh session
+                window.location.href = "/";
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error("Terjadi kesalahan saat login.");
         }
     };
 

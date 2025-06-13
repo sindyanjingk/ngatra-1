@@ -117,10 +117,13 @@ export const authOptions: NextAuthOptions = {
     }
   },
   callbacks: {
-    jwt: async ({ token, user, account }) => {
+    jwt: async ({ token, user, account, profile }) => {
       if (user) {
         token.user = user;
         token.sub = user.id;
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
       }
       return token;
     },
@@ -128,9 +131,9 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user = {
           ...session.user,
-          // @ts-ignore
-          id: token.sub,
-          // @ts-ignore
+          id: token.sub || token.id,
+          email: token.email,
+          name: token.name,
           username: token?.user?.username || token?.user?.gh_username,
         };
       }
