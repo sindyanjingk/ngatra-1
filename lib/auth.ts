@@ -10,6 +10,7 @@ import { getSiteContext } from "./getSiteContext";
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GitHubProvider({
       clientId: process.env.AUTH_GITHUB_ID as string,
@@ -82,7 +83,10 @@ export const authOptions: NextAuthOptions = {
     error: "/login",
   },
   adapter: PrismaAdapter(prisma) as Adapter,
-  session: { strategy: "jwt" },
+  session: { 
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
   cookies: {
     sessionToken: {
       name: `${VERCEL_DEPLOYMENT ? "__Secure-" : ""}next-auth.session-token`,
@@ -113,7 +117,7 @@ export const authOptions: NextAuthOptions = {
     }
   },
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, account }) => {
       if (user) {
         token.user = user;
         token.sub = user.id;
@@ -121,14 +125,23 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session: async ({ session, token }) => {
-      session.user = {
-        ...session.user,
-        // @ts-ignore
-        id: token.sub,
-        // @ts-ignore
-        username: token?.user?.username || token?.user?.gh_username,
-      };
+      if (token && session.user) {
+        session.user = {
+          ...session.user,
+          // @ts-ignore
+          id: token.sub,
+          // @ts-ignore
+          username: token?.user?.username || token?.user?.gh_username,
+        };
+      }
       return session;
+    },
+    redirect: async ({ url, baseUrl }) => {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
     },
   },
 };

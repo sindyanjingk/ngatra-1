@@ -18,7 +18,11 @@ import {
 
 const DashboardPage = async () => {
   const session = await getServerSession(authOptions);
-  console.log({ session });
+  console.log("Session status:", { 
+    hasSession: !!session, 
+    userId: session?.user?.id,
+    userEmail: session?.user?.email 
+  });
 
   // Jika tidak ada session, tampilkan landing page untuk login
   if (!session?.user) {
