@@ -10,7 +10,7 @@ export default async function middleware(req: NextRequest) {
   const host = req.headers.get("host");
   if (!host) return NextResponse.error();
 
-  let hostname = host
+  let hostname = host;
 
   // Handle localhost development
   if (hostname.includes(".localhost")) {
@@ -25,10 +25,15 @@ export default async function middleware(req: NextRequest) {
   console.log("🔍 Parsed Hostname:", hostname);
   console.log("📄 Final Path:", path);
 
+  // Check if it's root domain (main app for login/register)
   const isRootDomain =
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN ||
     hostname === `www.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
-    host === "localhost:3000";
+    host === "localhost:3000" ||
+    // Handle Replit development URLs - treat them as root domain for development
+    (process.env.NODE_ENV === "development" && 
+     (hostname.includes("replit.dev") || hostname.includes("replit.app")) &&
+     !hostname.includes("."))
 
   if (isRootDomain) {
     const session = await getToken({ req });
@@ -56,8 +61,16 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL(`/app${path === "/" ? "" : path}`, req.url));
   }
 
-  console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`)
+  // For development on Replit, handle subdomain simulation
+  if (process.env.NODE_ENV === "development" && hostname.includes("replit.dev")) {
+    // Extract potential subdomain from URL path or use full hostname as domain identifier
+    const domainIdentifier = hostname;
+    console.log("REWRITE TO (Development):", `/${domainIdentifier}${path === "/" ? "" : path}`);
+    return NextResponse.rewrite(new URL(`/${domainIdentifier}${path === "/" ? "" : path}`, req.url));
+  }
 
-  // Kalau bukan root domain (subdomain atau custom domain lain)
+  console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`);
+
+  // For subdomain or custom domain (tenant sites)
   return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));
 }
