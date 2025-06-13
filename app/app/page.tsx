@@ -17,18 +17,24 @@ const DashboardPage = async () => {
     // Landing page code akan tetap ditampilkan di bawah
   } else {
     // Jika ada session, cek apakah user sudah punya website
-    const userSite = await prisma.sites.findFirst({
-      where: {
-        userId: session.user.id
+    try {
+      const userSite = await prisma.sites.findFirst({
+        where: {
+          userId: session.user.id
+        }
+      })
+      
+      if (!userSite) {
+        // Jika belum punya website, redirect ke onboarding
+        redirect("/onboarding")
+      } else {
+        // Jika sudah punya website, redirect ke dashboard website
+        redirect(`/site/${userSite.id}`)
       }
-    })
-    
-    if (!userSite) {
-      // Jika belum punya website, redirect ke onboarding
+    } catch (error) {
+      console.error("Database connection error:", error)
+      // Jika database error, redirect ke onboarding
       redirect("/onboarding")
-    } else {
-      // Jika sudah punya website, redirect ke dashboard website
-      redirect(`/site/${userSite.id}`)
     }
   }
 
