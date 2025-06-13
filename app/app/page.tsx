@@ -1,17 +1,25 @@
-
-import { getServerSession } from "next-auth/next"
-import prisma from '../../lib/prisma'
-import { redirect } from 'next/navigation'
-import React from 'react'
-import { authOptions } from "../../lib/auth"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import Link from "next/link"
-import { ArrowRight, Star, Users, Zap, Shield, Globe, BarChart3 } from "lucide-react"
+import { getServerSession } from "next-auth/next";
+import prisma from "../../lib/prisma";
+import { redirect } from "next/navigation";
+import React from "react";
+import { authOptions } from "../../lib/auth";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Star,
+  Users,
+  Zap,
+  Shield,
+  Globe,
+  BarChart3,
+} from "lucide-react";
 
 const DashboardPage = async () => {
-  const session = await getServerSession(authOptions)
-  
+  const session = await getServerSession(authOptions);
+  console.log({ session });
+
   // Jika tidak ada session, tampilkan landing page untuk login
   if (!session?.user) {
     // Landing page code akan tetap ditampilkan di bawah
@@ -20,21 +28,21 @@ const DashboardPage = async () => {
     try {
       const userSite = await prisma.sites.findFirst({
         where: {
-          userId: session.user.id
-        }
-      })
-      
+          userId: session.user.id,
+        },
+      });
+
       if (!userSite) {
         // Jika belum punya website, redirect ke onboarding
-        redirect("/onboarding")
+        redirect("/onboarding");
       } else {
         // Jika sudah punya website, redirect ke dashboard website
-        redirect(`/site/${userSite.id}`)
+        redirect(`/site/${userSite.id}`);
       }
     } catch (error) {
-      console.error("Database connection error:", error)
+      console.error("Database connection error:", error);
       // Jika database error, redirect ke onboarding
-      redirect("/onboarding")
+      redirect("/onboarding");
     }
   }
 
@@ -47,11 +55,16 @@ const DashboardPage = async () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg"></div>
-                <span className="text-xl font-bold text-gray-900">PanelHub</span>
+                <span className="text-xl font-bold text-gray-900">
+                  Ngatra Panel
+                </span>
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <Link
+                href="/login"
+                className="text-gray-600 hover:text-gray-900 transition-colors"
+              >
                 Sign in
               </Link>
               <Link href="/register">
@@ -72,31 +85,42 @@ const DashboardPage = async () => {
               <Star className="h-4 w-4" />
               <span>Join 10,000+ businesses already growing</span>
             </div>
-            
+
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight">
               The everything app for
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent"> work</span>
+              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                {" "}
+                work
+              </span>
             </h1>
-            
+
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Replace all your business tools with one platform. Create automated digital panels, 
-              manage services, and grow your business with our comprehensive solution.
+              Replace all your business tools with one platform. Create
+              automated digital panels, manage services, and grow your business
+              with our comprehensive solution.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
               <Link href="/register">
-                <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-lg">
+                <Button
+                  size="lg"
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-lg"
+                >
                   Get started free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="#demo">
-                <Button variant="outline" size="lg" className="px-8 py-4 text-lg rounded-lg border-gray-300">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-4 text-lg rounded-lg border-gray-300"
+                >
                   See how it works
                 </Button>
               </Link>
             </div>
-            
+
             <div className="mt-12 text-sm text-gray-500">
               No credit card required • Free forever plan • Cancel anytime
             </div>
@@ -112,79 +136,98 @@ const DashboardPage = async () => {
               Everything you need to run your digital business
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From service management to payment processing, we've got you covered.
+              From service management to payment processing, we've got you
+              covered.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                   <Globe className="h-6 w-6 text-purple-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Multi-tenant Architecture</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Multi-tenant Architecture
+                </h3>
                 <p className="text-gray-600">
-                  Create unlimited branded panels for your clients with custom domains and complete white-label solutions.
+                  Create unlimited branded panels for your clients with custom
+                  domains and complete white-label solutions.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
                   <Zap className="h-6 w-6 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Automation at Scale</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Automation at Scale
+                </h3>
                 <p className="text-gray-600">
-                  Automate your entire service delivery pipeline with smart workflows and API integrations.
+                  Automate your entire service delivery pipeline with smart
+                  workflows and API integrations.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-6">
                   <BarChart3 className="h-6 w-6 text-green-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Advanced Analytics</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Advanced Analytics
+                </h3>
                 <p className="text-gray-600">
-                  Track performance, monitor revenue, and make data-driven decisions with comprehensive analytics.
+                  Track performance, monitor revenue, and make data-driven
+                  decisions with comprehensive analytics.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-6">
                   <Shield className="h-6 w-6 text-yellow-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Enterprise Security</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Enterprise Security
+                </h3>
                 <p className="text-gray-600">
-                  Bank-level security with encrypted data, secure payments, and compliance-ready infrastructure.
+                  Bank-level security with encrypted data, secure payments, and
+                  compliance-ready infrastructure.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-6">
                   <Users className="h-6 w-6 text-red-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Team Collaboration</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Team Collaboration
+                </h3>
                 <p className="text-gray-600">
-                  Manage teams, assign roles, and collaborate seamlessly across all your business operations.
+                  Manage teams, assign roles, and collaborate seamlessly across
+                  all your business operations.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-none shadow-lg hover:shadow-xl transition-shadow duration-300">
               <CardContent className="p-8">
                 <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
                   <Zap className="h-6 w-6 text-indigo-600" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">24/7 Support</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  24/7 Support
+                </h3>
                 <p className="text-gray-600">
-                  Get help when you need it with our dedicated support team and comprehensive documentation.
+                  Get help when you need it with our dedicated support team and
+                  comprehensive documentation.
                 </p>
               </CardContent>
             </Card>
@@ -199,10 +242,14 @@ const DashboardPage = async () => {
             Ready to transform your business?
           </h2>
           <p className="text-xl text-purple-100 mb-8">
-            Join thousands of businesses already using PanelHub to streamline their operations.
+            Join thousands of businesses already using PanelHub to streamline
+            their operations.
           </p>
           <Link href="/register">
-            <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-50 px-8 py-4 text-lg rounded-lg font-semibold">
+            <Button
+              size="lg"
+              className="bg-white text-purple-600 hover:bg-gray-50 px-8 py-4 text-lg rounded-lg font-semibold"
+            >
               Start your free trial
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -225,7 +272,7 @@ const DashboardPage = async () => {
         </div>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default DashboardPage
+export default DashboardPage;
