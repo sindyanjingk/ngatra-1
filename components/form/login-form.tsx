@@ -39,8 +39,11 @@ export function LoginForm() {
                 toast.error("Login gagal, periksa kembali email dan password.");
             } else if (result?.ok) {
                 toast.success("Login berhasil.");
-                // Force reload to get fresh session
-                window.location.href = "/";
+                // Wait a bit for session to be established, then redirect
+                setTimeout(() => {
+                    router.push("/");
+                    router.refresh();
+                }, 500);
             }
         } catch (error) {
             console.error("Login error:", error);

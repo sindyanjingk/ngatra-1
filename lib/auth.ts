@@ -28,52 +28,73 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
+          return null;
         }
 
-        const {
-          host,
-          isRootDomain,
-        } = getSiteContext();
-        console.log({ host, isRootDomain });
-        if (!isRootDomain) {
-          console.log("trigerred");
-          const site = await prisma.sites.findFirst({
-            where: {
-              OR: [
-                {
-                  subdomain: host.split(".")[0],
-                },
-                {
-                  customDomain: host.split(":")[0],
-                }
-              ]
-            },
-          });
-          if (!site) {
-            throw new Error("Site not found");
-          }
-          const userSite = await prisma.userSite.findFirst({
-            where: {
-              siteId: site?.id,
-              user: {
-                email: credentials.email
-              }
+        try {
+          const {
+            host,
+            isRootDomain,
+          } = getSiteContext();
+          console.log({ host, isRootDomain });
+          
+          if (!isRootDomain) {
+            console.log("trigerred");
+            const site = await prisma.sites.findFirst({
+              where: {
+                OR: [
+                  {
+                    subdomain: host.split(".")[0],
+                  },
+                  {
+                    customDomain: host.split(":")[0],
+                  }
+                ]
+              },
+            });
+            if (!site) {
+              return null;
             }
-          })
-          if (!userSite) {
-            throw new Error("User not found");
+            const userSite = await prisma.userSite.findFirst({
+              where: {
+                siteId: site?.id,
+                user: {
+                  email: credentials.email
+                }
+              },
+              include: {
+                user: true
+              }
+            })
+            if (!userSite) {
+              return null;
+            }
+            return {
+              id: userSite.user.id,
+              email: userSite.user.email,
+              name: userSite.user.name,
+              image: userSite.user.image,
+            };
           }
-          return userSite
-        }
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
-        });
+          
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
 
-        if (!user) {
-          throw new Error("User not found");
+          if (!user) {
+            return null;
+          }
+          
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image,
+          };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
         }
-        return user;
       },
     }),
   ],
@@ -119,23 +140,19 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt: async ({ token, user, account, profile }) => {
       if (user) {
-        token.user = user;
-        token.sub = user.id;
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
+        token.image = user.image;
       }
       return token;
     },
     session: async ({ session, token }) => {
       if (token && session.user) {
-        session.user = {
-          ...session.user,
-          id: token.sub || token.id,
-          email: token.email,
-          name: token.name,
-          username: token?.user?.username || token?.user?.gh_username,
-        };
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.image = token.image as string;
       }
       return session;
     },
