@@ -31,11 +31,11 @@ export default async function middleware(req: NextRequest) {
     hostname === `www.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
     host === "localhost:3000" ||
     // Handle Replit development URLs - treat them as root domain for development
-    (process.env.NODE_ENV === "development" && 
-     (hostname.includes("replit.dev") || hostname.includes("replit.app")))
+    hostname.includes("sisko.replit.dev") ||
+    hostname.includes("replit.app")
 
   if (isRootDomain) {
-    const session = await getToken({ req });
+    const session = await getToken({ req })en({ req });
 
     const redirectToRegister = url.searchParams.get("redirect") === "register";
     const redirectToForgotPassword = url.searchParams.get("redirect") === "forgot-password";
@@ -65,5 +65,5 @@ export default async function middleware(req: NextRequest) {
   console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`);
 
   // For subdomain or custom domain (tenant sites)
-  return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));
+  return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url)); req.url));
 }
