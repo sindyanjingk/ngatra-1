@@ -1,3 +1,4 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
@@ -32,7 +33,7 @@ export default async function middleware(req: NextRequest) {
     host === "localhost:3000" ||
     // Handle Replit development URLs - treat them as root domain for development
     hostname.includes("sisko.replit.dev") ||
-    hostname.includes("replit.app")
+    hostname.includes("replit.app");
 
   if (isRootDomain) {
     const session = await getToken({ req });
