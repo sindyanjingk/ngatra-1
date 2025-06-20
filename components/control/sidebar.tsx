@@ -140,12 +140,6 @@ export default function Sidebar() {
                 icon: <BellDotIcon width={18} />,
             },
             {
-                name: "Interactions",
-                href: `/site/${id}/control/interactions`,
-                isActive: segments[0] === "interactions",
-                icon: <CableIcon width={18} />,
-            },
-            {
                 name: "API",
                 href: `/site/${id}/control/api`,
                 isActive: segments[0] === "api",

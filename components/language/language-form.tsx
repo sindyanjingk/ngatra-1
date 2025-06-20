@@ -19,33 +19,33 @@ const LanguageForm = ({ siteLanguage }: Props) => {
     const [activePage, setActivePage] = useState("landing")
     const [formData, setFormData] = useState({
         landing: {
-            mainTitle: siteLanguage?.siteLanding?.mainTitle || "The most comfortable SMM-provider",
-            subtitle: siteLanguage?.siteLanding?.subtitle || "We will make you popular",
-            serviceTitle: siteLanguage?.siteLanding?.serviceTitle || "Huge service assortment",
-            serviceDescription: siteLanguage?.siteLanding?.serviceDescription || "In all of popular social networks",
-            featureTitle: siteLanguage?.siteLanding?.featureTitle || "We have everything you need",
+            mainTitle: siteLanguage?.siteLanding?.mostConvenient || "The most comfortable SMM-provider",
+            subtitle: siteLanguage?.siteLanding?.become || "We will make you popular",
+            serviceTitle: siteLanguage?.siteLanding?.hugeAssortment || "Huge service assortment",
+            serviceDescription: siteLanguage?.siteLanding?.hugeDesc|| "In all of popular social networks",
+            // featureTitle: siteLanguage?.siteLanding?.we || "We have everything you need",
         },
         auth: {
-            loginTitle: siteLanguage?.loginTitle || "Login to your account",
-            registerTitle: siteLanguage?.registerTitle || "Create new account",
-            forgotPasswordTitle: siteLanguage?.forgotPasswordTitle || "Reset your password",
+            loginTitle:  "Login to your account",
+            registerTitle:  "Create new account",
+            forgotPasswordTitle: "Reset your password",
         },
         dashboard: {
-            welcomeMessage: siteLanguage?.welcomeMessage || "Welcome to dashboard",
-            balanceLabel: siteLanguage?.balanceLabel || "Your Balance",
-            ordersLabel: siteLanguage?.ordersLabel || "Total Orders",
+            welcomeMessage:  "Welcome to dashboard",
+            balanceLabel:  "Your Balance",
+            ordersLabel:  "Total Orders",
         },
         orders: {
-            newOrderTitle: siteLanguage?.newOrderTitle || "Create New Order",
-            orderHistoryTitle: siteLanguage?.orderHistoryTitle || "Order History",
-            statusPending: siteLanguage?.statusPending || "Pending",
-            statusCompleted: siteLanguage?.statusCompleted || "Completed",
-            statusCanceled: siteLanguage?.statusCanceled || "Canceled",
+            newOrderTitle:  "Create New Order",
+            orderHistoryTitle:  "Order History",
+            statusPending:  "Pending",
+            statusCompleted:  "Completed",
+            statusCanceled:  "Canceled",
         },
         services: {
-            servicesTitle: siteLanguage?.servicesTitle || "Our Services",
-            categoryLabel: siteLanguage?.categoryLabel || "Category",
-            priceLabel: siteLanguage?.priceLabel || "Price",
+            servicesTitle: "Our Services",
+            categoryLabel:  "Category",
+            priceLabel:  "Price",
         }
     })
 
@@ -177,7 +177,7 @@ const LanguageForm = ({ siteLanguage }: Props) => {
                                     <label className='block text-sm font-semibold text-gray-700 mb-2'>Feature Title</label>
                                     <Input 
                                         type='text' 
-                                        value={formData.landing.featureTitle}
+                                        value={formData.landing.mainTitle}
                                         onChange={(e) => handleInputChange('landing', 'featureTitle', e.target.value)}
                                         placeholder='We have everything you need'
                                         className="w-full"

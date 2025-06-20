@@ -218,7 +218,7 @@ export default function APIDocsPage({
 
                                 <div className="flex items-start gap-4">
                                     <span className="font-medium min-w-20">status</span>
-                                    <span className="text-gray-600">Order status. Same as request parameter "status"</span>
+                                    <span className="text-gray-600">{`Order status. Same as request parameter "status"`}</span>
                                 </div>
 
                                 <div className="flex items-start gap-4">
@@ -336,7 +336,7 @@ export default function APIDocsPage({
                 {/* Increment User Balance Section */}
                 <div className="space-y-6">
                     <h2 className="text-2xl font-bold">Increment user balance</h2>
-                    <p className="text-gray-600">Use this method to increment user's balance</p>
+                    <p className="text-gray-600">{`Use this method to increment user's balance`}</p>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Request sample</h3>
@@ -399,7 +399,7 @@ export default function APIDocsPage({
                 {/* Decrement User Balance Section */}
                 <div className="space-y-6">
                     <h2 className="text-2xl font-bold">Decrement user balance</h2>
-                    <p className="text-gray-600">Use this method to decrement user's balance</p>
+                    <p className="text-gray-600">{`Use this method to decrement user's balance`}</p>
 
                     <div className="space-y-4">
                         <h3 className="text-lg font-semibold">Request sample</h3>
