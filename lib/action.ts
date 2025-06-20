@@ -179,7 +179,6 @@ export const addBalanceAction = async (balance: number, users: TUsers) => {
 };
 
 export const removeBalanceAction = async (balance: number, users: TUsers) => {
-    console.log({ balance })
     try {
 
         await prisma.user.update({

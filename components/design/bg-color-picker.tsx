@@ -72,7 +72,7 @@ export default function BgColorPicker({
                         color: textColor,
                         padding: 12
                     }}>
-                        <SiteNavbar logo='' />
+                        {/* <SiteNavbar logo='' /> */}
                         <HeroSection />
                         <ServiceSection />
                         <BenefitSection />

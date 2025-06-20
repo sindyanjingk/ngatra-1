@@ -57,7 +57,11 @@ const DomainPage = async ({
   })
 
   const session = await getSession()
-  console.log({session});
+  const siteIntegrations = await prisma.siteIntegrations.findFirst({
+    where: {
+      siteId: site?.id
+    }
+  })
   if(session){
     redirect('dashboard')
   }
@@ -110,7 +114,10 @@ const DomainPage = async ({
         buttonColor={siteDesigns?.buttonColor!}
         startNow={siteLanguage?.siteLanding?.startNow || "Start Now"}
         cta={siteLanguage?.siteLanding?.callToAction || ""} />
-      <FloatingWAButton phone='6281234567890' />
+        {
+          siteIntegrations?.whatsapp &&
+          <FloatingWAButton phone={siteIntegrations?.whatsapp || "831234567890"} />
+        }
       <Footer showBanner={siteSettings?.showBanner!} />
 
     </div>
