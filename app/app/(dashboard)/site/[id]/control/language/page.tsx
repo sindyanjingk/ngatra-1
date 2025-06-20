@@ -1,27 +1,27 @@
+
 import LanguageForm from '@/components/language/language-form'
-import { Input } from '../../../../../../../components/ui/input'
-import React, { useState } from 'react'
-import prisma from '@/lib/prisma';
+import prisma from '@/lib/prisma'
+import React from 'react'
 
-
-const Language = async  ({
+const LanguagePage = async ({
   params
-} : {
-  params: { id: string };
+}: {
+  params: { id: string }
 }) => {
   const siteLanguage = await prisma.siteLanguage.findFirst({
-    where : {
-      siteId : params.id
+    where: {
+      siteId: params.id
     },
-    include : {
-      siteLanding : true
+    include: {
+      siteLanding: true
     }
-  }) ?? {
-    siteLanding: null
-  };
-  
+  })
+
   return (
-    <div className="text-xl">Language form</div>
+    <div className="p-6">
+      <LanguageForm siteLanguage={siteLanguage} />
+    </div>
   )
 }
-export default Language
+
+export default LanguagePage
