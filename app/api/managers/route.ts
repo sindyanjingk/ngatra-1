@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import prisma from "../../../lib/prisma";
 
-const SECRET_KEY = process.env.JWT_SECRET!;
+
 
 export async function POST(req: NextRequest) {
     try {
@@ -56,24 +55,9 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        // Buat token JWT
-        const token = jwt.sign({ userId: user.id, siteId, role: "member" }, SECRET_KEY, {
-            expiresIn: "7d",
-        });
-
-        // Simpan token di database
-        await prisma.userToken.create({
-            data: {
-                userId: user.id,
-                siteId,
-                token,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 hari
-            },
-        });
 
         return NextResponse.json({
             message: "Success add user",
-            token,
             user: {
                 id: user.id,
                 email: user.email,
