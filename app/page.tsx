@@ -99,7 +99,7 @@ const DashboardPage = async () => {
               Everything you need to run your digital business
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From service management to payment processing, we've got you covered.
+              {`From service management to payment processing, we've got you covered.`}
             </p>
           </div>
           

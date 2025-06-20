@@ -18,11 +18,11 @@ import {
 
 const DashboardPage = async () => {
   const session = await getServerSession(authOptions);
-  console.log("Session status:", { 
-    hasSession: !!session, 
+  console.log("Session status:", {
+    hasSession: !!session,
     userId: session?.user?.id,
     userEmail: session?.user?.email,
-    fullSession: session 
+    fullSession: session
   });
 
   // Jika tidak ada session, tampilkan landing page untuk login
@@ -127,7 +127,7 @@ const DashboardPage = async () => {
             </div>
 
             <div className="mt-12 text-sm text-gray-500">
-              No credit card required • Free forever plan • Cancel anytime
+              {`No credit card required • Free forever plan • Cancel anytime`}
             </div>
           </div>
         </div>
@@ -141,8 +141,8 @@ const DashboardPage = async () => {
               Everything you need to run your digital business
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              From service management to payment processing, we've got you
-              covered.
+              {`From service management to payment processing, we've got you
+              covered.`}
             </p>
           </div>
 

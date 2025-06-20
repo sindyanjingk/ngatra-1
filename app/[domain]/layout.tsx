@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import prisma from "../../lib/prisma";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Head from "next/head";
+import Script from "next/script";
 
 export async function generateMetadata({
     params,
@@ -94,11 +96,33 @@ export default async function SiteLayout({
         }
     })
 
+    const siteIntegrations = await prisma.siteIntegrations.findFirst({
+        where: {
+            siteId: data?.id,
+        }
+    })
+
     return (
         <div style={{
             backgroundColor: siteDesigns?.backgroundColor || "",
             color: siteDesigns?.textColor || "",
         }} className={`min-h-screen`}>
+            {
+                siteIntegrations?.googleAnalytics &&
+                <>
+                    <Script
+                        src={`https://www.googletagmanager.com/gtag/js?id=${siteIntegrations?.googleAnalytics}`}
+                        strategy="afterInteractive" />
+                    <Script id="google-analytics" strategy="afterInteractive">
+                        {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${siteIntegrations?.googleAnalytics}');
+          `}
+                    </Script>
+                </>
+            }
             <main className="">
                 {children}
             </main>

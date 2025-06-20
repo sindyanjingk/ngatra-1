@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import prisma from '../../../lib/prisma'
 import React from 'react'
 
@@ -24,7 +25,7 @@ const AuthLayout = async ({ children, params }: Props) => {
     })    
     return (
         <div className="flex items-center justify-start w-screen md:p-12 p-4 flex-col gap-y-2 h-screen bg-gradient-to-br from-green-300 via-blue-300 to-blue-500">
-            {site?.image && <img src={site?.image} alt="" className='w-24 h-24 object-cover rounded-full' />}
+            {site?.image && <Image src={site?.image} alt="" height={24} width={24} className='w-24 h-24 object-cover rounded-full' />}
             <div className="text-2xl font-bold text-white">{site?.name}</div>
             {children}
         </div>
