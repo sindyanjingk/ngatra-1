@@ -7,36 +7,48 @@ import { getSession } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
     const session = await getSession()
-    if(!session) {
+    if (!session) {
         return NextResponse.json({
-            status : 401,
-            message : "Unauthorized"
+            status: 401,
+            message: "Unauthorized"
         })
     }
     const userSite = await prisma.userSite.findFirst({
-        where : {
-            id : session.user.id,
+        where: {
+            siteId: session.user.id,
         }
     })
 
-
     try {
-        const serverKey =  `${process.env.MIDTRANS_SANDBOX_SERVER_KEY}`
-        const clientKey =   `${process.env.MIDTRANS_SANDBOX_CLIENT_KEY}`
+
+        const order_id = generateTopUpOrderId()
+
+        const { ammount, siteId } = await req.json()
+
+        const sitePaymentMethod = await prisma.sitePaymentMethod.findFirst({
+            where: {
+                siteId: siteId
+            }
+        })
+        const user = await prisma.user.findFirst({
+            where: {
+                id: userSite?.userId
+            }
+        })
+
+        if (!sitePaymentMethod) {
+            return NextResponse.json({
+                status: 404,
+                message: "Site payment method not found"
+            })
+        }
+
+        const serverKey = `${sitePaymentMethod.serverKey}`
+        const clientKey = `${sitePaymentMethod.clientKey}`
         const snap = new Midtrans.Snap({
             clientKey,
             serverKey,
             isProduction: false
-        })
-
-        const order_id = generateTopUpOrderId()
-
-        const { ammount } = await req.json()
-
-        const user = await prisma.user.findFirst({
-            where : {
-                id : userSite?.userId
-            }
         })
         const response = await snap.createTransaction({
             transaction_details: {

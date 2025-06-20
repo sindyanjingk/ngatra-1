@@ -21,7 +21,7 @@ const addFundsSchema = z.object({
 // Tipe input form
 type AddFundsFormValues = z.infer<typeof addFundsSchema>
 
-export default function AddFundsForm() {
+export default function AddFundsForm({siteId}: {siteId: string}) {
     const {
         register,
         handleSubmit,

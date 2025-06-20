@@ -168,6 +168,8 @@ model sitePaymentMethod {
   id                    String               @id @default(cuid())
   masterPaymentMethodId String?
   siteId                String?
+  clientKey             String?
+  serverKey             String?
   masterPaymentMethod   masterPaymentMethod? @relation(fields: [masterPaymentMethodId], references: [id], onDelete: Cascade, map: "sitePaymentMethod_masterPaymentMethodId_masterPaymentMethod_id_")
   sites                 sites?               @relation(fields: [siteId], references: [id], onDelete: Cascade, map: "sitePaymentMethod_siteId_sites_id_fk")
 }

@@ -16,7 +16,7 @@ export default function AddFundsModalUser({ siteId }: { siteId: string }) {
         <form
             action={async (data: FormData) => {
                 const ammount = data.get("ammount")
-                const response = await axios.post(`/api/top-up/user`, { ammount })
+                const response = await axios.post(`/api/top-up/user`, { ammount, siteId })
                 if (response.status === 200) {
                     window.open(response.data.response.redirect_url, "_blank")
                     toast.success("Success add funds")

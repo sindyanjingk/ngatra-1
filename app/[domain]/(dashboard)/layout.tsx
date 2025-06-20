@@ -20,12 +20,14 @@ export default async function Layout({ children, params }: { children: React.Rea
     },
   });
   const session = await getSession();
+  console.log({ session });
+
   if (!session) {
     redirect("login")
   }
   const user = await prisma.userSite.findFirst({
     where : {
-      id : session.user.id,
+      userId : session.user.id,
     },
     include : {
       user : true

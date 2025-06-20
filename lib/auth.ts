@@ -36,10 +36,8 @@ export const authOptions: NextAuthOptions = {
             host,
             isRootDomain,
           } = getSiteContext();
-          console.log({ host, isRootDomain });
           
           if (!isRootDomain) {
-            console.log("trigerred");
             const site = await prisma.sites.findFirst({
               where: {
                 OR: [
@@ -66,6 +64,7 @@ export const authOptions: NextAuthOptions = {
                 user: true
               }
             })
+            console.log({userSite});
             if (!userSite) {
               return null;
             }
@@ -74,6 +73,7 @@ export const authOptions: NextAuthOptions = {
               email: userSite.user.email,
               name: userSite.user.name,
               image: userSite.user.image,
+              role: "user"
             };
           }
           
@@ -90,13 +90,14 @@ export const authOptions: NextAuthOptions = {
             email: user.email,
             name: user.name,
             image: user.image,
+            role: "user"
           };
         } catch (error) {
+          console.log({error});
           console.error("Auth error:", error);
           return null;
         }
-      },
-    }),
+      },    }),
   ],
   pages: {
     signIn: `/login`,

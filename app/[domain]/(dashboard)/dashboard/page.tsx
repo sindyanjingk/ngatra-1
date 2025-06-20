@@ -16,16 +16,26 @@ const DashboardPage = async ({ params }: { params: { slug: string, domain: strin
   }
   const userSite = await prisma.userSite.findFirst({
     where: {
-      id: session.user.id,
+      userId: session.user.id
     },
     include: {
       user: true
     }
   })
-  if (!userSite) {
-    redirect("login")
-  }
 
+  const domain = decodeURIComponent(params.domain);
+  const site = await prisma.sites.findFirst({
+    where: {
+      OR: [
+        {
+          customDomain: domain.split(":")[0],
+        },
+        {
+          subdomain: domain.split(".")[0],
+        }
+      ]
+    }
+  })
   return (
     <div className='text-black'>
       <SidebarHeader title='Dashboard' />
@@ -79,7 +89,7 @@ const DashboardPage = async ({ params }: { params: { slug: string, domain: strin
           </CardHeader>
           <CardContent className='flex items-center gap-x-4'>
             <AddFundsButton>
-              <AddFundsModalUser siteId='' />
+              <AddFundsModalUser siteId={site?.id || ""} />
             </AddFundsButton>
           </CardContent>
         </Card>
