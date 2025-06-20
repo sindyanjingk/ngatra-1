@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Copy } from "lucide-react"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export default function APIDocsPage() {
   return (
@@ -68,6 +69,70 @@ export default function APIDocsPage() {
           </div>
         </div>
         <StatusParameterSection/>
+        <Card className="mt-6">
+          <CardHeader className="font-semibold">Response sample</CardHeader>
+          <CardContent>
+            <div className="relative">
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute top-2 right-2 h-8 w-8"
+                onClick={() => {
+                  navigator.clipboard.writeText(`{
+  "count": 1802130,
+  "items": [
+    {
+      "id": 1234,
+      "charge": "0",
+      "start_count": 0,
+      "status": "canceled",
+      "remains": "10",
+      "currency": "USD",
+      "service_id": 123,
+      "user": {
+        "id": 123,
+        "login": "userLogin"
+      }
+    }
+  ]
+}`)
+                }}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <pre className="bg-gray-50 dark:bg-gray-900 p-4 rounded-md text-sm overflow-x-auto">
+{`{
+  "count": `}<span className="text-blue-600">1802130</span>{`,
+  "items": [
+    {
+      "id": `}<span className="text-blue-600">1234</span>{`,
+      "charge": "`}<span className="text-green-600">0</span>{`",
+      "start_count": `}<span className="text-blue-600">0</span>{`,
+      "status": "`}<span className="text-green-600">canceled</span>{`",
+      "remains": "`}<span className="text-green-600">10</span>{`",
+      "currency": "`}<span className="text-green-600">USD</span>{`",
+      "service_id": `}<span className="text-blue-600">123</span>{`,
+      "user": {
+        "id": `}<span className="text-blue-600">123</span>{`,
+        "login": "`}<span className="text-green-600">userLogin</span>{`"
+      }
+    }
+  ]
+}`}
+              </pre>
+            </div>
+            <div className="mt-4">
+              <p className="font-medium mb-2">The method returns an object containing the following fields:</p>
+              <div className="border rounded-md p-4 bg-gray-50 dark:bg-gray-900">
+                <div className="flex gap-4">
+                  <span className="font-mono text-sm font-medium">count</span>
+                  <span className="text-sm text-muted-foreground">Integer</span>
+                  <span className="text-sm">Amount of orders found by request</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
