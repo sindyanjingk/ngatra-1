@@ -134,6 +134,287 @@ export default function APIDocsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="space-y-8">
+        <StatusParameterSection />
+
+        {/* Response Fields Documentation */}
+        <div className="space-y-6">
+          <h3 className="text-lg font-semibold">The method returns an object containing the following fields:</h3>
+
+          <div className="space-y-4">
+            <div className="border-l-2 border-blue-600 pl-4 space-y-3">
+              <div className="flex items-start gap-4">
+                <span className="font-medium min-w-20">count</span>
+                <span className="text-blue-600 text-sm">Integer</span>
+                <span className="text-gray-600">Amount of orders found by request</span>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <span className="font-medium min-w-20">items</span>
+                <span className="text-blue-600 text-sm">Array</span>
+                <span className="text-gray-600">Orders list</span>
+              </div>
+
+              <div className="border-l-2 border-gray-300 pl-4 space-y-3 ml-6">
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">id</span>
+                  <span className="text-gray-600">Order ID</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">charge</span>
+                  <span className="text-gray-600">Order charge</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">start_count</span>
+                  <span className="text-gray-600">Start count of order</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">status</span>
+                  <span className="text-gray-600">Order status. Same as request parameter "status"</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">remains</span>
+                  <span className="text-gray-600">Remaining completions</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">currency</span>
+                  <span className="text-gray-600">ISO 4217 currency code</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">service_id</span>
+                  <span className="text-gray-600">ID of service which belongs to this order</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">user</span>
+                  <span className="text-gray-600">User object</span>
+                </div>
+
+                <div className="border-l-2 border-gray-300 pl-4 space-y-3 ml-6">
+                  <div className="flex items-start gap-4">
+                    <span className="font-medium min-w-20">id</span>
+                    <span className="text-gray-600">User ID on panel</span>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <span className="font-medium min-w-20">login</span>
+                    <span className="text-gray-600">User login on panel</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Edit Order Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Edit order</h2>
+          <p className="text-gray-600">Use this method to edit the order status, the number of executions or the start count</p>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Request sample</h3>
+            <div className="flex items-center gap-2">
+              <Input
+                value="https://socpanel.com/privateApi/editOrder?order_id={order_id}&status={status}&start_count={start_count}&completions={completions}&token={token}"
+                readOnly
+                className="text-sm border border-gray-700 text-gray-800"
+              />
+              <Button size="icon" variant="outline" className="border-gray-700">
+                <Copy className="h-4 w-4 text-gray-400" />
+              </Button>
+            </div>
+
+            <h3 className="text-lg font-semibold">parameters_title</h3>
+            <div className="space-y-3">
+              <div className="border-l-2 border-blue-600 pl-4 space-y-3">
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">order_id</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">Order ID (required)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">status</span>
+                  <span className="text-blue-600 text-sm">String</span>
+                  <span className="text-gray-600">New order status (optional)</span>
+                </div>
+
+                <div className="border-l-2 border-gray-300 pl-4 space-y-2 ml-6">
+                  <div className="text-gray-800 text-sm">active</div>
+                  <div className="text-gray-800 text-sm">completed</div>
+                  <div className="text-gray-800 text-sm">canceled</div>
+                  <div className="text-gray-800 text-sm">partial</div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">start_count</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">New start count (optional)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">completions</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">New completions count (optional)</span>
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold">Response sample</h3>
+            <Card className="bg-gray-100">
+              <CardContent className="p-4">
+                <pre className="text-sm">
+{`{
+  "ok": true
+}`}
+                </pre>
+              </CardContent>
+            </Card>
+
+            <h3 className="text-lg font-semibold">The method returns an object containing the following fields:</h3>
+            <div className="border-l-2 border-blue-600 pl-4">
+              <div className="flex items-start gap-4">
+                <span className="font-medium min-w-20">ok</span>
+                <span className="text-blue-600 text-sm">Boolean</span>
+                <span className="text-gray-600">Operation result</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Increment User Balance Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Increment user balance</h2>
+          <p className="text-gray-600">Use this method to increment user's balance</p>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Request sample</h3>
+            <div className="flex items-center gap-2">
+              <Input
+                value="https://socpanel.com/privateApi/incrementUserBalance?user_id={user_id}&amount={amount}"
+                readOnly
+                className="text-sm border border-gray-700 text-gray-800"
+              />
+              <Button size="icon" variant="outline" className="border-gray-700">
+                <Copy className="h-4 w-4 text-gray-400" />
+              </Button>
+            </div>
+
+            <h3 className="text-lg font-semibold">parameters_title</h3>
+            <div className="space-y-3">
+              <div className="border-l-2 border-blue-600 pl-4 space-y-3">
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">user_id</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">User ID (required without login)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">login</span>
+                  <span className="text-blue-600 text-sm">String</span>
+                  <span className="text-gray-600">User login (required without user_id)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">amount</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">Amount to add to user balance (required)</span>
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold">Response sample</h3>
+            <Card className="bg-gray-100">
+              <CardContent className="p-4">
+                <pre className="text-sm">
+{`{
+  "ok": true
+}`}
+                </pre>
+              </CardContent>
+            </Card>
+
+            <h3 className="text-lg font-semibold">The method returns an object containing the following fields:</h3>
+            <div className="border-l-2 border-blue-600 pl-4">
+              <div className="flex items-start gap-4">
+                <span className="font-medium min-w-20">ok</span>
+                <span className="text-blue-600 text-sm">Boolean</span>
+                <span className="text-gray-600">Operation result</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Decrement User Balance Section */}
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Decrement user balance</h2>
+          <p className="text-gray-600">Use this method to decrement user's balance</p>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Request sample</h3>
+            <div className="flex items-center gap-2">
+              <Input
+                value="https://socpanel.com/privateApi/decrementUserBalance?user_id={user_id}&amount={amount}"
+                readOnly
+                className="text-sm border border-gray-700 text-gray-800"
+              />
+              <Button size="icon" variant="outline" className="border-gray-700">
+                <Copy className="h-4 w-4 text-gray-400" />
+              </Button>
+            </div>
+
+            <h3 className="text-lg font-semibold">parameters_title</h3>
+            <div className="space-y-3">
+              <div className="border-l-2 border-blue-600 pl-4 space-y-3">
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">user_id</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">User ID (required without login)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">login</span>
+                  <span className="text-blue-600 text-sm">String</span>
+                  <span className="text-gray-600">User login (required without user_id)</span>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <span className="font-medium min-w-20">amount</span>
+                  <span className="text-blue-600 text-sm">Integer</span>
+                  <span className="text-gray-600">Amount to decrement from user balance (optional)</span>
+                </div>
+              </div>
+            </div>
+
+            <h3 className="text-lg font-semibold">Response sample</h3>
+            <Card className="bg-gray-100">
+              <CardContent className="p-4">
+                <pre className="text-sm">
+{`{
+  "ok": true
+}`}
+                </pre>
+              </CardContent>
+            </Card>
+
+            <h3 className="text-lg font-semibold">The method returns an object containing the following fields:</h3>
+            <div className="border-l-2 border-blue-600 pl-4">
+              <div className="flex items-start gap-4">
+                <span className="font-medium min-w-20">ok</span>
+                <span className="text-blue-600 text-sm">Boolean</span>
+                <span className="text-gray-600">Operation result</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
