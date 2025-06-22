@@ -33,7 +33,6 @@ export function LoginForm() {
                 password: data.password,
                 callbackUrl: "/"
             });
-            console.log({ result });
             if (result?.error) {
                 setError("password", { message: "Email atau password salah" });
                 toast.error("Login gagal, periksa kembali email dan password.");
@@ -53,7 +52,6 @@ export function LoginForm() {
 
     const handleGoogleLogin = async () => {
         const response = await signIn("google", { redirect: true, callbackUrl: "/" });
-        console.log({response});
     };
 
     return (

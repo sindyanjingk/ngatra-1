@@ -57,8 +57,6 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
     "Pending",
   ];
 
-  const modal = useModal()
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-xl font-bold mb-4">Orders</h1>
@@ -87,14 +85,6 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
                       <ArrowRightCircleIcon />
                       Resend To Provider
                     </Button>
-                    <Button variant={"ghost"}>
-                      <CheckIcon />
-                      Mark as completed
-                    </Button>
-                    <Button variant={"ghost"}>
-                      <XIcon />
-                      Cancel With Refund
-                    </Button>
                   </PopoverContent>
                 </Popover>
               </TableHead>
@@ -103,7 +93,8 @@ export default function OrderTable({ transactions }: { transactions: TTransactio
                 <TableHead>Order</TableHead>
                 <TableHead>User</TableHead>
                 <TableHead>Service</TableHead>
-                <TableHead>Start</TableHead>
+                <TableHead>Provider</TableHead>
+                <TableHead>Count</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Price</TableHead>
                 <TableHead>Date</TableHead>

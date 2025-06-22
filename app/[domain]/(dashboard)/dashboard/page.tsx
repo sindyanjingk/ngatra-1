@@ -36,6 +36,7 @@ const DashboardPage = async ({ params }: { params: { slug: string, domain: strin
       ]
     }
   })
+  
   return (
     <div className='text-black'>
       <SidebarHeader title='Dashboard' />

@@ -19,7 +19,7 @@ type Props = {
     isSelected: boolean
 }
 
-const OrderItem = ({ order, toggleSelectSingle, isSelected }: Props) => {
+const OrderItemUser = ({ order, toggleSelectSingle, isSelected }: Props) => {
     const [status, setStatus] = React.useState<string>(order.status || "")
     const [isLoadingMark, setIsLoadingMark] = React.useState<boolean>(false)
     const [isLoadingSync, setIsLoadingSync] = useState(false)
@@ -95,45 +95,14 @@ const OrderItem = ({ order, toggleSelectSingle, isSelected }: Props) => {
                 {order.siteService?.provider?.name}
             </TableCell>
             <TableCell>{order.qty}</TableCell>
-            <TableCell className='flex items-center gap-x-2'>
-                <RefreshCcw size={16} className={`cursor-pointer ${isLoadingSync && 'animate-spin'}`} onClick={handleSync} />
+            <TableCell className=''>
                 {status || "Pending"}
             </TableCell>
             <TableCell className='space-y-2 flex flex-col'>
                 {formatIDR(+order.totalAmount! || 0)}
-                <span className='text-green-500'>Profit {formatIDR(+order.profit! || 0)}</span>
             </TableCell>
             <TableCell>{moment(order.createdAt).format("ddd, DD MMM, HH:mm")}</TableCell>
-            <Popover>
-                <PopoverTrigger asChild>
-                    <EllipsisIcon className="cursor-pointer" />
-                </PopoverTrigger>
-                <PopoverContent className="md:w-56">
-                    <Button variant={"ghost"}>
-                        <ArrowRightCircleIcon />
-                        Resend To Provider
-                    </Button>
-                    <Button onClick={handleComplete} variant={"ghost"}>
-                        {
-                            isLoadingMark ?
-                                <Loader2Icon className='animate-spin' /> :
-                                <>
-                                    <CheckIcon />
-                                    Mark as completed
-                                </>
-                        }
-                    </Button>
-                    <Button onClick={handleCancel} variant={"ghost"}>
-                        {
-                            isLoadCancel ?
-                            <Loader2Icon className='animate-spin' /> :
-                            <XIcon/>
-                        }
-                        Cancel Order
-                    </Button>
-                </PopoverContent>
-            </Popover>
         </TableRow>
     )
 }
-export default OrderItem
+export default OrderItemUser

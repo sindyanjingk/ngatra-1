@@ -17,7 +17,7 @@ const ButtonStatusOrder = ({ status, statusState }: Props) => {
         const params = new URLSearchParams(searchParams.toString());
 
         if (status) {
-            params.set("status", status);
+            params.set("status", status.toLocaleLowerCase());
         } else {
             params.delete("status");
         }
@@ -27,7 +27,7 @@ const ButtonStatusOrder = ({ status, statusState }: Props) => {
         });
     };
     return (
-        <Button disabled={isPending} variant={statusState === status ? "default" : "ghost"} onClick={handleChange}>
+        <Button disabled={isPending} variant={statusState?.toLocaleLowerCase() === status.toLocaleLowerCase() ? "default" : "ghost"} onClick={handleChange}>
             {status}
         </Button>
     )

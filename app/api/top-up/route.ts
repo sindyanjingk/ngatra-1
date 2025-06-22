@@ -22,8 +22,6 @@ export async function POST(req: NextRequest) {
         const order_id = generateTopUpOrderId()
 
         const {  ammount } = await req.json()
-        console.log({ammount : +ammount});
-        
 
         const response = await snap.createTransaction({
             transaction_details: {

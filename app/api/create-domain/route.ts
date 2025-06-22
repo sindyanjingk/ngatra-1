@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
         }
         const response = await prisma.sites.create({
             data: {
-                name : domain,
+                name : name,
                 customDomain: domain,
                 subdomain: domain,
                 userId: session?.user?.id,
@@ -46,14 +46,8 @@ export async function POST(req: NextRequest) {
                         }
                     }
                 },
-                sitePaymentMethod: {
-                    create: {
-
-                    }
-                },
             }
         })
-        console.log({response});
         return NextResponse.json({ message: "success", response }, { status: 200 });
     } catch (error: any) {
         console.log({error});

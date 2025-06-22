@@ -1,7 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
 import OnboardForm from "@/components/form/onboard";
 
 export default async function OnboardingPage() {
@@ -9,18 +8,6 @@ export default async function OnboardingPage() {
 
   if (!session?.user) {
     redirect("/login");
-  }
-
-  // Cek apakah user sudah punya website
-  const existingSite = await prisma.sites.findFirst({
-    where: {
-      userId: session.user.id
-    }
-  });
-
-  // Jika sudah punya website, redirect ke dashboard
-  if (existingSite) {
-    redirect(`/site/${existingSite.id}`);
   }
 
   return (

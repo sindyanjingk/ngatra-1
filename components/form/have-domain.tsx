@@ -29,7 +29,7 @@ const HaveDomain = (props: Props) => {
                 console.log({ response });
             }
             toast.success("Domain created successfully");
-            router.push(`/`)
+            router.push(`/dashboard`);
         } catch (error: any) {
             console.log({ error });
             toast.error(error?.response?.data?.error || "Something went wrong");

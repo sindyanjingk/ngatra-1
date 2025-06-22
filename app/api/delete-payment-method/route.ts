@@ -9,14 +9,12 @@ export async function POST(req: NextRequest) {
     }
     try {
 
-        const {  clientKey, serverKey, siteId } = await req.json()
+        const {  paymentId } = await req.json()
         
 
-        const response = await prisma.sitePaymentMethod.create({
-            data : {
-                siteId,
-                serverKey,
-                clientKey,
+        const response = await prisma.sitePaymentMethod.delete({
+            where : {
+                id : paymentId
             }
         })
         return NextResponse.json({

@@ -83,7 +83,7 @@ export default function ModalCreateOrder({
                                         </CardHeader>
                                         <CardContent className="space-y-3 text-center">
                                             <div className="text-lg font-bold text-green-600">Payment Successful!</div>
-                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(res.data?.balance || 0)}</div>
+                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(Math.ceil(rate)|| 0)}</div>
 
                                             <div className="grid gap-1 text-sm text-muted-foreground">
                                                 <div><span className="font-semibold text-foreground">Layanan:</span> {name}</div>
@@ -92,7 +92,11 @@ export default function ModalCreateOrder({
                                                 <div><span className="font-semibold text-foreground">Sisa Saldo:</span> {formatIDR(res.data?.balance || "")}</div>
                                             </div>
                                             <div className="mt-4">
-                                                <Button>Go to History</Button>
+                                                <Link href="/order-list">
+                                                    <Button onClick={()=>{
+                                                        modal?.hide()
+                                                    }}>Go to History</Button>
+                                                </Link>
                                             </div>
                                         </CardContent>
                                     </Card>

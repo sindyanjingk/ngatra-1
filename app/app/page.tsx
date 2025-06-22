@@ -25,29 +25,21 @@ const DashboardPage = async () => {
     fullSession: session
   });
 
-  // Jika tidak ada session, tampilkan landing page untuk login
   if (!session?.user) {
-    // Landing page code akan tetap ditampilkan di bawah
+    redirect("/login");
   } else {
-    // Jika ada session, cek apakah user sudah punya website
-    try {
-      const userSite = await prisma.sites.findFirst({
-        where: {
-          userId: session.user.id,
-        },
-      });
+    const userSite = await prisma.sites.findFirst({
+      where: {
+        userId: session.user.id,
+      },
+    });
 
-      if (!userSite) {
-        // Jika belum punya website, redirect ke onboarding
-        redirect("/onboarding");
-      } else {
-        // Jika sudah punya website, redirect ke dashboard website
-        redirect(`/site/${userSite.id}`);
-      }
-    } catch (error) {
-      console.error("Database connection error:", error);
-      // Jika database error, redirect ke onboarding
+
+    if (!userSite) {
       redirect("/onboarding");
+    } else {
+      console.log("trigerred");
+      redirect(`/site/${userSite.id}`);
     }
   }
 

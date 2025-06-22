@@ -11,7 +11,6 @@ import { ArrowRight, Star, Users, Zap, Shield, Globe, BarChart3 } from "lucide-r
 
 const DashboardPage = async () => {
   const session = await getServerSession(authOptions)
-  console.log("Session status:", session)
   if (session && session.user) {
     const data = await prisma.sites.findFirst({
       where: {

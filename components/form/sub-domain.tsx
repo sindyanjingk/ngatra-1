@@ -10,14 +10,11 @@ import { cn } from '@/lib/utils'
 import axios from 'axios'
 import { toast } from 'sonner'
 import { Loader2Icon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type FormValues = {
     subdomain: string;
     currency: string;
-    username: string;
-    password: string;
-    confirmPassword: string;
-    email: string;
 }
 
 const SubDomain = () => {
@@ -25,20 +22,17 @@ const SubDomain = () => {
         defaultValues: {
             subdomain: "",
             currency: "IDR",
-            username: "",
-            password: "",
-            confirmPassword: "",
-            email: '',
         },
     });
 
+    const router = useRouter()
     const onSubmit = async (data: FormValues) => {
         try {
             const response = await axios.post(`/api/create-sub-domain`, data);
             console.log({ response });
             if (response.status === 200) {
                 toast.success("Success create subdomain");
-                window.location.replace("/");
+                router.push(`/dashboard`);
             }
         } catch (error:any) {
             console.log({ error });
@@ -78,41 +72,6 @@ const SubDomain = () => {
                         <SelectItem value="USD">USD</SelectItem>
                     </SelectContent>
                 </Select>
-            </div>
-
-            <div className='space-y-3'>
-                <Label className="block text-sm font-medium text-gray-700">
-                    Admin email <span className="text-red-500">*</span>
-                </Label>
-                <Input {...register("email", { required: "email is required" })} placeholder='Enter email' className="rounded-full text-gray-900 bg-gray-100 p-4 focus:ring-2 focus:ring-blue-500" />
-                {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
-            </div>
-
-            <div className='space-y-3'>
-                <Label className="block text-sm font-medium text-gray-700">
-                    Admin Username <span className="text-red-500">*</span>
-                </Label>
-                <Input {...register("username", { required: "Username is required" })} placeholder='Enter username' className="rounded-full text-gray-900 bg-gray-100 p-4 focus:ring-2 focus:ring-blue-500" />
-                {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
-            </div>
-
-            <div className='space-y-3'>
-                <Label className="block text-sm font-medium text-gray-700">
-                    Admin Password <span className="text-red-500">*</span>
-                </Label>
-                <Input type="password" {...register("password", { required: "Password is required" })} placeholder='Enter password' className="rounded-full text-gray-900 bg-gray-100 p-4 focus:ring-2 focus:ring-blue-500" />
-                {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
-            </div>
-
-            <div className='space-y-3'>
-                <Label className="block text-sm font-medium text-gray-700">
-                    Confirm Password <span className="text-red-500">*</span>
-                </Label>
-                <Input type="password" {...register("confirmPassword", {
-                    required: "Please confirm your password",
-                    validate: (value) => value === watch("password") || "Passwords do not match"
-                })} placeholder='Confirm password' className="rounded-full text-gray-900 bg-gray-100 p-4 focus:ring-2 focus:ring-blue-500" />
-                {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
             </div>
 
             <Button className="rounded-full bg-gradient-to-r from-purple-700 via-blue-500 to-blue-500 p-4 text-white" type='submit'>

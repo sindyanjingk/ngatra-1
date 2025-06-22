@@ -1,8 +1,6 @@
 import LoginUserSiteForm from '@/components/form/login-user-site-form'
 import prisma from '../../../../lib/prisma'
 import React from 'react'
-import { getSession } from '@/lib/auth'
-import { redirect } from 'next/navigation'
 
 
 type Props = {
@@ -18,10 +16,6 @@ const LoginPage = async ({ params }: Props) => {
       subdomain: domain
     }
   })
-    // const session = await getSession()
-    // if(session){
-    //   redirect("dashboard")
-    // }
   return (
     <LoginUserSiteForm siteId={site?.id || ''} />
   )

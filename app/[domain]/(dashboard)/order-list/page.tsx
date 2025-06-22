@@ -1,10 +1,8 @@
 import SidebarHeader from '@/components/dashboard-user/sidebar-header';
-import OrderTable from '@/components/table/order-table';
+import OrderTableUser from '@/components/table/order-table-user';
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import React from 'react'
-
-type Props = {}
 
 const Orders = async ({
     params,
@@ -31,8 +29,8 @@ const Orders = async ({
     const { page, search, status } = searchParams
     const where: (Prisma.transactionWhereInput) = {};
 
-    if (status !== "All") {
-        where.status = status
+    if (status !== "all") {
+        where.status = status?.toLocaleLowerCase()
     }
 
     where.siteId = site?.id
@@ -56,7 +54,7 @@ const Orders = async ({
     return (
         <div className='text-gray-800'>
             <SidebarHeader title='Order List'/>
-            <OrderTable transactions={transaction} />
+            <OrderTableUser transactions={transaction} />
         </div>
     )
 }

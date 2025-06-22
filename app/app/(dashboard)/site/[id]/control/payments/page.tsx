@@ -6,6 +6,8 @@ import React from 'react'
 import Image from 'next/image'
 import ChangeCredentialsButton from '@/components/payment/change-credentials'
 import ChangeCredentialsModal from '@/components/payment/change-credentials-modal'
+import DeletePaymentModal from '@/components/payment/delete-payment-modal'
+import DeleteCredentialsButton from '@/components/payment/delete-credentials'
 
 const Payments = async ({
   params
@@ -37,9 +39,14 @@ const Payments = async ({
                     />
                     <div className="font-semibold">Midtrans</div>
                   </div>
-                  <ChangeCredentialsButton>
-                    <ChangeCredentialsModal siteId={params.id} clientKey={item.clientKey!} serverKey={item.serverKey!} />
-                  </ChangeCredentialsButton>
+                  <div className="flex items-center gap-x-4">
+                    <DeleteCredentialsButton>
+                      <DeletePaymentModal paymentId={item.id} />
+                    </DeleteCredentialsButton>
+                    <ChangeCredentialsButton>
+                      <ChangeCredentialsModal siteId={params.id} clientKey={item.clientKey!} serverKey={item.serverKey!} />
+                    </ChangeCredentialsButton>
+                  </div>
                 </div>
               )
             }) :

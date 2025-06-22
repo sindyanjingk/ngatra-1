@@ -12,9 +12,6 @@ export async function POST(req: NextRequest) {
         const {
             subdomain,
             currency,
-            username,
-            password,
-            email,
         } = await req.json();
         const existSite = await prisma.sites.findUnique({
             where :{
@@ -23,17 +20,6 @@ export async function POST(req: NextRequest) {
         })
         if(existSite){
             return NextResponse.json({ error: "Subdomain already exists" }, { status: 400 });
-        }
-        let user = await prisma.user.findFirst({ where: { name: username } });
-        if (!user) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            user = await prisma.user.create({
-                data: {
-                    email,
-                    password: hashedPassword,
-                    name: username,
-                },
-            });
         }
         const site = await prisma.sites.create({
             data: {
@@ -59,19 +45,6 @@ export async function POST(req: NextRequest) {
                         }
                     }
                 },
-                sitePaymentMethod :{
-                    create :{
-                        
-                    }
-                },
-                userSite:{
-                    create:{
-                        userId : user.id,
-                        role: "ADMIN",
-                        updatedAt: new Date()
-                    }
-                },
-
             },
         });
         return NextResponse.json({ msg: "Success create sub domain", site }, { status: 200 });
