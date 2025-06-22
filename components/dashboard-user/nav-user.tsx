@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sidebar"
 import { signOut } from "next-auth/react"
 import { Prisma } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 export function NavUser({
   user,
@@ -32,7 +33,7 @@ export function NavUser({
   user: Prisma.UserWhereInput
 }) {
   const { isMobile } = useSidebar()
-
+  const router = useRouter()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -71,7 +72,8 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={async () => {
-              await signOut({ redirect: true, callbackUrl: "/login" });
+              await signOut({ redirect: false });
+              router.push('/login')
             }}>
               <LogOut />
               Log out

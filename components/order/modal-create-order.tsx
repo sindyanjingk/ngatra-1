@@ -37,14 +37,6 @@ export default function ModalCreateOrder({
     interval?: number,
 }) {
     const modal = useModal();
-    const [token, setToken] = useState("")
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const token = localStorage.getItem("token")
-            setToken(token || "")
-        }
-    }, [])
     return (
         <form
             action={async (data: FormData) => {
@@ -61,10 +53,6 @@ export default function ModalCreateOrder({
                             link,
                             providerUrl,
                             serviceId
-                        }, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
                         })
 
                         console.log({ res });
@@ -83,7 +71,7 @@ export default function ModalCreateOrder({
                                         </CardHeader>
                                         <CardContent className="space-y-3 text-center">
                                             <div className="text-lg font-bold text-green-600">Payment Successful!</div>
-                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(Math.ceil(rate)|| 0)}</div>
+                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(Math.ceil(rate) || 0)}</div>
 
                                             <div className="grid gap-1 text-sm text-muted-foreground">
                                                 <div><span className="font-semibold text-foreground">Layanan:</span> {name}</div>
@@ -93,7 +81,7 @@ export default function ModalCreateOrder({
                                             </div>
                                             <div className="mt-4">
                                                 <Link href="/order-list">
-                                                    <Button onClick={()=>{
+                                                    <Button onClick={() => {
                                                         modal?.hide()
                                                     }}>Go to History</Button>
                                                 </Link>
@@ -114,10 +102,6 @@ export default function ModalCreateOrder({
                             serviceId,
                             runs,
                             interval
-                        }, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
                         })
 
                         console.log({ res });
@@ -136,13 +120,20 @@ export default function ModalCreateOrder({
                                         </CardHeader>
                                         <CardContent className="space-y-3 text-center">
                                             <div className="text-lg font-bold text-green-600">Payment Successful!</div>
-                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(balance)}</div>
+                                            <div className="text-2xl font-extrabold text-green-500">{formatIDR(interval ? rate * interval : rate)}</div>
 
                                             <div className="grid gap-1 text-sm text-muted-foreground">
                                                 <div><span className="font-semibold text-foreground">Layanan:</span> {name}</div>
                                                 <div><span className="font-semibold text-foreground">Link:</span> {link}</div>
                                                 <div><span className="font-semibold text-foreground">ID Pesanan:</span> {res.data?.orderId || ""}</div>
                                                 <div><span className="font-semibold text-foreground">Sisa Saldo:</span> {formatIDR(res.data?.balance || "")}</div>
+                                            </div>
+                                            <div className="mt-4">
+                                                <Link href="/order-list">
+                                                    <Button onClick={() => {
+                                                        modal?.hide()
+                                                    }}>Go to History</Button>
+                                                </Link>
                                             </div>
                                         </CardContent>
                                     </Card>

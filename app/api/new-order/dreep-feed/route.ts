@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ status: 401, message: "Unauthorized" });
   }
 
+  console.log("Received request to create dreep feed order");
+
   try {
     const { providerUrl, serviceId, link, quantity, amount, runs, interval } = await req.json();
 
@@ -25,7 +27,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Runs must be at least 1" }, { status: 400 });
     }
 
-    const userSite = await prisma.userSite.findFirst({ where: { id: session.user.id } });
+    const userSite = await prisma.userSite.findFirst({ where: { userId: session.user.id } });
     if (!userSite) {
       return NextResponse.json({ error: "User site not found" }, { status: 400 });
     }
@@ -40,8 +42,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Service not found" }, { status: 400 });
     }
 
+    const user = await prisma.user.findUnique({ where: { id: userSite.userId } });
+
     // Return langsung ke user, proses lanjut di belakang
-    const response = NextResponse.json({ message: "Order is being processed" });
+    const response = NextResponse.json({ message: "Order is being processed", balance: user?.balance });
 
     setImmediate(async () => {
       const hargaAsli = (service.providersRate! / 1000) * quantity;
@@ -50,7 +54,7 @@ export async function POST(req: NextRequest) {
         if (i > 0) await delay(interval * 60 * 1000); // delay antar runs
 
         try {
-          const { data } = await axios.post(
+          const response = await axios.post(
             `${providerUrl}/api/v2?action=add&service=${serviceId}&link=${encodeURIComponent(link)}&quantity=${quantity}&key=${provider.apiKey}`
           );
 
@@ -68,7 +72,7 @@ export async function POST(req: NextRequest) {
                   totalAmount: +amount,
                   link,
                   profit: amount - hargaAsli,
-                  providerOrderId: data?.order || "",
+                  providerOrderId: response?.data?.order || "",
                   siteServiceId: service.id,
                 },
               },
@@ -76,16 +80,21 @@ export async function POST(req: NextRequest) {
             },
           });
 
-          console.log(`Run ${i + 1} successful, order ID: ${data?.order || "N/A"}`);
+          console.log(`Run ${i + 1} successful, order ID: ${response?.data?.order || "N/A"}`);
         } catch (orderError: any) {
+          console.log({ orderError });
           console.error(`Run ${i + 1} failed:`, orderError?.response?.data || orderError.message);
         }
       }
     });
-
-    return response;
+    return response
   } catch (error: any) {
+    console.log({ error });
     console.error("Unexpected error:", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
+}
+
+export async function GET(req: NextRequest) {
+  return NextResponse.json({ status: 200, message: "OK" });
 }

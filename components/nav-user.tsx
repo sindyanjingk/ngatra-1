@@ -38,11 +38,6 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    window.location.href = '/'
-  }
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -92,7 +87,6 @@ export function NavUser({
             <DropdownMenuItem
               className="cursor-pointer">
               <button
-                onClick={handleLogout}
                 className="flex w-full items-center"
               >
                 <LogOut />

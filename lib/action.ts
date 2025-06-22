@@ -146,7 +146,6 @@ export const updateUserAction = async (data: FormData, users: TUsers) => {
 };
 
 export const addBalanceAction = async (balance: number, users: TUsers) => {
-    console.log({ balance })
     try {
 
         await prisma.user.update({
