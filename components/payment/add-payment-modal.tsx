@@ -34,6 +34,7 @@ export default function AddPaymentModal({ siteId }: { siteId: string }) {
             console.log("Saved:", response.data);
             toast.success("Success add payment method")
             modal?.hide?.();
+            window.location.reload();
         } catch (error) {
             console.error("Failed to submit payment method", error);
             toast.error("Something went wrong, try again")
@@ -87,7 +88,7 @@ export default function AddPaymentModal({ siteId }: { siteId: string }) {
                                 Webhook URL
                             </label>
                             <Input
-                                value={`https://ngatrapanel.my.id/api/payments/midtrans/webhook`}
+                                value={`https://www.ngatrapanel.my.id/api/top-up/callback`}
                                 readOnly
                                 className="font-semibold text-md text-gray-600 dark:text-gray-400"
                                 type="text"
