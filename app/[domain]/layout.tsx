@@ -62,7 +62,6 @@ export default async function SiteLayout({
     children: ReactNode;
 }) {
     const domain = decodeURIComponent(params.domain);
-    console.log({ domain });
 
     const data = await prisma.sites.findFirst({
         where: {

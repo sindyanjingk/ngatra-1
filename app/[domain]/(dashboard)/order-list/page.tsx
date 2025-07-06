@@ -28,7 +28,6 @@ const Orders = async ({
         }
     })
 
-    console.log({session});
 
     const { page, search, status } = searchParams
     const where: (Prisma.transactionWhereInput) = {};

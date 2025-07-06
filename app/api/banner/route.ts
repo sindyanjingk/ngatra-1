@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
         // Kirim token ke client
         return NextResponse.json({msg : "Success update banner"});
     } catch (error) {
-        console.log({ error });
         return NextResponse.json({ error: "Terjadi kesalahan" }, { status: 500 });
     }
 }

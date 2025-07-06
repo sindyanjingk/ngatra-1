@@ -20,7 +20,6 @@ export default async function Layout({ children, params }: { children: React.Rea
     },
   });
   const session = await getSession();
-  console.log({ session });
 
   if (!session) {
     redirect("login")

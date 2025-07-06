@@ -64,7 +64,6 @@ export const authOptions: NextAuthOptions = {
                 user: true
               }
             })
-            console.log({userSite});
             if (!userSite) {
               return null;
             }
