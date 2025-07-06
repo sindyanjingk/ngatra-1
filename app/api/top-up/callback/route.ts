@@ -12,6 +12,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Invalid request" }, { status: 400 });
         }
 
+        if(order_id.includes("payment_notif_test")){
+            return NextResponse.json({ error: "Success update transaction" }, { status: 200 });
+        }
+
         const transaction = await prisma.transaction.findUnique({
             where: { id: order_id },
             include: { user: true },
