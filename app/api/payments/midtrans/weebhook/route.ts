@@ -1,11 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
-import Midtrans from "midtrans-client-typescript";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
+        console.log("webhook trigerred ");
         const body = await req.json();
         console.log("Midtrans Callback Received:", body);
+
 
         const { order_id, transaction_status, gross_amount } = body;
 
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
             await prisma.$transaction([
                 prisma.transaction.update({
                     where: { id: order_id },
-                    data: { status  : 'completed' },
+                    data: { status: 'completed' },
                 }),
                 prisma.user.update({
                     where: { id: transaction.user.id },
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
                     },
                 }),
             ]);
-        }else{
+        } else {
             await prisma.transaction.update({
                 where: { id: order_id },
                 data: { status: 'failed' },
