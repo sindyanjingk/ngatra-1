@@ -18,7 +18,7 @@ const DashboardPage = async () => {
       }
     })
     if (!data) {
-      redirect("/onboarding")
+      redirect("/app/onboarding")
     } else {
       redirect(`/site/${data.id}`)
     }
@@ -37,10 +37,10 @@ const DashboardPage = async () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Link href="/app/login" className="text-gray-600 hover:text-gray-900 transition-colors">
+              <Link href="/login" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Sign in
               </Link>
-              <Link href="/app/register">
+              <Link href="/register">
                 <Button className="bg-purple-600 hover:bg-purple-700 text-white">
                   Get started
                 </Button>
@@ -70,7 +70,7 @@ const DashboardPage = async () => {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Link href="/app/register">
+              <Link href="/register">
                 <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg rounded-lg">
                   Get started free
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -187,7 +187,7 @@ const DashboardPage = async () => {
           <p className="text-xl text-purple-100 mb-8">
             Join thousands of businesses already using PanelHub to streamline their operations.
           </p>
-          <Link href="/app/register">
+          <Link href="/register">
             <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-50 px-8 py-4 text-lg rounded-lg font-semibold">
               Start your free trial
               <ArrowRight className="ml-2 h-5 w-5" />

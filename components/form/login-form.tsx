@@ -100,7 +100,7 @@ export function LoginForm() {
                     className="text-sm font-bold text-gray-600 flex justify-between"
                 >
                     <span>Password <span className="text-red-500">*</span></span>
-                    <Link href="/login?redirect=forgot-password" className="text-sm underline">
+                    <Link href="/forgot-password" className="text-sm underline">
                         Forgot Password?
                     </Link>
                 </label>

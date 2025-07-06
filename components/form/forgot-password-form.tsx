@@ -176,7 +176,7 @@ export function ForgotPasswordForm() {
         <form onSubmit={resetForm.handleSubmit(handleResetPassword)} className="w-full flex flex-col space-y-4">
           <div>
             <label htmlFor="password" className="block text-sm font-bold text-gray-600">
-              Password Baru <span className="text-red-500">*</span>
+              New Password <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -198,7 +198,7 @@ export function ForgotPasswordForm() {
 
           <div>
             <label htmlFor="confirmPassword" className="block text-sm font-bold text-gray-600">
-              Konfirmasi Password <span className="text-red-500">*</span>
+              Confirm Password <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <input
@@ -225,7 +225,7 @@ export function ForgotPasswordForm() {
       )}
 
       <Link href="/login" className="text-sm text-blue-500 underline">
-        Kembali ke Login
+        Back to Login
       </Link>
     </div>
   );

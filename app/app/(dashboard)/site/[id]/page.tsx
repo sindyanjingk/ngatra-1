@@ -18,11 +18,15 @@ export default async function SiteAnalytics({
     }
   })
 
-  if (!data || data.userId !== session.user.id) {
-    notFound();
-  }
+  console.log({data});
 
-  const url = data.customDomain ? data.customDomain : `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+  // if (!data || data.userId !== session.user.id) {
+  //   notFound();
+  // }
+
+  // const url = data.customDomain ? data.customDomain : `${data.subdomain}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`;
+  // console.log({url});
+  
 
   const orders = await prisma.transaction.findMany({
     where: {

@@ -8,6 +8,7 @@ import { Loader2Icon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
+import { toast } from 'sonner'
 
 type Props = {
   siteId: string
@@ -33,13 +34,19 @@ const LoginUserSiteForm = ({ siteId }: Props) => {
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        const response = await signIn('credentials', {
-          redirect: false,
-          email: data.email,
-          password: data.password,
-        })
-        if (response?.ok) {
-          router.push('dashboard')
+        try {
+          const response = await signIn('credentials', {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+          })
+          if (response?.ok) {
+            toast.success('Login successful')
+            router.push('dashboard')
+          }
+        } catch (error) {
+          console.log({ error });
+          toast.error("Login failed")
         }
       })}
       className="text-gray-800 bg-white shadow-md rounded-xl px-8 pt-6 pb-8 mb-4 md:w-1/3 w-full flex items-center justify-center flex-col gap-6"

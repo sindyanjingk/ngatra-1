@@ -25,7 +25,8 @@ type OrderFormValues = {
 
 const OrderForm = ({
   siteServices,
-  user
+  user,
+  discount
 }: {
   siteServices: Prisma.siteServicesGetPayload<{
     include: {
@@ -34,7 +35,8 @@ const OrderForm = ({
       site: true
     }
   }>[]
-  user : Prisma.UserWhereInput
+  user: Prisma.UserWhereInput,
+  discount?: number
 }) => {
   const [price, setPrice] = useState(0)
   const [balance, setBalance] = useState(user.balance)
@@ -65,12 +67,12 @@ const OrderForm = ({
       : siteServices
     return Array.from(new Set(filtered.map(s => s.category?.category_name || "Uncategorized")))
   }, [watchPlatform, siteServices])
-  
-  
+
+
 
   const filteredServices = useMemo(() => {
     return siteServices.filter(
-      service =>service.category?.category_name === watchCategory
+      service => service.category?.category_name === watchCategory
     )
   }, [watchPlatform, watchCategory, siteServices])
 
@@ -234,8 +236,16 @@ const OrderForm = ({
         {/* Price */}
         <div className="flex items-center justify-between">
           <div>Price</div>
-          <div>{selectedService && formatIDR(price)}</div>
+          <div>{selectedService && discount ? formatIDR(price - (+price * +discount / 100)) : formatIDR(price)}</div>
         </div>
+        {
+          discount && selectedService && (
+            <div className="flex items-center gap-x-2">
+              <div>Discount</div>
+              <div className="text-red-500">{discount}%</div>
+            </div>
+          )
+        }
 
         {/* Submit */}
         {selectedService && (
@@ -249,7 +259,7 @@ const OrderForm = ({
               balance={balance as number || 0}
               name={selectedService.name || ""}
               amount={watchAmount || 0}
-              rate={price}
+              rate={ discount ? price - (+price * discount / 100) : price}
               link={watch("link")}
             />
           </ButtonCreateOrder>

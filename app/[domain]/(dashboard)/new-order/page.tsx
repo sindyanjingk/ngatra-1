@@ -2,6 +2,7 @@ import SidebarHeader from '@/components/dashboard-user/sidebar-header';
 import OrderForm from '@/components/form/order-form'
 import { getSession } from '@/lib/auth';
 import prisma from '@/lib/prisma'
+import { Sparkle, SparkleIcon, Sparkles } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
@@ -53,7 +54,8 @@ const OrderSite = async ({
   return (
     <div className='text-black'>
       <SidebarHeader title='New Order' />
-      <OrderForm user={user} siteServices={services} />
+      <div className="text-md rounded-lg flex items-center gap-x-2">{user.discount && `Congratulations, you have ${user.discount}% discount`}<Sparkles className='text-yellow-500'/> </div>
+      <OrderForm discount={user.discount || 0} user={user} siteServices={services} />
     </div>
   )
 }

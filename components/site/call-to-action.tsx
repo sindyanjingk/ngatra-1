@@ -3,6 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '../ui/button'
+import Link from 'next/link'
 
 type Props = {
     cta?: string
@@ -24,7 +25,9 @@ const CallToAction = ({ cta, buttonColor, startNow }: Props) => {
             viewport={{ once: true }}
         >
             {cta}
-            <Button style={{ backgroundColor: buttonColor || "" }} className='text-xl font-bold'>{startNow}</Button>
+            <Link href={"/login"}>
+                <Button style={{ backgroundColor: buttonColor || "" }} className='text-xl font-bold'>{startNow}</Button>
+            </Link>
         </motion.div>
     )
 }

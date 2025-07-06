@@ -76,6 +76,7 @@ const DomainPage = async ({
         signUp={siteLanguage?.siteLanding?.signUp!}
         newOrder={siteLanguage?.siteLanding?.newOrder!}
         services={siteLanguage?.siteLanding?.service!}
+        siteName={site?.name!}
         logo={siteDesigns?.logo!} />
       <HeroSection
         startNow={siteLanguage?.siteLanding?.startNow || ""}

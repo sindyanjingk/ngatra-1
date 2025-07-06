@@ -55,7 +55,7 @@ const SelectSite = ({ sites, siteName }: Props) => {
         ))}
         <div className="border-t border-white/20 mt-2 pt-2 text-center">
           <Link
-            href="/onboarding"
+            href="/app/onboarding"
             className="flex items-center justify-center gap-x-2 text-blue-300 font-bold text-sm"
           >
             <CirclePlusIcon size={16} /> Add Site

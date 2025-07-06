@@ -102,6 +102,12 @@ export async function AppSidebar({ name, user, logo, ...props }: AppSidebarProps
         url: "api-page",
         icon: Code2Icon,
         isActive: false,
+                items: [
+          {
+            title: "API Documentation",
+            url: "api-page",
+          },
+        ],
       },
     ],
   }

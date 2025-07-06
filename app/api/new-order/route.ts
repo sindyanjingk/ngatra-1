@@ -44,13 +44,21 @@ export async function POST(req: NextRequest) {
         })
         if (response.status === 200) {
             const hargaAsli = service?.providersRate! / 1000 * quantity
+            const userDiscount = await prisma.user.findFirst({
+                where : {
+                    id : userSite.id,
+                }
+            })
+
+            const totalAmmount = userDiscount?.discount ? amount - (+amount * +userDiscount.discount / 100) : +amount
+            
             const user = await prisma.user.update({
                 where: {
                     id: userSite?.userId
                 },
                 data: {
                     balance: {
-                        decrement: +amount
+                        decrement: +totalAmmount
                     },
                     transaction: {
                         create: {
@@ -59,7 +67,7 @@ export async function POST(req: NextRequest) {
                             name: "ORDER",
                             qty: +quantity,
                             siteId: userSite?.siteId,
-                            totalAmount: +amount,
+                            totalAmount: +totalAmmount,
                             link,
                             profit: amount - hargaAsli,
                             providerOrderId: response?.data?.order || "",
@@ -67,10 +75,10 @@ export async function POST(req: NextRequest) {
                         }
                     },
                     spent: {
-                        increment: +amount
+                        increment: +totalAmmount
                     },
                     income : {
-                        increment: +amount
+                        increment: +totalAmmount
                     }
                 }
             })

@@ -34,9 +34,11 @@ const DashboardPage = async () => {
       },
     });
 
+    console.log({userSite});
+    
 
     if (!userSite) {
-      redirect("/onboarding");
+      redirect("/app/onboarding");
     } else {
       console.log("trigerred");
       redirect(`/site/${userSite.id}`);

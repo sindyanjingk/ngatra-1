@@ -15,6 +15,7 @@ type Props = {
     services?: string;
     signIn?: string;
     signUp?: string;
+    siteName? : string;
 }
 
 const SiteNavbar = ({ 
@@ -22,7 +23,8 @@ const SiteNavbar = ({
     newOrder,
     services,
     signIn,
-    signUp
+    signUp,
+    siteName
  }: Props) => {
     const pathname = usePathname()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -76,7 +78,7 @@ const SiteNavbar = ({
                                 className="rounded-lg"
                             />
                         </div>
-                        <span className="text-xl font-bold text-gray-900">Panel</span>
+                        <span className="text-xl font-bold text-gray-900">{siteName || "Panel"}</span>
                     </Link>
 
                     {/* Desktop Navigation */}

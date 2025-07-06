@@ -10,9 +10,10 @@ export async function POST(req: NextRequest) {
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const goodDomain = domain.replace(/[^a-zA-Z0-9.-]/g, "");
     try {
         const createVercelDomain = await axios.post(`https://api.vercel.com/v9/projects/${process.env.PROJECT_VERCEL_ID}/domains`, {
-            name: domain,
+            name: goodDomain,
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.PROJECT_VERCEL_TOKEN}`
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
         }
         const response = await prisma.sites.create({
             data: {
-                name : name,
+                name: name,
                 customDomain: domain,
                 subdomain: domain,
                 userId: session?.user?.id,
@@ -50,8 +51,8 @@ export async function POST(req: NextRequest) {
         })
         return NextResponse.json({ message: "success", response }, { status: 200 });
     } catch (error: any) {
-        console.log({error});
-        console.log({ error : error?.response?.data });
+        console.log({ error });
+        console.log({ error: error?.response?.data });
         return NextResponse.json({ error: error?.response?.data?.error?.code || "Something went wrong" }, { status: 500 });
     }
 }

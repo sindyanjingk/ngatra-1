@@ -1,68 +1,44 @@
-
 import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export const config = {
-  matcher: ["/((?!api/|_next/|_vercel|[\\w-]+\\.\\w+).*)"],
+  matcher: ["/((?!api/|_next/|_vercel|_static|favicon.ico|.*\\..*).*)"],
 };
 
 export default async function middleware(req: NextRequest) {
   const url = req.nextUrl;
-  const host = req.headers.get("host");
-  if (!host) return NextResponse.error();
+  const host = req.headers.get("host") || "";
+  const path = url.pathname + url.search;
+  let hostname = host.split(":")[0];
 
-  let hostname = host;
+  const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost";
 
-  // Handle localhost development
   if (hostname.includes(".localhost")) {
-    hostname = hostname.replace(".localhost:3000", `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
+    hostname = hostname.replace(".localhost", `.${ROOT_DOMAIN}`);
   }
 
-  const searchParams = url.searchParams.toString();
-  const path = `${url.pathname}${searchParams ? `?${searchParams}` : ""}`;
+  const ROOT_DOMAINS = [ROOT_DOMAIN, `www.${ROOT_DOMAIN}`, "localhost"];
+  const isRootDomain = ROOT_DOMAINS.includes(hostname);
 
-  console.log("📌 Full Request URL:", req.url);
-  console.log("🌍 Raw Hostname:", host);
-  console.log("🔍 Parsed Hostname:", hostname);
-  console.log("📄 Final Path:", path);
+  const token = await getToken({ req });
 
-  // Check if it's root domain (main app for login/register)
-  const isRootDomain =
-    hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN ||
-    hostname === `www.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
-    host === "localhost:3000" ||
-    // Handle Replit development URLs - treat them as root domain for development
-    hostname.includes("sisko.replit.dev") ||
-    hostname.includes("replit.app");
+  const PUBLIC_PATHS = ["/", "/login", "/register", "/forgot-password"];
 
+  // ⛔ Public path, biarkan lewat
+  if (isRootDomain && PUBLIC_PATHS.includes(url.pathname)) {
+    // Tapi kalau user login dan mengakses '/', arahkan ke /app
+    if (url.pathname === "/" && token) {
+      return NextResponse.rewrite(new URL("/app", req.url));
+    }
+    return NextResponse.next();
+  }
+
+  // ✅ Kalau root domain dan bukan path publik, rewrite ke /app/...
   if (isRootDomain) {
-    const session = await getToken({ req });
-
-    const redirectToRegister = url.searchParams.get("redirect") === "register";
-    const redirectToForgotPassword = url.searchParams.get("redirect") === "forgot-password";
-    const publicPaths = ["/login", "/register", "/forgot-password"];
-
-    if (!session) {
-      if (redirectToRegister) {
-        return NextResponse.redirect(new URL("/register", req.url));
-      }
-      if (redirectToForgotPassword) {
-        return NextResponse.redirect(new URL("/forgot-password", req.url));
-      }
-      if (!publicPaths.includes(url.pathname) && url.pathname !== "/") {
-        return NextResponse.redirect(new URL("/login", req.url));
-      }
-    }
-
-    if (session && (url.pathname === "/login" || url.pathname === "/register")) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-
-    return NextResponse.rewrite(new URL(`/app${path === "/" ? "" : path}`, req.url));
+    return NextResponse.rewrite(new URL(`/app${path}`, req.url));
   }
 
-  console.log("REWRITE TO:", `/${hostname}${path === "/" ? "" : path}`);
-
-  // For subdomain or custom domain (tenant sites)  
-  return NextResponse.rewrite(new URL(`/${hostname}${path === "/" ? "" : path}`, req.url));
+  // ✅ Tenant domain rewrite ke /[tenant]/...
+  const newPath = `/${hostname}${url.pathname}${url.search}`;
+  return NextResponse.rewrite(new URL(newPath, req.url));
 }
