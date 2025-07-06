@@ -1,13 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
-import Midtrans from "midtrans-client-typescript";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
     try {
-        const serverKey = process.env.MIDTRANS_SANBOX_SERVER_KEY!;
-        const clientKey = process.env.MIDTRANS_SANBOX_CLIENT_KEY!;
-        const snap = new Midtrans.Snap({ clientKey, serverKey, isProduction: false });
-
         const body = await req.json();
         console.log("Midtrans Callback Received:", body);
 
@@ -47,4 +42,8 @@ export async function POST(req: NextRequest) {
         console.error("Midtrans Callback Error:", error);
         return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
     }
+}
+
+export async function GET(req: NextRequest) {
+    return NextResponse.json({ msg: "Success access callback" });
 }
